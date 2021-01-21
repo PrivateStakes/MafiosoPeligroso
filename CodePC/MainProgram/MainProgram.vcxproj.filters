@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game Entities">
+      <UniqueIdentifier>{3d1cb3b9-d982-4b30-afa5-5cb981e2f5de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Entities\Header files">
+      <UniqueIdentifier>{a8d942a1-e2c7-4e18-a554-5ef5a3474310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Entities\Source files">
+      <UniqueIdentifier>{197b937f-6db3-4b5f-bafa-760a420879e4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEntity.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game Entities\Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StateStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEntity.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game Entities\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
