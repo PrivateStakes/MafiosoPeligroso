@@ -15,27 +15,6 @@
 const int WIDTH = 900;
 const int HEIGHT = 600;
 
-/*
-animations:
-- have even sprite sheet (duh)
-- cell size = width/amount of cells
-- make an sf::IntRect for you sprite (presumably which part you're showing)
-- intRect(0, 0, texture.getSize().x / cell_amountX, texture.getSize().y / cell_amountY)
-  ^^^-defines cell size
-- sprite.setTextureRect(intRect) <- sets portion of sprite
-- for new/specific frame: multiply desired frame pos by base value (nd some modulus shit idk)
-intrect.top = which_cell * cell_height, moves which square up/down
-intrect.left = which_cell * cell_width, moves which square right/left
-
-stamped image:
-sf::image
-image.loadFromFile("../..")
-image.createMaskFromColour
-
-'procedurell programmering': användandet av funktioner
-check what sf::RenderTarget and sf::RenderState (renderTarget.draw(sprite)) does
-*/
-
 int main()
 {
 	
