@@ -23,6 +23,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="State.cpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuState.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Soldier.h" />
     <ClInclude Include="State.h" />

@@ -4,68 +4,69 @@
     <Filter Include="States">
       <UniqueIdentifier>{e6823f50-648d-43a8-a2d0-24c4538827d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="States\Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="States\Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Header files">
       <UniqueIdentifier>{0ff3a628-00fd-460b-8798-fb037fbe6a5c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source files">
       <UniqueIdentifier>{c374b6d8-ddcd-4a78-bdb9-c9f70914798c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEntity">
+      <UniqueIdentifier>{e8edff48-5ecd-4e78-8c59-223bce695977}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="StateStack.cpp">
-      <Filter>States\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>States\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>States\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuState.cpp">
-      <Filter>States\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="GameEntity.cpp">
-      <Filter>States\Source Files</Filter>
+    <ClCompile Include="StateStack.cpp">
+      <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>States\Source Files</Filter>
+    <ClCompile Include="GameState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>States</Filter>
     </ClCompile>
     <ClCompile Include="Soldier.cpp">
-      <Filter>States\Source Files</Filter>
+      <Filter>GameEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEntity.cpp">
+      <Filter>GameEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>GameEntity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StateStack.h">
-      <Filter>States\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>States\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameState.h">
-      <Filter>States\Header Files</Filter>
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="MenuState.h">
-      <Filter>States\Header Files</Filter>
+      <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="GameEntity.h">
-      <Filter>States\Header Files</Filter>
+    <ClInclude Include="State.h">
+      <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>States\Header Files</Filter>
+    <ClInclude Include="StateStack.h">
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="Soldier.h">
-      <Filter>States\Header Files</Filter>
+      <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEntity.h">
+      <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>GameEntity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

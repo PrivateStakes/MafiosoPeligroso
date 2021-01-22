@@ -9,8 +9,8 @@ private:
     float speed;
 
 public:
-    Soldier(string name, int health = 3);
+    Soldier(string fileName, string name, int health = 3);
     ~Soldier();
 
     virtual void move() = 0;
-}
+};

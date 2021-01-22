@@ -15,6 +15,7 @@ public:
 	GameEntity(string fileName);
 	~GameEntity();
 
+	virtual void update(const float deltaTime) = 0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 
 	void setPosition(sf::Vector2f position);
