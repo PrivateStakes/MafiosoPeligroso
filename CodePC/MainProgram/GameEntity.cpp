@@ -6,6 +6,7 @@ GameEntity::GameEntity(string fileName)
 	sprite.setTexture(texture);
 
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+	sprite.setScale(2, 2);
 }
 
 GameEntity::~GameEntity()
