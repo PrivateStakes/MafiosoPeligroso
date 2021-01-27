@@ -44,7 +44,7 @@ public:
 	void push(StateID id);
 	void pop();
 	void render(sf::RenderWindow& window);
-	bool update(const float aDeltaTime);
+	bool update(const float aDeltaTime, sf::RenderWindow& window);
 	
 	int currentLevelIndex = 1;
 	const int windowWidth, windowHeight;

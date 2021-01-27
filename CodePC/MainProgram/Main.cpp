@@ -13,8 +13,8 @@
 #pragma comment(lib, "sfml-graphics.lib")
 #endif
 
-const int WIDTH = 900;
-const int HEIGHT = 600;
+const int WIDTH = 1680;
+const int HEIGHT = 1050;
 
 int main()
 {
@@ -59,7 +59,7 @@ int main()
 		{
 			elapsedTimeSinceLastUpdate -= timePerFrame;
 
-			if (!stateStack->update(timePerFrame.asSeconds()))
+			if (!stateStack->update(timePerFrame.asSeconds(), window))
 			{
 				window.close();
 				gameOn = false;
@@ -78,10 +78,9 @@ int main()
 		if (gameOn)
 		{
 			window.clear();
+			stateStack->render(window);
 			window.draw(player);
 			window.draw(cursor);
-			stateStack->render(window);
-			
 			//stateStack.get()->render(window);
 			window.display();
 		}

@@ -24,7 +24,7 @@ public:
 	GameState(const StateID InputStateId, StateStack& stateStack);
 	~GameState() override;
 
-	int update(const float deltaTime) override;
+	int update(const float deltaTime, sf::RenderWindow& window) override;
 	void render(sf::RenderWindow& window) override;
 };
 

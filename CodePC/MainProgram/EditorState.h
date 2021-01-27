@@ -14,7 +14,7 @@ private:
 
 	sf::Font font;
 
-	const int tileSizeX = 20;
+	const int tileSizeX = 30;
 	const int tileSizeY = 20;
 	std::vector<Tile*> tiles;
 
@@ -22,6 +22,6 @@ public:
 	EditorState(const StateID InputStateId, StateStack& stateStack);
 	~EditorState() override;
 
-	int update(const float deltaTime) override;
+	int update(const float deltaTime, sf::RenderWindow& window) override;
 	void render(sf::RenderWindow& window) override;
 };
