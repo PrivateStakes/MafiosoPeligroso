@@ -96,13 +96,13 @@ void StateStack::render(sf::RenderWindow& window)
 	if (stateQuantity + 1 != 0) states[stateQuantity]->render(window);
 }
 
-bool StateStack::update(const float deltaTime)
+bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 {
 	if (stateQuantity + 1 != 0)
 	{
 		if (states[stateQuantity] != nullptr)
 		{
-			int tempInt = states[stateQuantity]->update(deltaTime);
+			int tempInt = states[stateQuantity]->update(deltaTime, window);
 
 			switch ((stateEvent)tempInt)
 			{

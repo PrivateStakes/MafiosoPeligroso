@@ -15,8 +15,8 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack) :
 		{
 			tiles.push_back(new Tile("basic_tile.png"));
 			tiles.back()->setPosition({ 
-				(tiles.back()->getSprite().getLocalBounds().height / 2) + ((i * tiles.back()->getSprite().getLocalBounds().height)),
-				(tiles.back()->getSprite().getLocalBounds().height / 2) + ((j * tiles.back()->getSprite().getLocalBounds().width)) });
+				(tiles.back()->getSprite().getGlobalBounds().width / 2) + ((j * tiles.back()->getSprite().getGlobalBounds().width)),
+				(tiles.back()->getSprite().getGlobalBounds().height / 2) + ((i * tiles.back()->getSprite().getGlobalBounds().height)) });
 		}
 	}
 
@@ -28,12 +28,13 @@ EditorState::~EditorState()
 
 }
 
-int EditorState::update(const float deltaTime)
+int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
 
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
 
+	//sf::Vector2f(mouse.getPosition(window));
 
 	return returnMessage;
 }
