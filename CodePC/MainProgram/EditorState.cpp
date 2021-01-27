@@ -13,10 +13,10 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack) :
 	{
 		for (int j = 0; j < tileSizeX; j++)
 		{
-			tiles.push_back(make_unique<Tile>(Tile("basic_tile.png")));
-			tiles.back().get()->setPosition({ 
-				(tiles.back().get()->getSprite().getLocalBounds().height / 2) + ((i * 2 * tiles.back().get()->getSprite().getLocalBounds().height)),
-				(tiles.back().get()->getSprite().getLocalBounds().height / 2) + ((j * 2 * tiles.back().get()->getSprite().getLocalBounds().width)) });
+			tiles.push_back(new Tile("basic_tile.png"));
+			tiles.back()->setPosition({ 
+				(tiles.back()->getSprite().getLocalBounds().height / 2) + ((i * tiles.back()->getSprite().getLocalBounds().height)),
+				(tiles.back()->getSprite().getLocalBounds().height / 2) + ((j * tiles.back()->getSprite().getLocalBounds().width)) });
 		}
 	}
 
@@ -40,10 +40,10 @@ int EditorState::update(const float deltaTime)
 
 void EditorState::render(sf::RenderWindow& window)
 {
-
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		tiles[i].get()->draw(window);
+		tiles[i]->draw(window);
+		//window.draw(tiles[i].get()->getSprite());
 	}
 
 	int temp = 0;

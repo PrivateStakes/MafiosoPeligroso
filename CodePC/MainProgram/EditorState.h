@@ -16,7 +16,7 @@ private:
 
 	const int tileSizeX = 20;
 	const int tileSizeY = 20;
-	std::vector<std::unique_ptr<Tile>> tiles;
+	std::vector<Tile*> tiles;
 
 public:
 	EditorState(const StateID InputStateId, StateStack& stateStack);
