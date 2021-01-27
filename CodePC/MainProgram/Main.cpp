@@ -28,6 +28,8 @@ int main()
 	sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
+	sf::Mouse mouse;
+
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//std::unique_ptr<StateStack> stateStack = std::make_unique<StateStack>(WIDTH, HEIGHT);
 	StateStack* stateStack = new StateStack(WIDTH, HEIGHT);
@@ -53,6 +55,7 @@ int main()
 				gameOn = false;
 			}
 			player.move();
+			player.rotateSprite(sf::Vector2f(mouse.getPosition(window)));
 			/*
 			if (!stateStack.get()->update(timePerFrame.asSeconds()))
 			{
