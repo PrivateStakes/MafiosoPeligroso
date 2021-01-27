@@ -4,6 +4,8 @@ GameEntity::GameEntity(string fileName)
 {
 	texture.loadFromFile("../Images/"+fileName);
 	sprite.setTexture(texture);
+
+	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 }
 
 GameEntity::~GameEntity()
