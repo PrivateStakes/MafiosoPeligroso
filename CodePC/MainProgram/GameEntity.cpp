@@ -4,6 +4,8 @@ GameEntity::GameEntity(string fileName)
 {
 	texture.loadFromFile("../Images/"+fileName);
 	sprite.setTexture(texture);
+
+	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 }
 
 GameEntity::~GameEntity()
@@ -24,4 +26,9 @@ void GameEntity::setPosition(sf::Vector2f position)
 sf::Vector2f GameEntity::getPosition()
 {
 	return sprite.getPosition();
+}
+
+sf::Sprite GameEntity::getSprite()
+{
+	return sprite;
 }
