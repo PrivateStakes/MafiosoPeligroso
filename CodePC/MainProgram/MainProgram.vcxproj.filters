@@ -42,6 +42,9 @@
     <ClCompile Include="Particle.cpp">
       <Filter>GameEntity</Filter>
     </ClCompile>
+    <ClCompile Include="EditorState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="Particle.h">
       <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorState.h">
+      <Filter>States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

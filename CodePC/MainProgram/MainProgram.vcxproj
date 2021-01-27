@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EditorState.cpp" />
     <ClCompile Include="GameEntity.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="StateStack.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EditorState.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuState.h" />
