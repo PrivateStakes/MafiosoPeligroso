@@ -40,7 +40,19 @@ void Player::rotateSprite(sf::Vector2f pos)
 		this->sprite.setRotation(180 - ((asin((pos.y - this->sprite.getPosition().y) / hypotenuse)) / 3.141592) * 180);
 	}
 	
-	//std::cout << biggerOrNot(this->sprite.getPosition().y, (pos.y)) * ((atan(pos.x - this->sprite.getPosition().x) / ((pos.y - this->sprite.getPosition().y)) / 3.141592) * 180) << std::endl;
+}
+
+Bullet Player::shoot(sf::Vector2f direction)
+{
+	//Normalises direction
+	float squaredLength = direction.x * direction.x + direction.y * direction.y;
+	if (squaredLength > 0)
+	{
+		direction.x /= sqrt(squaredLength);
+		direction.y /= sqrt(squaredLength);
+	}
+
+	return Bullet(direction, this->sprite.getPosition());
 }
 
 void Player::update(const float deltaTime)
