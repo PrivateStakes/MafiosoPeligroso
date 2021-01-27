@@ -5,7 +5,7 @@ class StateStack;
 class Player;
 class GameEntity;
 
-class EditorState : State
+class EditorState : public State
 {
 private:
 	float width;

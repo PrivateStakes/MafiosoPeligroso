@@ -18,7 +18,8 @@ GameState::~GameState()
 int GameState::update(const float deltaTime)
 {
 	int returnMessage = 0;
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
 
 	
 	/*if (unpauseTimer < unpauseTimerElapsed)

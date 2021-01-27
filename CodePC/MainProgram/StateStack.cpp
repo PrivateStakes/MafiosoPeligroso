@@ -6,6 +6,7 @@
 #include "StateStack.h"
 #include "GameState.h"
 #include "MenuState.h"
+#include "EditorState.h"
 
 StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) :
 	windowWidth(inputWindowWidth),
@@ -69,6 +70,11 @@ void StateStack::push(StateID id)
 			stateQuantity++;
 			if (stateQuantity != -1) states[stateQuantity] = new MenuState(StateID::MainMenuState, *this, false);
 			break;
+
+		case StateID::EditorState:
+			stateQuantity++;
+			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this);
+			break;
 		}
 	}
 	else assert(true == true && "Too many states! Increase 'statesCapacity' to allow for more");
@@ -131,6 +137,11 @@ bool StateStack::update(const float deltaTime)
 				currentLevelIndex = 0;
 				pop();
 				push(StateID::GameState);
+				break;
+
+			case stateEvent::LaunchEditor:
+				pop();
+				push(StateID::EditorState);
 				break;
 			}
 

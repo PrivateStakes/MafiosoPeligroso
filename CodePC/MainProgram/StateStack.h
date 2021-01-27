@@ -12,14 +12,16 @@ enum class stateEvent
 	Unpause,
 	ExitGame,
 	WonGame,
-	LostGame
+	LostGame,
+	LaunchEditor
 };
 
 enum class StateID
 {
 	GameState,
 	PauseMenuState,
-	MainMenuState
+	MainMenuState,
+	EditorState
 };
 
 class State;
