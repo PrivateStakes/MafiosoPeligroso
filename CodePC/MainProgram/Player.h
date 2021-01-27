@@ -3,6 +3,9 @@
 
 class Player : public Soldier
 {
+private:
+	int biggerOrNot(int firstValue, int secondValue);
+
 public:
 	Player(string name = "Joe", int health = 3, float speed = 5.0);
 	~Player();
