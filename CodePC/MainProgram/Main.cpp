@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include "StateStack.h"
+#include "Player.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "sfml-window-d.lib")
@@ -18,14 +19,16 @@ const int HEIGHT = 600;
 int main()
 {
 	
-
+	Player player;
 	std::srand((unsigned)time(0));
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "DV1594 Muntlig tentamen 2");
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "BeSt MaFiA gAmE eVeR!");
 	sf::RenderStates defaultRenderState;
 
 	sf::Clock clock;
 	sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+
+	sf::Mouse mouse;
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//std::unique_ptr<StateStack> stateStack = std::make_unique<StateStack>(WIDTH, HEIGHT);
@@ -50,7 +53,10 @@ int main()
 			{
 				window.close();
 				gameOn = false;
-			}/*
+			}
+			player.move();
+			player.rotateSprite(sf::Vector2f(mouse.getPosition(window)));
+			/*
 			if (!stateStack.get()->update(timePerFrame.asSeconds()))
 			{
 				window.close();
@@ -61,7 +67,9 @@ int main()
 		if (gameOn)
 		{
 			window.clear();
+			window.draw(player);
 			stateStack->render(window);
+			
 			//stateStack.get()->render(window);
 			window.display();
 		}

@@ -3,9 +3,6 @@
 
 class StateStack;
 class Player;
-class Platform;
-class Enemy;
-class Goal;
 class GameEntity;
 
 enum class GameEntityCollision
@@ -21,6 +18,7 @@ private:
 	float height;
 
 	sf::Font font;
+	//sf::Mouse mouse;
 
 public:
 	GameState(const StateID InputStateId, StateStack& stateStack);

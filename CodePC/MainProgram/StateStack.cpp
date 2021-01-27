@@ -27,7 +27,8 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	}
 	loadStream.close();
 
-	push(StateID::MainMenuState);
+	//push(StateID::MainMenuState);
+	push(StateID::GameState);
 }
 
 StateStack::~StateStack()

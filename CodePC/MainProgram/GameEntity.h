@@ -3,7 +3,7 @@
 #include <cstring>
 
 using namespace std;
-class GameEntity : sf::Drawable
+class GameEntity : public sf::Drawable
 {
 protected:
 	sf::Sprite sprite;

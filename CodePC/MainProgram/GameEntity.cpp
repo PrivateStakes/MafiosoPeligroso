@@ -2,7 +2,7 @@
 
 GameEntity::GameEntity(string fileName)
 {
-	texture.loadFromFile(fileName);
+	texture.loadFromFile("../Images/"+fileName);
 	sprite.setTexture(texture);
 }
 
