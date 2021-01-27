@@ -27,3 +27,8 @@ sf::Vector2f GameEntity::getPosition()
 {
 	return sprite.getPosition();
 }
+
+sf::Sprite GameEntity::getSprite()
+{
+	return sprite;
+}

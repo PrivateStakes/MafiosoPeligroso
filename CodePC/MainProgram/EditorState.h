@@ -4,6 +4,7 @@
 class StateStack;
 class Player;
 class GameEntity;
+class Tile;
 
 class EditorState : public State
 {
@@ -12,6 +13,10 @@ private:
 	float height;
 
 	sf::Font font;
+
+	const int tileSizeX = 20;
+	const int tileSizeY = 20;
+	std::vector<std::unique_ptr<Tile>> tiles;
 
 public:
 	EditorState(const StateID InputStateId, StateStack& stateStack);
