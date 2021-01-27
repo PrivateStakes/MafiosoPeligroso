@@ -11,7 +11,8 @@ private:
 
 	void move();
 public:
-	Bullet(sf::Vector2f direction, sf::Vector2f position, int dmg = 1, float speed = 15.0f);
+	Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg = 1, float speed = 35.0f);
+	~Bullet();
 
 	// Inherited via GameEntity
 	virtual void update(const float deltaTime) override;

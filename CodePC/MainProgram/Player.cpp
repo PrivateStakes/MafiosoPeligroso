@@ -52,7 +52,7 @@ Bullet Player::shoot(sf::Vector2f direction)
 		direction.y /= sqrt(squaredLength);
 	}
 
-	return Bullet(direction, this->sprite.getPosition());
+	return Bullet(this->sprite.getRotation(), direction, this->sprite.getPosition());
 }
 
 void Player::update(const float deltaTime)
