@@ -20,7 +20,7 @@ int Player::biggerOrNot(int firstValue, int secondValue)
 }
 
 Player::Player(string name, int health, float speed)
-	:Soldier("CollectorRight.png", name, health)
+	:Soldier("character.png", name, health)
 {
 }
 
