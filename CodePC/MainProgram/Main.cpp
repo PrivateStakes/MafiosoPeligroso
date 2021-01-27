@@ -31,6 +31,8 @@ int main()
 	sf::Sprite cursor;
 
 	sf::Mouse mouse;
+
+	Bullet* bullets = nullptr;
 	//sf::Cursor cursor;
 	window.setMouseCursorVisible(false);
 	texture.loadFromFile("../images/cursor.png");
@@ -67,20 +69,34 @@ int main()
 			player.move();
 			player.rotateSprite(sf::Vector2f(mouse.getPosition(window)));
 			cursor.setPosition(sf::Vector2f(mouse.getPosition(window)));
+			if (bullets != nullptr)
+			{
+				bullets->update(timePerFrame.asSeconds());
+			}
 			/*
 			if (!stateStack.get()->update(timePerFrame.asSeconds()))
 			{
 				window.close();
 				gameOn = false;
 			}*/
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				bullets = new Bullet(player.shoot((sf::Vector2f(mouse.getPosition(window)) - player.getPosition())));
+			}
 		}
 
 		if (gameOn)
 		{
 			window.clear();
 			stateStack->render(window);
+			if (bullets != nullptr)
+			{
+				window.draw(*bullets);
+			}
 			window.draw(player);
 			window.draw(cursor);
+			
+			
 			//stateStack.get()->render(window);
 			window.display();
 		}

@@ -48,6 +48,9 @@
     <ClCompile Include="Tile.cpp">
       <Filter>GameEntity</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>GameEntity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -78,6 +81,9 @@
       <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
+      <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
       <Filter>GameEntity</Filter>
     </ClInclude>
   </ItemGroup>

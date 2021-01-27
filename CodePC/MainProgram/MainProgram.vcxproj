@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="EditorState.cpp" />
     <ClCompile Include="GameEntity.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="EditorState.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="GameState.h" />
