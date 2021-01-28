@@ -13,5 +13,5 @@ Tile::~Tile()
 
 void Tile::update(const float deltaTime)
 {
-
+	sprite.setPosition((sf::Vector2f)((sf::Vector2i)sprite.getPosition()));
 }
