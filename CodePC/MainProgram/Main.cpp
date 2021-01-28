@@ -79,7 +79,7 @@ int main()
 				window.close();
 				gameOn = false;
 			}*/
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player.ableToShoot())
 			{
 				bullets = new Bullet(player.shoot((sf::Vector2f(mouse.getPosition(window)) - player.getPosition())));
 			}
