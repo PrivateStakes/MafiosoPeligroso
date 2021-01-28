@@ -8,6 +8,7 @@ protected:
 	const StateID stateId;
 	const float unpauseTimer = 0.4f;
 	float unpauseTimerElapsed = 0.f;
+	sf::Mouse mouse;
 
 public:
 	State(const StateID InputStateId);

@@ -16,6 +16,8 @@ private:
 
 	const int tileSizeX = 30;
 	const int tileSizeY = 20;
+	std::vector<Tile*> grid;
+
 	std::vector<Tile*> tiles;
 
 public:
