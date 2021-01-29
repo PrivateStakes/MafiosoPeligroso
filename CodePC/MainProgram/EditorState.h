@@ -20,7 +20,8 @@ enum class TileSorts
 enum class Levels
 {
 	level1,
-	level2
+	level2,
+	COUNT //dictates size of levels -- always last
 };
 
 class EditorState : public State
@@ -38,6 +39,7 @@ private:
 	const int tileSizeY = 20;
 
 	std::string currentFileName;
+	std::string currentDirectory = "../Saves/";
 	
 	std::vector <std::vector<Tile*>> grid;
 	std::vector <std::vector<Tile*>> tiles;

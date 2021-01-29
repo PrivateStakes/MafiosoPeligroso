@@ -13,53 +13,6 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Lev
 	bool loadEmptyLevel = true;
 	currentFileName = levelDirectories[(int)level];
 
-	std::ifstream loadStream;
-	loadStream.open("../Saves/" + currentFileName);
-	/*if (loadStream && loadStream.is_open())
-	{
-		std::string saveFileSize;
-		loadStream >> saveFileSize;
-		if (saveFileSize.size() > 0) loadEmptyLevel = false;
-	}*/
-	
-	//Loads level data
-	for (int i = 0; i < tileSizeY; i++)
-	{
-		std::vector<Tile*> tempGrid;
-		std::vector<Tile*> emptyTiles;
-
-		std::string tileRow;
-		std::getline(loadStream, tileRow);
-
-		for (int j = 0; j < tileSizeX; j++)
-		{
-			tempGrid.push_back(new Tile("basic_tile.png"));
-			tempGrid.back()->setPosition({
-				(tempGrid.back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid.back()->getSprite().getGlobalBounds().width)),
-				(tempGrid.back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid.back()->getSprite().getGlobalBounds().height)) });
-			
-			emptyTiles.push_back(nullptr);
-			if (!loadEmptyLevel) 
-			{
-				//NOTE: MUST READ FROM NEW LINE AFTER i = 0
-				//int whichTile;
-				//loadStream >> whichTile;
-
-				if (!std::isblank(tileRow[j]) && tileRow[j] != ' ')
-				{
-					if (loadTile((TileSorts)(int)tileRow[j]) != nullptr)
-					{
-						emptyTiles[j] = new Tile(*loadTile((TileSorts)(int)tileRow[j]));
-						emptyTiles[j]->setTileType((int)tileRow[j]);
-					}
-				}
-			}
-		}
-		grid.push_back(tempGrid);
-		tiles.push_back(emptyTiles);
-	}
-	loadStream.close();
-
 	//Create palette chache
 	{
 		tileCache[TileSorts::wall] = std::make_unique<Tile>("basic_tile2.png");
@@ -77,6 +30,55 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Lev
 		currentBrush = nullptr;
 		currentBrush = tileCache.at(TileSorts::wall).get();
 	}
+
+	std::ifstream loadStream;
+	loadStream.open(currentDirectory + currentFileName);
+	if (loadStream && loadStream.is_open())
+	{
+		loadEmptyLevel = false;
+	}
+	
+	//Loads level data
+	for (int i = 0; i < tileSizeY; i++)
+	{
+		std::vector<Tile*> tempGrid;
+		std::vector<Tile*> tempTiles;
+
+		std::string tileRow = "";
+		loadStream >> tileRow;
+		if (tileRow.size() > 0) loadEmptyLevel = false;
+		loadStream.ignore();
+
+		//std::getline(loadStream, tileRow);
+
+		for (int j = 0; j < tileSizeX; j++)
+		{
+			tempGrid.push_back(new Tile("basic_tile.png"));
+			tempGrid.back()->setPosition({
+				(tempGrid.back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid.back()->getSprite().getGlobalBounds().width)),
+				(tempGrid.back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid.back()->getSprite().getGlobalBounds().height)) });
+			
+			tempTiles.push_back(nullptr);
+			if (!loadEmptyLevel) 
+			{
+				if (!std::isblank(tileRow[j]))
+				{
+					std::cout << tileRow[j] << std::endl;
+					int saveFileInformation = (int)tileRow[j] - 48;
+
+					if (saveFileInformation != 0 && loadTile((TileSorts)saveFileInformation) != nullptr)
+					{
+						tempTiles[j] = new Tile(*loadTile((TileSorts)saveFileInformation));
+						tempTiles[j]->setTileType(saveFileInformation);
+						tempTiles[j]->setPosition(tempGrid[j]->getPosition());
+					}
+				}
+			}
+		}
+		grid.push_back(tempGrid);
+		tiles.push_back(tempTiles);
+	}
+	loadStream.close();
 
 	std::cout << "Level editor loaded! Open palette by pressing 'G'" << std::endl;
 }
@@ -149,12 +151,18 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 
 			case 2:
 				std::cout << "Write new level name:" << std::endl;
-				cin >> currentFileName;
+				std::cin >> currentFileName;
 				std::cout << std::endl;
 				writeLevel();
 				break;
 				
 			case 3:
+				std::cout << "Which level would you like to edit?" << std::endl;
+				for (int i = 0; i < (int)Levels::COUNT; i++)
+				{
+					std::cout << levelDirectories[i] << std::endl;
+				}
+
 				//send new level name enum name
 				returnMessage = (int)stateEvent::LaunchEditor;
 				break;
@@ -257,19 +265,19 @@ Tile* EditorState::loadTile(TileSorts whichTile)
 	switch (whichTile)
 	{
 	case TileSorts::wall:
-		returnTile = tileCache[TileSorts::wall].get();
+		returnTile = new Tile(*tileCache[TileSorts::wall].get());
 		break;
 
 	case TileSorts::breakable:
-		returnTile = tileCache[TileSorts::breakable].get();
+		returnTile = new Tile(*tileCache[TileSorts::breakable].get());
 		break;
 
 	case TileSorts::enemySpawnPoint:
-		returnTile = tileCache[TileSorts::enemySpawnPoint].get();
+		returnTile = new Tile(*tileCache[TileSorts::enemySpawnPoint].get());
 		break;
 
 	case TileSorts::friendlySpawnPoint:
-		returnTile = tileCache[TileSorts::friendlySpawnPoint].get();
+		returnTile = new Tile(*tileCache[TileSorts::friendlySpawnPoint].get());
 		break;
 
 	default:
@@ -307,16 +315,16 @@ int EditorState::consoleMenu(bool pallete, int highestNumber)
 	//recieves input from editor (into var input) and validates it
 	while (!hasSelectedOption)
 	{
-		cin >> input;
-		cout << std::endl;
-		if (cin.fail() != true)
+		std::cin >> input;
+		std::cout << std::endl;
+		if (std::cin.fail() != true)
 		{
 			if (input >= 0 && input <= highestNumber) hasSelectedOption = true;
-			else cout << "Pick a number FROM 0 to " << highestNumber << std::endl;
+			else std::cout << "Pick a number FROM 0 to " << highestNumber << std::endl;
 		}
-		else cout << "Pick a NUMBER from 0 to " << highestNumber << std::endl;
-		cin.clear();
-		cin.ignore();
+		else std::cout << "Pick a NUMBER from 0 to " << highestNumber << std::endl;
+		std::cin.clear();
+		std::cin.ignore();
 	}
 
 	return input;
@@ -327,15 +335,16 @@ bool EditorState::writeLevel()
 	bool saveSuccessful = true;
 
 	std::ofstream saveStream;
-	saveStream.open("../Saves/" + currentFileName, std::ofstream::out | std::ofstream::trunc);
+	saveStream.open(currentDirectory + currentFileName, std::ofstream::out | std::ofstream::trunc);
 	if (saveStream && saveStream.is_open())
 	{
 		for (int i = 0; i < tiles.size(); i++)
 		{
-			for (int j = 0; j <= tiles.size(); j++)
+			for (int j = 0; j <= tiles[i].size(); j++)
 			{
-				if (j == tiles.size()) saveStream << std::endl;
-				else if(tiles[i][j] != nullptr) saveStream << tiles[i][j]->getTileType();
+				if (j == tiles[i].size()) saveStream << std::endl;
+				else if (tiles[i][j] != nullptr) saveStream << tiles[i][j]->getTileType();
+				else saveStream << 0;
 			}
 		}
 	}
