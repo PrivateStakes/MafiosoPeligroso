@@ -8,6 +8,7 @@ class Player;
 class GameEntity;
 class Tile;
 
+//cannot exceed 9 tile sorts -- change to letters if you need more
 enum class TileSorts 
 {
 	wall = 1,
@@ -16,30 +17,44 @@ enum class TileSorts
 	friendlySpawnPoint
 };
 
+enum class Levels
+{
+	level1,
+	level2
+};
+
 class EditorState : public State
 {
 private:
-	float width;
-	float height;
+	std::string levelDirectories[2]
+	{
+		"level1.txt",
+		"level2.txt"
+	};
 
-	sf::Font font;
-
+	const float width;
+	const float height;
 	const int tileSizeX = 30;
 	const int tileSizeY = 20;
 
+	std::string currentFileName;
 	
-	std::vector<Tile*> grid;
-
-	std::vector<Tile*> tiles;
+	std::vector <std::vector<Tile*>> grid;
+	std::vector <std::vector<Tile*>> tiles;
 
 	Tile* currentBrush;
 	std::unordered_map<TileSorts, std::unique_ptr<Tile>> tileCache;
 
 public:
-	EditorState(const StateID InputStateId, StateStack& stateStack);
+	EditorState(const StateID InputStateId, StateStack& stateStack, Levels level);
 	~EditorState() override;
 
 	int update(const float deltaTime, sf::RenderWindow& window) override;
 	void render(sf::RenderWindow& window) override;
-	bool hasClickedOnTile(int index, std::vector<Tile*> inputTiles, sf::Vector2i mousePos);
+	
+	int consoleMenu(bool pallete, int highestNumber);
+	bool hasClickedOnTile(int index_i, int index_j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos);
+	bool writeLevel();
+	Tile* loadTile(TileSorts whichTile);
+
 };

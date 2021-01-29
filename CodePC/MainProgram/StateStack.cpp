@@ -73,7 +73,8 @@ void StateStack::push(StateID id)
 
 		case StateID::EditorState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this);
+			//change Level::level1 to accomodate
+			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, Levels::level1);
 			break;
 		}
 	}
