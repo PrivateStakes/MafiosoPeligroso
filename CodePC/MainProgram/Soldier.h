@@ -4,7 +4,7 @@ class Soldier : public GameEntity
 {
 private:
     sf::IntRect intRect;
-    string name;
+    std::string name;
 
 protected:
     int health;
@@ -14,8 +14,10 @@ protected:
     int counter;
 
 public:
-    Soldier(string fileName, string name, int health = 3);
+    Soldier(std::string fileName, std::string name, int health = 3);
     ~Soldier();
+    void loseHealth(int dmg = 1);
+    int getHealth()const;
 
     virtual void move() = 0;
 };

@@ -13,6 +13,7 @@ private:
 public:
 	Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg = 1, float speed = 35.0f);
 	~Bullet();
+	sf::FloatRect getBounds()const;
 
 	// Inherited via GameEntity
 	virtual void update(const float deltaTime) override;

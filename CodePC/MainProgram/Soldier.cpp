@@ -1,6 +1,6 @@
 #include "Soldier.h"
 
-Soldier::Soldier(string fileName, string name, int health) : 
+Soldier::Soldier(std::string fileName, std::string name, int health):
 	GameEntity(fileName),
 	health(health),
 	speed(5)
@@ -11,4 +11,14 @@ Soldier::Soldier(string fileName, string name, int health) :
 Soldier::~Soldier()
 {
 
+}
+
+void Soldier::loseHealth(int dmg)
+{
+	this->health -= dmg;
+}
+
+int Soldier::getHealth() const
+{
+	return this->health;
 }

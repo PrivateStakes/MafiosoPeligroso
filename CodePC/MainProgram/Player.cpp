@@ -19,10 +19,10 @@ int Player::biggerOrNot(int firstValue, int secondValue)
 	return value;
 }
 
-Player::Player(string name, int health, float speed)
+Player::Player(std::string name, int health, float speed)
 	:Soldier("character.png", name, health), counter(0), reloading(false)
 {
-	this->currentWeapon = new Weapon(GunType::sniper);
+	this->currentWeapon = new Weapon(GunType::pistol);
 }
 
 Player::~Player()
@@ -76,9 +76,19 @@ Bullet Player::shoot(sf::Vector2f direction)
 	return Bullet(rotation, direction, this->sprite.getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed());
 }
 
+sf::Vector2f Player::getInputDirection() const
+{
+	return this->inputDirection;
+}
+
 bool Player::ableToShoot() const
 {
 	return !this->reloading;
+}
+
+float Player::getRotation() const
+{
+	return this->sprite.getRotation();
 }
 
 void Player::update(const float deltaTime)
@@ -88,25 +98,27 @@ void Player::update(const float deltaTime)
 
 void Player::move()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	this->inputDirection = sf::Vector2f(0, 0);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		this->sprite.move(-this->speed, 0);
+		this->inputDirection.x = -this->speed;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		this->sprite.move(this->speed, 0);
+		this->inputDirection.x = this->speed;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		this->sprite.move(0, -this->speed);
+		this->inputDirection.y = -this->speed;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		this->sprite.move(0, this->speed);
+		this->inputDirection.y = this->speed;
 	}
+
 
 	if (this->reloading)
 	{
@@ -116,4 +128,23 @@ void Player::move()
 			this->reloading = false;
 		}
 	}
+
+	this->sprite.move(this->inputDirection);
+
+	/*if (this->sprite.getGlobalBounds().left < 0 && this->sprite.getGlobalBounds().left > -100)
+		{
+			this->setPosition(sf::Vector2f(this->sprite.getGlobalBounds().width, this->sprite.getGlobalBounds().top));
+		}
+		else if (this->sprite.getGlobalBounds().left + this->sprite.getGlobalBounds().width > 1680)
+		{
+			this->setPosition(sf::Vector2f(1680 - this->sprite.getGlobalBounds().width, this->sprite.getGlobalBounds().top));
+		}
+		if (this->sprite.getGlobalBounds().top < 0)
+		{
+			this->setPosition(sf::Vector2f(this->sprite.getGlobalBounds().left, this->sprite.getGlobalBounds().width));
+		}
+		else if (this->sprite.getGlobalBounds().top + this->sprite.getGlobalBounds().height > 1050)
+		{
+			this->setPosition(sf::Vector2f(this->sprite.getGlobalBounds().left, 1050 - this->sprite.getGlobalBounds().height));
+		}*/
 }

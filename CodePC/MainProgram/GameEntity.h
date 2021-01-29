@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <cstring>
 
-using namespace std;
+class Bullet;
+
 class GameEntity : public sf::Drawable
 {
 protected:
@@ -12,8 +13,9 @@ private:
 	sf::Texture texture;
 
 public:
-	GameEntity(string fileName);
+	GameEntity(std::string fileName);
 	~GameEntity();
+	bool gotHit(const Bullet &bullet)const;
 
 	virtual void update(const float deltaTime) = 0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;

@@ -16,6 +16,11 @@ Bullet::~Bullet()
 {
 }
 
+sf::FloatRect Bullet::getBounds() const
+{
+	return this->sprite.getGlobalBounds();
+}
+
 void Bullet::update(const float deltaTime)
 {
 	this->move();

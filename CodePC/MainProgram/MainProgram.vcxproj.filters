@@ -54,6 +54,9 @@
     <ClCompile Include="Weapon.cpp">
       <Filter>GameEntity</Filter>
     </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>GameEntity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -90,6 +93,9 @@
       <Filter>GameEntity</Filter>
     </ClInclude>
     <ClInclude Include="Weapon.h">
+      <Filter>GameEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
       <Filter>GameEntity</Filter>
     </ClInclude>
   </ItemGroup>

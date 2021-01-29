@@ -2,6 +2,7 @@
 #include<iostream>
 #include "StateStack.h"
 #include "Player.h"
+#include "NPC.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "sfml-window-d.lib")
@@ -20,6 +21,7 @@ int main()
 {
 	
 	Player player;
+	NPC npc;
 	std::srand((unsigned)time(0));
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "BeSt MaFiA gAmE eVeR!");
 	sf::RenderStates defaultRenderState;
@@ -29,6 +31,11 @@ int main()
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Texture texture;
 	sf::Sprite cursor;
+	sf::View camera;
+
+	camera.setCenter(0, 0);
+	camera.setSize(1280, 720);
+	float temp = 0.f;
 
 	sf::Mouse mouse;
 
@@ -66,9 +73,14 @@ int main()
 				window.close();
 				gameOn = false;
 			}
+			player.rotateSprite(cursor.getPosition());
+		
 			player.move();
-			player.rotateSprite(sf::Vector2f(mouse.getPosition(window)));
-			cursor.setPosition(sf::Vector2f(mouse.getPosition(window)));
+
+			camera.move(player.getInputDirection());
+			cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player.getPosition() - 2.f* player.getInputDirection()));
+
+			mouse.setPosition(sf::Vector2i(player.getPosition()), window);
 			if (bullets != nullptr)
 			{
 				bullets->update(timePerFrame.asSeconds());
@@ -81,7 +93,21 @@ int main()
 			}*/
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player.ableToShoot())
 			{
-				bullets = new Bullet(player.shoot((sf::Vector2f(mouse.getPosition(window)) - player.getPosition())));
+				bullets = new Bullet(player.shoot((cursor.getPosition() - player.getPosition())));
+			}
+			if (bullets != nullptr)
+			{
+				if (npc.gotHit(*bullets))
+				{
+					npc.loseHealth();
+					delete bullets;
+					bullets = nullptr;
+					if (npc.getHealth() <= 0)
+					{
+						npc.setPosition(sf::Vector2f(-100, -100));
+					}
+				}
+				
 			}
 		}
 
@@ -93,8 +119,10 @@ int main()
 			{
 				window.draw(*bullets);
 			}
+			window.draw(npc);
 			window.draw(player);
 			window.draw(cursor);
+			window.setView(camera);
 			
 			
 			//stateStack.get()->render(window);

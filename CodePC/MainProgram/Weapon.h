@@ -1,8 +1,6 @@
 #include <iostream>
 #include <cstring>
 
-using namespace std;
-
 enum class GunType
 {
 	pistol, 
@@ -13,7 +11,7 @@ enum class GunType
 class Weapon
 {
 private:
-	string gunType;
+	std::string gunType;
 	int dmg;
 	int reloadTime;
 	int spreadMultiplier;
@@ -24,7 +22,7 @@ public:
 	Weapon(GunType gunType);
 	~Weapon();
 
-	string getGunType()const;
+	std::string getGunType()const;
 	int getDmg()const;
 	int getReloadTime()const;
 	int getSpreadMultiplier()const;

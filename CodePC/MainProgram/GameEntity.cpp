@@ -1,17 +1,23 @@
 #include "GameEntity.h"
+#include "Bullet.h"
 
-GameEntity::GameEntity(string fileName)
+GameEntity::GameEntity(std::string fileName)
 {
 	texture.loadFromFile("../Images/"+fileName);
 	sprite.setTexture(texture);
 
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-	sprite.setScale(3.f, 3.f);
+	sprite.setScale(2.f, 2.f);
 }
 
 GameEntity::~GameEntity()
 {
 
+}
+
+bool GameEntity::gotHit(const Bullet& bullet) const
+{
+	return this->sprite.getGlobalBounds().intersects(bullet.getBounds());
 }
 
 void GameEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
