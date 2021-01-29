@@ -2,34 +2,81 @@
 #include "StateStack.h"
 #include "Tile.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
-
-EditorState::EditorState(const StateID InputStateId, StateStack& stateStack) :
+EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Levels level) :
 	State(InputStateId),
 	width(stateStack.windowWidth),
 	height(stateStack.windowHeight)
 {
-	
+	bool loadEmptyLevel = true;
+	currentFileName = levelDirectories[(int)level];
 
+	std::ifstream loadStream;
+	loadStream.open("../Saves/" + currentFileName);
+	/*if (loadStream && loadStream.is_open())
+	{
+		std::string saveFileSize;
+		loadStream >> saveFileSize;
+		if (saveFileSize.size() > 0) loadEmptyLevel = false;
+	}*/
+	
+	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
-		
+		std::vector<Tile*> tempGrid;
+		std::vector<Tile*> emptyTiles;
+
+		std::string tileRow;
+		std::getline(loadStream, tileRow);
+
 		for (int j = 0; j < tileSizeX; j++)
 		{
-			grid.push_back(new Tile("basic_tile.png"));
-			grid.back()->setPosition({ 
-				(grid.back()->getSprite().getGlobalBounds().width / 2) + ((j * grid.back()->getSprite().getGlobalBounds().width)),
-				(grid.back()->getSprite().getGlobalBounds().height / 2) + ((i * grid.back()->getSprite().getGlobalBounds().height)) });
-		}
-	}
+			tempGrid.push_back(new Tile("basic_tile.png"));
+			tempGrid.back()->setPosition({
+				(tempGrid.back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid.back()->getSprite().getGlobalBounds().width)),
+				(tempGrid.back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid.back()->getSprite().getGlobalBounds().height)) });
+			
+			emptyTiles.push_back(nullptr);
+			if (!loadEmptyLevel) 
+			{
+				//NOTE: MUST READ FROM NEW LINE AFTER i = 0
+				//int whichTile;
+				//loadStream >> whichTile;
 
-	tileCache[TileSorts::wall] = std::make_unique<Tile>("basic_tile2.png");
-	tileCache[TileSorts::breakable] = std::make_unique<Tile>("basic_tile2.png");
-	tileCache[TileSorts::enemySpawnPoint] = std::make_unique<Tile>("basic_tile3.png");
-	tileCache[TileSorts::friendlySpawnPoint] = std::make_unique<Tile>("basic_tile4.png");
-	
-	currentBrush = nullptr;
-	currentBrush = tileCache.at(TileSorts::wall).get();
+				if (!std::isblank(tileRow[j]) && tileRow[j] != ' ')
+				{
+					if (loadTile((TileSorts)(int)tileRow[j]) != nullptr)
+					{
+						emptyTiles[j] = new Tile(*loadTile((TileSorts)(int)tileRow[j]));
+						emptyTiles[j]->setTileType((int)tileRow[j]);
+					}
+				}
+			}
+		}
+		grid.push_back(tempGrid);
+		tiles.push_back(emptyTiles);
+	}
+	loadStream.close();
+
+	//Create palette chache
+	{
+		tileCache[TileSorts::wall] = std::make_unique<Tile>("basic_tile2.png");
+		tileCache[TileSorts::wall].get()->setTileType((int)TileSorts::wall);
+
+		tileCache[TileSorts::breakable] = std::make_unique<Tile>("basic_tile2.png");
+		tileCache[TileSorts::breakable].get()->setTileType((int)TileSorts::breakable);
+
+		tileCache[TileSorts::enemySpawnPoint] = std::make_unique<Tile>("basic_tile3.png");
+		tileCache[TileSorts::enemySpawnPoint].get()->setTileType((int)TileSorts::enemySpawnPoint);
+
+		tileCache[TileSorts::friendlySpawnPoint] = std::make_unique<Tile>("basic_tile4.png");
+		tileCache[TileSorts::friendlySpawnPoint].get()->setTileType((int)TileSorts::friendlySpawnPoint);
+
+		currentBrush = nullptr;
+		currentBrush = tileCache.at(TileSorts::wall).get();
+	}
 
 	std::cout << "Level editor loaded! Open palette by pressing 'G'" << std::endl;
 }
@@ -38,14 +85,20 @@ EditorState::~EditorState()
 {
 	for (int i = 0; i < grid.size(); i++)
 	{
-		delete grid[i];
-		grid[i] = nullptr;
+		for (int j = 0; j < grid[i].size(); j++)
+		{
+			delete grid[i][j];
+			grid[i][j] = nullptr;
+		}
 	}
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		delete tiles[i];
-		tiles[i] = nullptr;
+		for (int j = 0; j < tiles[i].size(); j++)
+		{
+			delete tiles[i][j];
+			tiles[i][j] = nullptr;
+		}
 	}
 
 	delete currentBrush;
@@ -55,67 +108,86 @@ EditorState::~EditorState()
 int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
-	for (int i = 0; i < grid.size(); i++)
+
+	//Update all tiles
 	{
-		grid[i]->update(deltaTime);
+		for (int i = 0; i < grid.size(); i++)
+		{
+			for (int j = 0; j < grid[i].size(); j++)
+			{
+				grid[i][j]->update(deltaTime);
+			}
+		}
+
+		for (int i = 0; i < tiles.size(); i++)
+		{
+			for (int j = 0; j < tiles[i].size(); j++)
+			{
+				if (tiles[i][j] != nullptr) tiles[i][j]->update(deltaTime);
+			}
+		}
 	}
 
-	for (int i = 0; i < tiles.size(); i++)
-	{
-		tiles[i]->update(deltaTime);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) returnMessage = (int)stateEvent::ExitGame;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 	{
-		//give console prompt on pos..
-		bool hasSelectedOption = false;
-		std::cout <<	"select an option:" << std::endl << 
-						"[0] do nothing" << std::endl <<
-						"[1] wall" << std::endl <<
-						"[2] Enemy NPC spawnpoint" << std::endl <<
-						"[3] Friendly NPC spawnpoint" << std::endl <<
-						"[--] ***" << std::endl;
-		int input = 0;
-		const int control_number_high = 3; //highest option
-
-		//recieves input from editor (into var input) and validates it
-		while (!hasSelectedOption)
-		{
-			cin >> input;
-			if (cin.fail() != true)
-			{
-				if (input >= 0 && input <= control_number_high) hasSelectedOption = true;
-				else cout << "Pick a number FROM 0 to " << control_number_high << std::endl;
-			}
-			else cout << "Pick a NUMBER from 0 to " << control_number_high << std::endl;
-			cin.clear();
-			cin.ignore();
-		}
-		
+		int input = consoleMenu(true, 3);
 		if (input != 0) currentBrush = tileCache.at((TileSorts)input).get();
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	{
+		int input = consoleMenu(false, 3);
+		if (input != 0)
+		{
+			switch (input)
+			{
+			case 1:
+				writeLevel();
+				break;
+
+			case 2:
+				std::cout << "Write new level name:" << std::endl;
+				cin >> currentFileName;
+				std::cout << std::endl;
+				writeLevel();
+				break;
+				
+			case 3:
+				//send new level name enum name
+				returnMessage = (int)stateEvent::LaunchEditor;
+				break;
+			}
+		}
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		sf::Vector2i input = mouse.getPosition(window);
-		bool otherTileOnPosition = false;
-		for (int j = 0; j < tiles.size(); j++)
-		{
-			otherTileOnPosition = hasClickedOnTile(j, tiles, input);
-		}
+		//Used to check tile count
+		/*int tileQuantity = 0;
 
-		if (!otherTileOnPosition)
+		for (int i = 0; i < tiles.size(); i++)
 		{
-			for (size_t i = 0; i < grid.size(); i++)
+			for (int j = 0; j < tiles[i].size(); j++)
 			{
-				if (hasClickedOnTile(i, grid, input))
+				if (tiles[i][j] != nullptr)
 				{
-					tiles.push_back(new Tile(*currentBrush));
-					tiles.back()->setPosition(grid[i]->getPosition());
+					tileQuantity++;
+				}
+			}
+		}
+		std::cout << tileQuantity << std::endl;
+		*/
 
-					std::cout << tiles.size() << std::endl;
+		for (int i = 0; i < grid.size(); i++)
+		{
+			for (int j = 0; j < grid[i].size(); j++)
+			{
+				if (tiles[i][j] == nullptr && hasClickedOnTile(i, j, grid, mouse.getPosition(window)))
+				{
+					tiles[i][j] = new Tile(*currentBrush);
+					tiles[i][j]->setPosition(grid[i][j]->getPosition());
 				}
 			}
 		}
@@ -125,11 +197,17 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		for (size_t i = 0; i < tiles.size(); i++)
 		{
-			if (hasClickedOnTile(i, tiles, mouse.getPosition(window)))
+			for (int j = 0; j < tiles[i].size(); j++)
 			{
-				tiles[i] = tiles.back();
-				tiles.back() = nullptr;
-				tiles.pop_back();
+				if (tiles[i][j] != nullptr)
+				{
+					if (hasClickedOnTile(i, j, tiles, mouse.getPosition(window)))
+					{
+						tiles[i][j] = tiles[i].back();
+						tiles[i].back() = nullptr;
+						//tiles[i].pop_back();
+					}
+				}
 			}
 		}
 	}
@@ -137,15 +215,15 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	return returnMessage;
 }
 
-bool EditorState::hasClickedOnTile(int i, std::vector<Tile*> inputTiles, sf::Vector2i mousePos)
+bool EditorState::hasClickedOnTile(int i, int j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos)
 {
 	bool hasBeenClickedOn = false;
 
-	if (inputTiles[i]->getPosition().x - (inputTiles[i]->getSprite().getLocalBounds().width * inputTiles[i]->getSprite().getScale().x) / 2 < mousePos.x &&
-		inputTiles[i]->getPosition().x + (inputTiles[i]->getSprite().getLocalBounds().width * inputTiles[i]->getSprite().getScale().x) / 2 > mousePos.x)
+	if (inputTiles[i][j]->getPosition().x - (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2 < mousePos.x &&
+		inputTiles[i][j]->getPosition().x + (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2 > mousePos.x)
 	{
-		if (inputTiles[i]->getPosition().y - (inputTiles[i]->getSprite().getLocalBounds().height * inputTiles[i]->getSprite().getScale().y) / 2 < mousePos.y &&
-			inputTiles[i]->getPosition().y + (inputTiles[i]->getSprite().getLocalBounds().height * inputTiles[i]->getSprite().getScale().y) / 2 > mousePos.y)
+		if (inputTiles[i][j]->getPosition().y - (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2 < mousePos.y &&
+			inputTiles[i][j]->getPosition().y + (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2 > mousePos.y)
 		{
 			hasBeenClickedOn = true;
 		}
@@ -157,13 +235,113 @@ void EditorState::render(sf::RenderWindow& window)
 {
 	for (int i = 0; i < grid.size(); i++)
 	{
-		grid[i]->draw(window);
-		//window.draw(tiles[i].get()->getSprite());
+		for (int j = 0; j < grid[i].size(); j++)
+		{
+			grid[i][j]->draw(window);
+		}
 	}
-	
+
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		tiles[i]->draw(window);
-		//window.draw(tiles[i].get()->getSprite());
+		for (int j = 0; j < tiles[i].size(); j++)
+		{
+			if (tiles[i][j] != nullptr) tiles[i][j]->draw(window);
+		}
 	}
+}
+
+Tile* EditorState::loadTile(TileSorts whichTile)
+{
+	Tile* returnTile = nullptr;
+
+	switch (whichTile)
+	{
+	case TileSorts::wall:
+		returnTile = tileCache[TileSorts::wall].get();
+		break;
+
+	case TileSorts::breakable:
+		returnTile = tileCache[TileSorts::breakable].get();
+		break;
+
+	case TileSorts::enemySpawnPoint:
+		returnTile = tileCache[TileSorts::enemySpawnPoint].get();
+		break;
+
+	case TileSorts::friendlySpawnPoint:
+		returnTile = tileCache[TileSorts::friendlySpawnPoint].get();
+		break;
+
+	default:
+		returnTile = nullptr;
+		break;
+	}
+
+	return returnTile;
+}
+
+int EditorState::consoleMenu(bool pallete, int highestNumber)
+{
+	bool hasSelectedOption = false;
+	int input = 0;
+
+	if (pallete)
+	{
+		std::cout << "select an option:" << std::endl <<
+			"[0] do nothing" << std::endl <<
+			"[1] wall" << std::endl <<
+			"[2] Enemy NPC spawnpoint" << std::endl <<
+			"[3] Friendly NPC spawnpoint" << std::endl <<
+			"[--] ***" << std::endl;
+	}
+	else
+	{
+		std::cout << "select an option:" << std::endl <<
+			"[0] do nothing" << std::endl <<
+			"[1] save to current level" << std::endl <<
+			"[2] save as new level" << std::endl <<
+			"[3] load new level" << std::endl <<
+			"[--] ***" << std::endl;
+	}
+
+	//recieves input from editor (into var input) and validates it
+	while (!hasSelectedOption)
+	{
+		cin >> input;
+		cout << std::endl;
+		if (cin.fail() != true)
+		{
+			if (input >= 0 && input <= highestNumber) hasSelectedOption = true;
+			else cout << "Pick a number FROM 0 to " << highestNumber << std::endl;
+		}
+		else cout << "Pick a NUMBER from 0 to " << highestNumber << std::endl;
+		cin.clear();
+		cin.ignore();
+	}
+
+	return input;
+}
+
+bool EditorState::writeLevel()
+{
+	bool saveSuccessful = true;
+
+	std::ofstream saveStream;
+	saveStream.open("../Saves/" + currentFileName, std::ofstream::out | std::ofstream::trunc);
+	if (saveStream && saveStream.is_open())
+	{
+		for (int i = 0; i < tiles.size(); i++)
+		{
+			for (int j = 0; j <= tiles.size(); j++)
+			{
+				if (j == tiles.size()) saveStream << std::endl;
+				else if(tiles[i][j] != nullptr) saveStream << tiles[i][j]->getTileType();
+			}
+		}
+	}
+	else saveSuccessful = false;
+
+	saveStream.close();
+
+	return saveSuccessful;
 }
