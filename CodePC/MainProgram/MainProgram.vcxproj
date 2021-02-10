@@ -49,6 +49,9 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BFA3F943-8701-4E20-A183-D5C3C8375B61}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

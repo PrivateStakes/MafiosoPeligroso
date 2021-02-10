@@ -99,7 +99,7 @@ int main()
 			{
 				if (npc.gotHit(*bullets))
 				{
-					npc.loseHealth(player.getDmg());
+					npc.loseHealth();
 					delete bullets;
 					bullets = nullptr;
 					if (npc.getHealth() <= 0)

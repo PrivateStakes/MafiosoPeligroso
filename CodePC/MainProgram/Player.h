@@ -1,12 +1,13 @@
 #pragma once
 #include "Soldier.h"
 #include "Bullet.h"
-
+#include "Weapon.h"
 
 class Player : public Soldier
 {
 private:
 	int biggerOrNot(int firstValue, int secondValue);
+	Weapon* currentWeapon;
 	sf::Vector2f inputDirection;
 
 	int counter;
