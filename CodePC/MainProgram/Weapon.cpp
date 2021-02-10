@@ -6,7 +6,7 @@ Weapon::Weapon(GunType gunType)
 	{
 	case GunType::pistol:
 		this->gunType = "Pistol";
-		this->dmg = 1;
+		this->dmg = 3;
 		this->reloadTime = 30;
 		this->spreadMultiplier = 1;
 		this->speed = 35.f;
@@ -28,15 +28,6 @@ Weapon::Weapon(GunType gunType)
 		this->reloadTime = 120;
 		this->spreadMultiplier = 0;
 		this->speed = 60.f;
-		this->multiShot = false;
-		break;
-
-	default:
-		this->gunType = "Pistol";
-		this->dmg = 1;
-		this->reloadTime = 30;
-		this->spreadMultiplier = 1;
-		this->speed = 35.f;
 		this->multiShot = false;
 		break;
 	}

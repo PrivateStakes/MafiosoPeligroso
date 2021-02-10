@@ -22,3 +22,8 @@ int Soldier::getHealth() const
 {
 	return this->health;
 }
+
+int Soldier::getDmg() const
+{
+	return this->currentWeapon->getDmg();
+}

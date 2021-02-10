@@ -19,7 +19,7 @@ private:
 	bool multiShot;
 
 public:
-	Weapon(GunType gunType);
+	Weapon(GunType gunType = GunType::pistol);
 	~Weapon();
 
 	std::string getGunType()const;
