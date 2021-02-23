@@ -1,5 +1,10 @@
 #pragma once
 #include "State.h"
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include "StateStack.h"
+#include "Player.h"
+#include "NPC.h"
 
 class StateStack;
 class Player;
@@ -18,7 +23,19 @@ private:
 	float height;
 
 	sf::Font font;
-	//sf::Mouse mouse;
+
+	//Cursor + camera
+	sf::Sprite cursor;
+	sf::View camera;
+	sf::Mouse mouse;
+	sf::Texture texture;
+
+	//Player + NPC
+	Player player;
+	NPC npc;
+	Bullet* bullets = nullptr;
+
+	bool mouseVisability = true;
 
 public:
 	GameState(const StateID InputStateId, StateStack& stateStack);

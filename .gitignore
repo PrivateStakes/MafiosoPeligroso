@@ -9,6 +9,8 @@
 *.d
 
 # Compiled Object files
+*.vxproj
+*.user
 *.slo
 *.lo
 *.o

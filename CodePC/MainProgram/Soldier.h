@@ -18,7 +18,7 @@ protected:
     Weapon* currentWeapon;
 
 public:
-    Soldier(std::string fileName, std::string name, int health = 3);
+    Soldier(std::string fileName = "character.png", std::string name = "joe", int health = 3);
     ~Soldier();
     void loseHealth(int dmg = 1);
     int getHealth()const;
