@@ -13,6 +13,7 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	windowHeight(inputWindowHeight)
 {
 	currentLevelIndex = 0;
+	currentLevel = new Levels(Levels::level1);
 
 	states = new State*[statesCapacity];
 	stateQuantity = -1; //first object becomes 0
@@ -72,9 +73,14 @@ void StateStack::push(StateID id)
 			break;
 
 		case StateID::EditorState:
+
+			/*if (stateQuantity - 1 <= 0 && stateQuantity + 1 != 0)
+			{
+				if (states[stateQuantity]->getStateID() == StateID::EditorState) pop();
+			}*/
+
 			stateQuantity++;
-			//change Level::level1 to accomodate
-			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, Levels::level1);
+			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, currentLevel);
 			break;
 		}
 	}

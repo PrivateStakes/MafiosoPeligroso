@@ -4,6 +4,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
+enum class Levels;
 enum class stateEvent
 {
 	ReturnToMainMenu = 1,
@@ -31,6 +32,7 @@ private:
 	int stateQuantity;
 	const int statesCapacity = 10;
 	State** states;
+	Levels* currentLevel;
 
 	int currentStateEvent = 0;
 	bool gameOn = true;
