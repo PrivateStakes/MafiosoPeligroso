@@ -85,7 +85,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 void GameState::render(sf::RenderWindow& window)
 {
-	window.clear();
 	if (bullets != nullptr)
 	{
 		window.draw(*bullets);
@@ -94,6 +93,4 @@ void GameState::render(sf::RenderWindow& window)
 	window.draw(player);
 	window.draw(cursor);
 	window.setView(camera);
-
-	window.display();
 }

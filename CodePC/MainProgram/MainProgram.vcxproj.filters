@@ -1,102 +1,111 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="States">
-      <UniqueIdentifier>{e6823f50-648d-43a8-a2d0-24c4538827d1}</UniqueIdentifier>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header files">
-      <UniqueIdentifier>{0ff3a628-00fd-460b-8798-fb037fbe6a5c}</UniqueIdentifier>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source files">
-      <UniqueIdentifier>{c374b6d8-ddcd-4a78-bdb9-c9f70914798c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameEntity">
-      <UniqueIdentifier>{e8edff48-5ecd-4e78-8c59-223bce695977}</UniqueIdentifier>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source files</Filter>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StateStack.cpp">
-      <Filter>States</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>States</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuState.cpp">
-      <Filter>States</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>States</Filter>
-    </ClCompile>
-    <ClCompile Include="Soldier.cpp">
-      <Filter>GameEntity</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEntity.cpp">
-      <Filter>GameEntity</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>GameEntity</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>GameEntity</Filter>
+    <ClCompile Include="CollissionMan.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EditorState.cpp">
-      <Filter>States</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>GameEntity</Filter>
+    <ClCompile Include="GameEntity.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>GameEntity</Filter>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>GameEntity</Filter>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NPC.cpp">
-      <Filter>GameEntity</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Soldier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameState.h">
-      <Filter>States</Filter>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuState.h">
-      <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="StateStack.h">
-      <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="Soldier.h">
-      <Filter>GameEntity</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEntity.h">
-      <Filter>GameEntity</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>GameEntity</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>GameEntity</Filter>
+    <ClInclude Include="CollissionMan.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EditorState.h">
-      <Filter>States</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>GameEntity</Filter>
+    <ClInclude Include="GameEntity.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>GameEntity</Filter>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>GameEntity</Filter>
+    <ClInclude Include="MenuState.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NPC.h">
-      <Filter>GameEntity</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Soldier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
