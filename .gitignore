@@ -12,6 +12,10 @@
 *.vxproj
 *.vcxproj
 *.vcxproj.user
+*MainProgram.vcxproj
+*MainProgram.vcxproj.user
+MainProgram.vcxproj
+MainProgram.vcxproj.user
 *.user
 *.slo
 *.lo
