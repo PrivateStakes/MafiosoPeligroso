@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "MenuState.h"
 #include "EditorState.h"
+#include "CityMap.h"
 
 StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) :
 	windowWidth(inputWindowWidth),
@@ -30,7 +31,8 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	loadStream.close();
 
 	//push(StateID::MainMenuState);
-	push(StateID::GameState);
+	//push(StateID::GameState);
+	push(StateID::CityMapState);
 }
 
 StateStack::~StateStack()
@@ -81,6 +83,11 @@ void StateStack::push(StateID id)
 
 			stateQuantity++;
 			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, currentLevel);
+			break;
+
+		case StateID::CityMapState:
+			stateQuantity++;
+			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this);
 			break;
 		}
 	}
