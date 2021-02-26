@@ -36,7 +36,6 @@ private:
 	std::vector<std::string> levels;
 	std::string* currentFileName;
 	std::string currentDirectory = "../Saves/";
-	int levelDocumentRowQuantity;
 
 	const float width;
 	const float height;

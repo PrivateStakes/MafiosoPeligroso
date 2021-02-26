@@ -31,12 +31,14 @@ private:
 	int stateQuantity;
 	const int statesCapacity = 10;
 	State** states;
-	Levels* currentLevel;
+	
 
 	int currentStateEvent = 0;
 	bool gameOn = true;
 
 public:
+	std::string* currentLevel;
+
 	//StateStack(const StateStack&) = default;
 	StateStack(const int inputWindowWidth, const int inputWindowHeight);
 	~StateStack();

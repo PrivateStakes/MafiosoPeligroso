@@ -14,7 +14,8 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	windowHeight(inputWindowHeight)
 {
 	currentLevelIndex = 0;
-	currentLevel = new Levels(Levels::level1);
+	//load from 'save' later
+	//currentLevel = new Levels(Levels::level1);
 
 	states = new State*[statesCapacity];
 	stateQuantity = -1; //first object becomes 0
@@ -25,8 +26,32 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	loadStream.open("../Saves/save.txt");
 	if (loadStream.is_open())
 	{
-		loadStream >> currentLevelIndex;
-		if (currentLevelIndex < 0) currentLevelIndex = 0;
+		int i = 0;
+		while (1)
+		{
+			std::string tileRow = "";
+			getline(loadStream, tileRow);
+			if (tileRow.size() > 0)
+			{
+				if (i == 0)
+				{
+					loadStream >> currentLevelIndex;
+					if (currentLevelIndex < 0) currentLevelIndex = 0;
+				}
+				else
+				{
+					currentLevel = new std::string(tileRow);
+					std::cout << *currentLevel << std::endl;
+				}
+			}
+			else break;
+			i++;
+		}
+
+		if (currentLevel == nullptr)
+		{
+			currentLevel = new std::string("level1.txt");
+		}
 	}
 	loadStream.close();
 
@@ -46,7 +71,11 @@ StateStack::~StateStack()
 
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
-	if (saveStream.is_open()) saveStream << currentLevelIndex;
+	if (saveStream.is_open())
+	{
+		saveStream << currentLevelIndex << std::endl;
+		saveStream << *currentLevel;
+	}
 	saveStream.close();
 }
 
@@ -142,7 +171,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 				break;
 
 			case stateEvent::LaunchEditor:
-				pop();
+				//pop();
 				push(StateID::EditorState);
 				break;
 			}
