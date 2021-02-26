@@ -29,7 +29,6 @@ int main()
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//std::unique_ptr<StateStack> stateStack = std::make_unique<StateStack>(WIDTH, HEIGHT);
 	StateStack* stateStack = new StateStack(WIDTH, HEIGHT);
 
 	bool gameOn = true;
@@ -46,17 +45,16 @@ int main()
 		while (elapsedTimeSinceLastUpdate > timePerFrame)
 		{
 			elapsedTimeSinceLastUpdate -= timePerFrame;
-
+			gameOn = stateStack->update(timePerFrame.asSeconds(), window);
 		}
 
 		if (gameOn)
 		{
 			window.clear();
 			stateStack->render(window);
-			
-			//stateStack.get()->render(window);
 			window.display();
 		}
+		else window.close();
 	}
 	delete stateStack;
 	stateStack = nullptr;
