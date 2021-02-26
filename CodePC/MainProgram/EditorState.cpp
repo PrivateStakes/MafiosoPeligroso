@@ -1,9 +1,11 @@
 #include "EditorState.h"
 #include "StateStack.h"
 #include "Tile.h"
+#include "Bullet.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cctype>
 
 int inputChecker(int high);
 char intToLetter(int input);
@@ -16,44 +18,46 @@ char intToLetter(int input);
 - G: Palette
 */
 
-EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Levels* level) :
+EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std::string* level) :
 	State(InputStateId),
 	width(stateStack.windowWidth),
 	height(stateStack.windowHeight),
-	stateStackCurrentLevel(level)
+	currentFileName(level)
 {
+	camera.setCenter(0, 0);
+	camera.setSize(width, height);
+
 	bool loadEmptyLevel = true;
-	currentFileName = levelDirectories[(int)*level];
 
 	//Create palette chache
+	for (int i = 1; i < (int)TileSorts::COUNT; i++)
 	{
-		for (int i = 1; i < (int)TileSorts::COUNT; i++)
-		{
-			tileCache[(TileSorts)i] = std::make_unique<Tile>(tileTextures[i - 1]);
-			tileCache[TileSorts::wall].get()->setTileType(intToLetter(i - 1));
-		}
-
-		/*
-		tileCache[TileSorts::wall] = std::make_unique<Tile>("basic_tile2.png");
-		tileCache[TileSorts::wall].get()->setTileType('a');//(int)TileSorts::wall);
-
-		tileCache[TileSorts::breakable] = std::make_unique<Tile>("basic_tile2.png");
-		tileCache[TileSorts::breakable].get()->setTileType('b');//(int)TileSorts::breakable);
-
-		tileCache[TileSorts::enemySpawnPoint] = std::make_unique<Tile>("basic_tile3.png");
-		tileCache[TileSorts::enemySpawnPoint].get()->setTileType('c');//(int)TileSorts::enemySpawnPoint);
-
-		tileCache[TileSorts::friendlySpawnPoint] = std::make_unique<Tile>("basic_tile4.png");
-		tileCache[TileSorts::friendlySpawnPoint].get()->setTileType('d');//(int)TileSorts::friendlySpawnPoint);
-		*/
-		currentBrush = nullptr;
-		currentBrush = tileCache.at(TileSorts::wall).get();
+		tileCache[(TileSorts)i] = std::make_unique<Tile>(tileTextures[i - 1]);
+		tileCache[(TileSorts)i].get()->setTileType(intToLetter(i));
 	}
+	currentBrush = nullptr;
+	currentBrush = tileCache.at(TileSorts::wall).get();
 
 	std::ifstream loadStream;
-	loadStream.open(currentDirectory + currentFileName);
-	if (loadStream && loadStream.is_open()) loadEmptyLevel = false;
-	
+	loadStream.open("../Saves/saveFiles.txt");
+	if (loadStream && loadStream.is_open())
+	{
+		int i = 0;
+		while (1)
+		{
+			std::string tileRow = "";
+			getline(loadStream, tileRow);
+			if (tileRow.size() > 0)
+			{
+				levels.push_back(tileRow);
+				std::cout << levels[i] << std::endl;
+			}
+			else break;
+			i++;
+		}
+	}
+	loadStream.close();
+
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
@@ -64,8 +68,6 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Lev
 		loadStream >> tileRow;
 		if (tileRow.size() > 0) loadEmptyLevel = false;
 		loadStream.ignore();
-
-		//std::getline(loadStream, tileRow);
 
 		for (int j = 0; j < tileSizeX; j++)
 		{
@@ -80,13 +82,11 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Lev
 				std::locale loc;
 				if (!std::isblank(tileRow[j], loc))
 				{
-					std::cout << tileRow[j] << std::endl;
 					char saveFileInformation = (char)tileRow[j] - 48;
 
-					if (saveFileInformation != -99 && saveFileInformation != '\0' && loadTile((TileSorts)saveFileInformation) != nullptr)
+					if (saveFileInformation != -99 && saveFileInformation != '\0' && loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
 					{
-						tempTiles[j] = new Tile(*loadTile((TileSorts)saveFileInformation));
-						//tempTiles[j]->setTileType(intToLetter(saveFileInformation));
+						tempTiles[j] = new Tile(*loadTile((TileSorts)(saveFileInformation - 48)));
 						tempTiles[j]->setPosition(tempGrid[j]->getPosition());
 					}
 				}
@@ -122,11 +122,19 @@ EditorState::~EditorState()
 
 	delete currentBrush;
 	currentBrush = nullptr;
+
+	currentFileName = nullptr;
 }
 
 int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
+
+	//---[Player]---
+	player.rotateSprite((sf::Vector2f)mouse.getPosition());
+	player.move();
+	camera.move(player.getInputDirection());
+	//--------------
 
 	//Update all tiles
 	{
@@ -168,20 +176,20 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 
 			case 2:
 				std::cout << "Write new level name:" << std::endl;
-				std::cin >> currentFileName;
+				std::cin >> *currentFileName;
 				std::cout << std::endl;
 				writeLevel();
 				break;
 				
 			case 3:
 				std::cout << "Which level would you like to edit?" << std::endl;
-				for (int i = 0; i < (int)Levels::COUNT; i++)
+				/*for (int i = 0; i < (int)Levels::COUNT; i++)
 				{
 					std::cout << levelDirectories[i] << std::endl;
 				}
 
 				//send new level name enum name
-				stateStackCurrentLevel = new Levels((Levels)inputChecker((int)Levels::COUNT));
+				stateStackCurrentLevel = new Levels((Levels)inputChecker((int)Levels::COUNT));*/
 				returnMessage = (int)stateEvent::LaunchEditor;
 				break;
 			}
@@ -190,30 +198,34 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		//Used to check tile count
-		/*int tileQuantity = 0;
-
-		for (int i = 0; i < tiles.size(); i++)
-		{
-			for (int j = 0; j < tiles[i].size(); j++)
-			{
-				if (tiles[i][j] != nullptr)
-				{
-					tileQuantity++;
-				}
-			}
-		}
-		std::cout << tileQuantity << std::endl;
-		*/
-
 		for (int i = 0; i < grid.size(); i++)
 		{
 			for (int j = 0; j < grid[i].size(); j++)
 			{
-				if (tiles[i][j] == nullptr && hasClickedOnTile(i, j, grid, mouse.getPosition(window)))
+				if (tiles[i][j] == nullptr && hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
 				{
 					tiles[i][j] = new Tile(*currentBrush);
 					tiles[i][j]->setPosition(grid[i][j]->getPosition());
+				}
+				else if (
+				(currentBrush->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || currentBrush->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint)) &&
+				hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
+				{
+					bool do_not_place = false;
+
+					if (tiles[i][j] != nullptr)
+					{
+						if (tiles[i][j]->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || tiles[i][j]->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint))
+						{
+							do_not_place = true;
+						}
+					}
+					
+					if (!do_not_place)
+					{
+						tiles[i][j] = new Tile(*currentBrush);
+						tiles[i][j]->setPosition(grid[i][j]->getPosition());
+					}
 				}
 			}
 		}
@@ -227,7 +239,7 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (tiles[i][j] != nullptr)
 				{
-					if (hasClickedOnTile(i, j, tiles, mouse.getPosition(window)))
+					if (hasClickedOnTile(i, j, tiles, mouse.getPosition(window), window))
 					{
 						tiles[i][j] = tiles[i].back();
 						tiles[i].back() = nullptr;
@@ -241,24 +253,37 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	return returnMessage;
 }
 
-bool EditorState::hasClickedOnTile(int i, int j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos)
+bool EditorState::hasClickedOnTile(int i, int j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window)
 {
 	bool hasBeenClickedOn = false;
+	sf::Vector2i tilePos_high = window.mapCoordsToPixel(sf::Vector2f(
+		(inputTiles[i][j]->getPosition().x - (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2),
+		(inputTiles[i][j]->getPosition().y - (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2)));
 
-	if (inputTiles[i][j]->getPosition().x - (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2 < mousePos.x &&
-		inputTiles[i][j]->getPosition().x + (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2 > mousePos.x)
+	sf::Vector2i tilePos_low = window.mapCoordsToPixel(sf::Vector2f(
+		(inputTiles[i][j]->getPosition().x + (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2),
+		(inputTiles[i][j]->getPosition().y + (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2)));
+
+
+	if (tilePos_high.x < mousePos.x && tilePos_low.x > mousePos.x)
 	{
-		if (inputTiles[i][j]->getPosition().y - (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2 < mousePos.y &&
-			inputTiles[i][j]->getPosition().y + (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2 > mousePos.y)
+		if (tilePos_high.y < mousePos.y && tilePos_low.y > mousePos.y)
 		{
 			hasBeenClickedOn = true;
 		}
 	}
+
 	return hasBeenClickedOn;
 }
 
 void EditorState::render(sf::RenderWindow& window)
 {
+	if (!do_once)
+	{
+		window.setMouseCursorVisible(true);
+		do_once = true;
+	}
+
 	for (int i = 0; i < grid.size(); i++)
 	{
 		for (int j = 0; j < grid[i].size(); j++)
@@ -274,6 +299,9 @@ void EditorState::render(sf::RenderWindow& window)
 			if (tiles[i][j] != nullptr) tiles[i][j]->draw(window);
 		}
 	}
+
+	window.draw(player);
+	window.setView(camera);
 }
 
 Tile* EditorState::loadTile(TileSorts whichTile)
@@ -312,19 +340,19 @@ char intToLetter(int input)
 	char returnValue;
 	switch (input)
 	{
-	case 1:
+	case (int)TileSorts::wall:
 		returnValue = 'a';
 		break;
 
-	case 2:
+	case (int)TileSorts::breakable:
 		returnValue = 'b';
 		break;
 
-	case 3:
+	case (int)TileSorts::enemySpawnPoint:
 		returnValue = 'c';
 		break;
 
-	case 4:
+	case (int)TileSorts::friendlySpawnPoint:
 		returnValue = 'd';
 		break;
 
@@ -337,7 +365,6 @@ char intToLetter(int input)
 
 int EditorState::consoleMenu(bool pallete, int highestNumber)
 {
-	
 	int input = 0;
 
 	if (pallete)
@@ -391,7 +418,7 @@ bool EditorState::writeLevel()
 	bool saveSuccessful = true;
 
 	std::ofstream saveStream;
-	saveStream.open(currentDirectory + currentFileName, std::ofstream::out | std::ofstream::trunc);
+	saveStream.open(currentDirectory + *currentFileName + ".txt", std::ofstream::out | std::ofstream::trunc);
 	if (saveStream && saveStream.is_open())
 	{
 		for (int i = 0; i < tiles.size(); i++)
@@ -399,13 +426,37 @@ bool EditorState::writeLevel()
 			for (int j = 0; j <= tiles[i].size(); j++)
 			{
 				if (j == tiles[i].size()) saveStream << std::endl;
-				else if (tiles[i][j] != nullptr) saveStream << tiles[i][j]->getTileType();
+				else if (tiles[i][j] != nullptr)
+				{
+					if (tiles[i][j]->getTileType() != '\0') saveStream << tiles[i][j]->getTileType();
+				}
 				else saveStream << '0';
 			}
 		}
 	}
 	else saveSuccessful = false;
+	saveStream.close();
 
+	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
+	if (saveStream && saveStream.is_open())
+	{
+		bool change_saveFiles = false;
+		for (int i = 0; i < levels.size(); i++)
+		{
+			if ((*currentFileName + ".txt") == levels[i])
+			{
+				change_saveFiles = true;
+			}
+			
+			saveStream << levels[i];
+		}
+
+		if (!change_saveFiles)
+		{
+			levels.push_back((*currentFileName + ".txt"));
+			saveStream << (*currentFileName + ".txt");
+		}
+	}
 	saveStream.close();
 
 	return saveSuccessful;

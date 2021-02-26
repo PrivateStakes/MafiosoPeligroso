@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "MenuState.h"
 #include "EditorState.h"
+#include "CityMap.h"
 
 StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) :
 	windowWidth(inputWindowWidth),
@@ -30,7 +31,8 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	loadStream.close();
 
 	//push(StateID::MainMenuState);
-	push(StateID::GameState);
+	//push(StateID::GameState);
+	push(StateID::CityMapState);
 }
 
 StateStack::~StateStack()
@@ -82,6 +84,11 @@ void StateStack::push(StateID id)
 			stateQuantity++;
 			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, currentLevel);
 			break;
+
+		case StateID::CityMapState:
+			stateQuantity++;
+			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this);
+			break;
 		}
 	}
 	else assert(true == true && "Too many states! Increase 'statesCapacity' to allow for more");
@@ -132,18 +139,6 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 
 			case stateEvent::ExitGame:
 				gameOn = false;
-				break;
-
-			case stateEvent::WonGame:
-				currentLevelIndex++;
-				pop();
-				push(StateID::GameState);
-				break;
-
-			case stateEvent::LostGame:
-				currentLevelIndex = 0;
-				pop();
-				push(StateID::GameState);
 				break;
 
 			case stateEvent::LaunchEditor:
