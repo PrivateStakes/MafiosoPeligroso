@@ -20,25 +20,10 @@ enum class TileSorts
 	COUNT
 };
 
-enum class Levels
-{
-	level1,
-	level2,
-	COUNT //dictates size of levels -- always last
-};
-
 class EditorState : public State
 {
 private:
 	bool do_once = false;
-
-	//std::string** levelDirectories; //fetches from StateStack
-	std::string levelDirectories[3]
-	{
-		"level1.txt",
-		"level2.txt",
-		"urmumga.txt"
-	};
 
 	std::string tileTextures[4]
 	{
@@ -48,14 +33,15 @@ private:
 		"basic_tile4.png"
 	};
 
-	Levels* stateStackCurrentLevel;
+	std::vector<std::string> levels;
+	std::string* currentFileName;
+	std::string currentDirectory = "../Saves/";
+	int levelDocumentRowQuantity;
+
 	const float width;
 	const float height;
 	const int tileSizeX = 30;
 	const int tileSizeY = 20;
-
-	std::string currentFileName;
-	std::string currentDirectory = "../Saves/";
 	
 	std::vector <std::vector<Tile*>> grid;
 	std::vector <std::vector<Tile*>> tiles;
@@ -72,7 +58,7 @@ private:
 	//---
 
 public:
-	EditorState(const StateID InputStateId, StateStack& stateStack, Levels* level);
+	EditorState(const StateID InputStateId, StateStack& stateStack, std::string* level);
 	~EditorState() override;
 
 	int update(const float deltaTime, sf::RenderWindow& window) override;
