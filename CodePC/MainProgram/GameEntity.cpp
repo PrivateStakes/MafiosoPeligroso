@@ -39,3 +39,8 @@ sf::Sprite GameEntity::getSprite()
 {
 	return sprite;
 }
+
+sf::FloatRect GameEntity::getBounds()
+{
+	return this->sprite.getGlobalBounds();
+}

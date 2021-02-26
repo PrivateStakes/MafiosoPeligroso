@@ -5,6 +5,7 @@
 #include "StateStack.h"
 #include "Player.h"
 #include "NPC.h"
+#include "CollissionMan.h"
 
 class StateStack;
 class Player;

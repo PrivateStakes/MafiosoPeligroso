@@ -45,10 +45,15 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	player.rotateSprite(cursor.getPosition());
 
-	player.move();
+	if (!CollissionMan().intersectCircRect(player, npc))
+	{
+		player.move();
+		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player.getPosition() - 2.f * player.getInputDirection()));
+	}
 
-	camera.move(player.getInputDirection());
-	cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player.getPosition() - 2.f * player.getInputDirection()));
+	//camera.move(player.getInputDirection());
+	camera.setCenter(player.getPosition());
+	
 
 	mouse.setPosition(sf::Vector2i(player.getPosition()), window);
 	if (bullets != nullptr)
@@ -79,6 +84,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		}
 
 	}
+	
 
 	return returnMessage;
 }

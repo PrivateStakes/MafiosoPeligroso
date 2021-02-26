@@ -22,7 +22,10 @@ public:
 
 	sf::Sprite getSprite();
 
+	sf::FloatRect getBounds();
+
 	void setPosition(sf::Vector2f position);
 	sf::Vector2f getPosition();
+
 };
 
