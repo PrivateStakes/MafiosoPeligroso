@@ -134,18 +134,6 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 				gameOn = false;
 				break;
 
-			case stateEvent::WonGame:
-				currentLevelIndex++;
-				pop();
-				push(StateID::GameState);
-				break;
-
-			case stateEvent::LostGame:
-				currentLevelIndex = 0;
-				pop();
-				push(StateID::GameState);
-				break;
-
 			case stateEvent::LaunchEditor:
 				pop();
 				push(StateID::EditorState);
