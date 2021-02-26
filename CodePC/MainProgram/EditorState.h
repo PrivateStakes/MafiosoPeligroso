@@ -14,7 +14,8 @@ enum class TileSorts
 	wall = 1,
 	breakable,
 	enemySpawnPoint,
-	friendlySpawnPoint
+	friendlySpawnPoint,
+	COUNT
 };
 
 enum class Levels
@@ -27,12 +28,22 @@ enum class Levels
 class EditorState : public State
 {
 private:
+	//std::string** levelDirectories; //fetches from StateStack
 	std::string levelDirectories[2]
 	{
 		"level1.txt",
 		"level2.txt"
 	};
 
+	std::string tileTextures[4]
+	{
+		"wall1.png",
+		"basic_tile2.png",
+		"basic_tile3.png",
+		"basic_tile4.png"
+	};
+
+	Levels* stateStackCurrentLevel;
 	const float width;
 	const float height;
 	const int tileSizeX = 30;
@@ -48,7 +59,7 @@ private:
 	std::unordered_map<TileSorts, std::unique_ptr<Tile>> tileCache;
 
 public:
-	EditorState(const StateID InputStateId, StateStack& stateStack, Levels level);
+	EditorState(const StateID InputStateId, StateStack& stateStack, Levels* level);
 	~EditorState() override;
 
 	int update(const float deltaTime, sf::RenderWindow& window) override;

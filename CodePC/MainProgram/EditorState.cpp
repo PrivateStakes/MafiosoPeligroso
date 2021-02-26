@@ -5,38 +5,54 @@
 #include <fstream>
 #include <sstream>
 
-EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Levels level) :
+int inputChecker(int high);
+char intToLetter(int input);
+
+//CONTROLS:
+/*
+- H: Start Editor
+- J: Save menu
+- L: Exit
+- G: Palette
+*/
+
+EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Levels* level) :
 	State(InputStateId),
 	width(stateStack.windowWidth),
-	height(stateStack.windowHeight)
+	height(stateStack.windowHeight),
+	stateStackCurrentLevel(level)
 {
 	bool loadEmptyLevel = true;
-	currentFileName = levelDirectories[(int)level];
+	currentFileName = levelDirectories[(int)*level];
 
 	//Create palette chache
 	{
+		for (int i = 1; i < (int)TileSorts::COUNT; i++)
+		{
+			tileCache[(TileSorts)i] = std::make_unique<Tile>(tileTextures[i - 1]);
+			tileCache[TileSorts::wall].get()->setTileType(intToLetter(i - 1));
+		}
+
+		/*
 		tileCache[TileSorts::wall] = std::make_unique<Tile>("basic_tile2.png");
-		tileCache[TileSorts::wall].get()->setTileType((int)TileSorts::wall);
+		tileCache[TileSorts::wall].get()->setTileType('a');//(int)TileSorts::wall);
 
 		tileCache[TileSorts::breakable] = std::make_unique<Tile>("basic_tile2.png");
-		tileCache[TileSorts::breakable].get()->setTileType((int)TileSorts::breakable);
+		tileCache[TileSorts::breakable].get()->setTileType('b');//(int)TileSorts::breakable);
 
 		tileCache[TileSorts::enemySpawnPoint] = std::make_unique<Tile>("basic_tile3.png");
-		tileCache[TileSorts::enemySpawnPoint].get()->setTileType((int)TileSorts::enemySpawnPoint);
+		tileCache[TileSorts::enemySpawnPoint].get()->setTileType('c');//(int)TileSorts::enemySpawnPoint);
 
 		tileCache[TileSorts::friendlySpawnPoint] = std::make_unique<Tile>("basic_tile4.png");
-		tileCache[TileSorts::friendlySpawnPoint].get()->setTileType((int)TileSorts::friendlySpawnPoint);
-
+		tileCache[TileSorts::friendlySpawnPoint].get()->setTileType('d');//(int)TileSorts::friendlySpawnPoint);
+		*/
 		currentBrush = nullptr;
 		currentBrush = tileCache.at(TileSorts::wall).get();
 	}
 
 	std::ifstream loadStream;
 	loadStream.open(currentDirectory + currentFileName);
-	if (loadStream && loadStream.is_open())
-	{
-		loadEmptyLevel = false;
-	}
+	if (loadStream && loadStream.is_open()) loadEmptyLevel = false;
 	
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
@@ -61,15 +77,16 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, Lev
 			tempTiles.push_back(nullptr);
 			if (!loadEmptyLevel) 
 			{
-				if (!std::isblank(tileRow[j]))
+				std::locale loc;
+				if (!std::isblank(tileRow[j], loc))
 				{
 					std::cout << tileRow[j] << std::endl;
-					int saveFileInformation = (int)tileRow[j] - 48;
+					char saveFileInformation = (char)tileRow[j] - 48;
 
-					if (saveFileInformation != 0 && loadTile((TileSorts)saveFileInformation) != nullptr)
+					if (saveFileInformation != -99 && saveFileInformation != '\0' && loadTile((TileSorts)saveFileInformation) != nullptr)
 					{
 						tempTiles[j] = new Tile(*loadTile((TileSorts)saveFileInformation));
-						tempTiles[j]->setTileType(saveFileInformation);
+						//tempTiles[j]->setTileType(intToLetter(saveFileInformation));
 						tempTiles[j]->setPosition(tempGrid[j]->getPosition());
 					}
 				}
@@ -164,6 +181,7 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 				}
 
 				//send new level name enum name
+				stateStackCurrentLevel = new Levels((Levels)inputChecker((int)Levels::COUNT));
 				returnMessage = (int)stateEvent::LaunchEditor;
 				break;
 			}
@@ -279,28 +297,58 @@ Tile* EditorState::loadTile(TileSorts whichTile)
 	case TileSorts::friendlySpawnPoint:
 		returnTile = new Tile(*tileCache[TileSorts::friendlySpawnPoint].get());
 		break;
-
-	default:
-		returnTile = nullptr;
-		break;
 	}
 
+	if (returnTile != nullptr)
+	{
+
+	}
+	returnTile->setTileType(intToLetter((int)whichTile));
 	return returnTile;
+}
+
+char intToLetter(int input)
+{
+	char returnValue;
+	switch (input)
+	{
+	case 1:
+		returnValue = 'a';
+		break;
+
+	case 2:
+		returnValue = 'b';
+		break;
+
+	case 3:
+		returnValue = 'c';
+		break;
+
+	case 4:
+		returnValue = 'd';
+		break;
+
+	default:
+		returnValue = '0';
+	}
+
+	return returnValue;
 }
 
 int EditorState::consoleMenu(bool pallete, int highestNumber)
 {
-	bool hasSelectedOption = false;
+	
 	int input = 0;
 
 	if (pallete)
 	{
 		std::cout << "select an option:" << std::endl <<
-			"[0] do nothing" << std::endl <<
-			"[1] wall" << std::endl <<
-			"[2] Enemy NPC spawnpoint" << std::endl <<
-			"[3] Friendly NPC spawnpoint" << std::endl <<
-			"[--] ***" << std::endl;
+					 "[0] do nothing" << std::endl;
+
+		for (int i = 0; i < ((int)TileSorts::COUNT - 1); i++)
+		{
+			std::cout << "[" << (i + 1) << "] " << tileTextures[i] << std::endl;
+		}
 	}
 	else
 	{
@@ -312,7 +360,15 @@ int EditorState::consoleMenu(bool pallete, int highestNumber)
 			"[--] ***" << std::endl;
 	}
 
+	input = inputChecker(highestNumber);
+	return input;
+}
+
+int inputChecker(int highestNumber)
+{
 	//recieves input from editor (into var input) and validates it
+	int input;
+	bool hasSelectedOption = false;
 	while (!hasSelectedOption)
 	{
 		std::cin >> input;
@@ -344,7 +400,7 @@ bool EditorState::writeLevel()
 			{
 				if (j == tiles[i].size()) saveStream << std::endl;
 				else if (tiles[i][j] != nullptr) saveStream << tiles[i][j]->getTileType();
-				else saveStream << 0;
+				else saveStream << '0';
 			}
 		}
 	}
