@@ -23,6 +23,7 @@ class GameState : public State
 private:
 	const float width;
 	const float height;
+	bool collideCheck;
 
 	sf::Font font;
 

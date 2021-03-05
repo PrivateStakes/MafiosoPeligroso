@@ -23,6 +23,8 @@ currentFileName(level)
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
 	cursor.setScale(2, 2);
 
+	
+
 	std::ifstream loadStream;
 	loadStream.open(currentDirectory + *currentFileName);
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
@@ -121,11 +123,34 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	player.rotateSprite(cursor.getPosition());
 
-	if (!CollissionMan().intersectCircRect(player, npc))
+	if (!CollissionMan().intersectCircCirc(player, npc))
+	{
+		
+	}
+
+	collideCheck = false;
+
+	for (int i = 0; i < tiles.size(); i++)
+	{
+		for (int j = 0; j < tiles[i].size(); j++)
+		{
+			if (tiles[i][j] != nullptr)
+			{
+				if (CollissionMan().intersectCircRect(player, *tiles[i][j]))
+				{
+					collideCheck = true;
+				}
+			}
+			
+		}
+	}
+
+	if (collideCheck == false)
 	{
 		player.move();
 		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player.getPosition() - 2.f * player.getInputDirection()));
 	}
+	
 
 	//camera.move(player.getInputDirection());
 	camera.setCenter(player.getPosition());
