@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include "StateStack.h"
+#include "CollissionMan.h"
 #include <iostream>
 
 GameState::GameState(const StateID InputStateId, StateStack& stateStack) :
