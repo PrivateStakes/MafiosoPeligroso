@@ -2,6 +2,7 @@
 #include <cmath>
 #include <math.h>
 #include "GameEntity.h"
+#include "Tile.h"
 #include <iostream>
 
 class CollissionMan
@@ -17,7 +18,7 @@ public:
 	CollissionMan();
 	~CollissionMan();
 
-	virtual bool intersectCircRect(GameEntity& circle, GameEntity& rect);
+	virtual bool intersectCircRect(GameEntity& circle, Tile& rect);
 
 	virtual bool intersectCircCirc(GameEntity& circle1, GameEntity& circle2);
 
