@@ -132,8 +132,8 @@ EditorState::~EditorState()
 		}
 	}
 
-	delete currentBrush;
 	currentBrush = nullptr;
+	tileCache.clear();
 
 	currentFileName = nullptr;
 }
@@ -324,6 +324,16 @@ Tile* EditorState::loadTile(TileSorts whichTile)
 	returnTile->setTileType(intToLetter((int)whichTile));
 	return returnTile;
 }
+
+/*std::string* EditorState::getTileTexturePaths()
+{
+	return tileTextures;
+}
+
+int EditorState::getTileTextureQuantity()
+{
+	return textureQuantity;
+}*/
 
 char intToLetter(int input)
 {

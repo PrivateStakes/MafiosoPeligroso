@@ -92,7 +92,7 @@ void StateStack::push(StateID id)
 		{
 		case StateID::GameState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this);
+			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel);
 			break;
 		case StateID::PauseMenuState:
 			stateQuantity++;
