@@ -25,6 +25,7 @@ class EditorState : public State
 private:
 	bool do_once = false;
 
+	//const int textureQuantity = 4;
 	std::string tileTextures[4]
 	{
 		"wall1.png",
@@ -68,4 +69,6 @@ public:
 	bool writeLevel();
 	Tile* loadTile(TileSorts whichTile);
 
+	//std::string* getTileTexturePaths();
+	//int getTileTextureQuantity();
 };

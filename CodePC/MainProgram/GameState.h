@@ -5,11 +5,12 @@
 #include "StateStack.h"
 #include "Player.h"
 #include "NPC.h"
-#include "CollissionMan.h"
 
 class StateStack;
 class Player;
 class GameEntity;
+class Tile;
+class CollissionMan;
 
 enum class GameEntityCollision
 {
@@ -20,10 +21,18 @@ enum class GameEntityCollision
 class GameState : public State
 {
 private:
-	float width;
-	float height;
+	const float width;
+	const float height;
 
 	sf::Font font;
+
+	//Level loading
+	std::string* currentFileName;
+	std::string currentDirectory = "../Saves/";
+	const int tileSizeX = 30;	//DO NOT CHANGE WÍTHOUT CHANGING IN EditorState.h AND REMOVING ALL SAVED LEVEL DATA!!
+	const int tileSizeY = 20;	// /\.. /\.. /\..
+	std::vector <std::vector<Tile*>> tiles;
+
 
 	//Cursor + camera
 	sf::Sprite cursor;
@@ -34,12 +43,12 @@ private:
 	//Player + NPC
 	Player player;
 	NPC npc;
-	Bullet* bullets = nullptr;
+	Bullet* bullets = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
 
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level);
 	~GameState() override;
 
 	int update(const float deltaTime, sf::RenderWindow& window) override;
