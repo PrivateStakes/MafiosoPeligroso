@@ -43,6 +43,10 @@ private:
 
 	//Player + NPC
 	Soldier *player;
+	sf::Vector2f* *enemySpawnPointArray;
+	int amountOfEnemySpawnPoints;
+	int cap;
+	Soldier* enemies;
 	NPC npc;
 	Soldier soldiers[2];
 	Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
@@ -55,6 +59,7 @@ public:
 	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level);
 	~GameState() override;
 
+	int backendUpdate();
 	int update(const float deltaTime, sf::RenderWindow& window) override;
 	void render(sf::RenderWindow& window) override;
 };

@@ -27,6 +27,9 @@ currentFileName(level)
 	player = &soldiers[0];
 	soldiers[1].setPosition(sf::Vector2f(200, 200));
 	amountOfBullets = 0;
+	amountOfEnemySpawnPoints = 0;
+	cap = 3;
+	enemySpawnPointArray = new sf::Vector2f*[cap];
 
 	
 
@@ -65,6 +68,22 @@ currentFileName(level)
 					tempTiles[j] = new Tile(tempTile.getTexturePath());
 					tempTiles[j]->setTileType(tempTile.getTileType());
 					tempTiles[j]->setPosition(tempGrid[j]->getPosition());
+					if (tempEditor.loadTile((TileSorts)(saveFileInformation - 48))->getTileType() == 'c')
+					{
+						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempTiles[j]->getPosition());
+						if (amountOfEnemySpawnPoints == cap)
+						{
+							cap += 3;
+							sf::Vector2f** temp = new sf::Vector2f * [cap];
+							for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+							{
+								temp[i] = enemySpawnPointArray[i];
+							}
+							delete[] enemySpawnPointArray;
+							enemySpawnPointArray = temp;
+							temp = nullptr;
+						}
+					}
 				}
 			}
 		}
@@ -77,6 +96,11 @@ currentFileName(level)
 		}
 	}
 	loadStream.close();
+	enemies = new Soldier[amountOfEnemySpawnPoints];
+	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+	{
+		enemies[i].setPosition(*enemySpawnPointArray[i]);
+	}
 }
 
 GameState::~GameState()
@@ -96,6 +120,11 @@ GameState::~GameState()
 			tiles[k][i] = nullptr;
 		}
 	}
+}
+
+int GameState::backendUpdate()
+{
+	return 0;
 }
 
 int GameState::update(const float deltaTime, sf::RenderWindow& window)
@@ -151,6 +180,16 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		
 	}
 
+	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+	{
+		//enemies[i].move();
+		enemies[i].rotateSprite(player->getPosition());
+		/*if (enemies[i].isAbleToShoot())
+		{
+			bullets[amountOfBullets++] = new Bullet(enemies[i].shoot((player->getPosition() - enemies[i].getPosition())));
+		}*/
+	}
+
 	collideCheck = false;
 
 	for (int i = 0; i < tiles.size(); i++)
@@ -193,9 +232,47 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
 		bullets[amountOfBullets++] = new Bullet(player->shoot((cursor.getPosition() - player->getPosition())));
+		if (amountOfBullets > 50)
+		{
+			for (int i = 0; i < amountOfBullets; i++)
+			{
+				delete bullets[i];
+			}
+		}
 	}
 	for (int i = 0; i < amountOfBullets; i++)
 	{
+		for (int j = 0; j < amountOfEnemySpawnPoints; j++)
+		{
+			if (enemies[j].gotHit(*bullets[i]))
+			{
+				enemies[j].loseHealth(1);
+				delete bullets[i];
+				if (i != (amountOfBullets - 1) && amountOfBullets > 1)
+				{
+					bullets[i] = bullets[amountOfBullets - 1];
+				}
+				amountOfBullets--;
+				if (enemies[j].getHealth() <= 0)
+				{
+					enemies[j].setPosition(sf::Vector2f(-100, -100));
+				}
+			}
+		}
+		if (player->gotHit(*bullets[i]))
+		{
+			player->loseHealth(1);
+			delete bullets[i];
+			if (i != (amountOfBullets - 1) && amountOfBullets > 1)
+			{
+				bullets[i] = bullets[amountOfBullets - 1];
+			}
+			amountOfBullets--;
+			if (player->getHealth() <= 0)
+			{
+				player->setPosition(sf::Vector2f(100, 100));
+			}
+		}
 		if (npc.gotHit(*bullets[i]))
 		{
 			npc.loseHealth(player->getDmg());
@@ -235,6 +312,11 @@ void GameState::render(sf::RenderWindow& window)
 	for (int i = 0; i < 2; i++)
 	{
 		window.draw(soldiers[i]);
+	}
+
+	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+	{
+		window.draw(enemies[i]);
 	}
 
 	window.draw(npc);
