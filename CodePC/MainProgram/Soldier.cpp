@@ -12,7 +12,7 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 
 Soldier::~Soldier()
 {
-
+	//delete this->currentWeapon;
 }
 
 void Soldier::loseHealth(int dmg)

@@ -13,10 +13,10 @@ class Bullet;
 //cannot exceed 9 tile sorts -- change to letters if you need more
 enum class TileSorts 
 {
-	wall = 1,
-	breakable,
-	enemySpawnPoint,
-	friendlySpawnPoint,
+	wall = 1,			//a
+	breakable,			//b
+	enemySpawnPoint,	//c
+	friendlySpawnPoint,	//d
 	COUNT
 };
 
