@@ -22,7 +22,7 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect)
         return false; 
     }
 
-    if (circleDistanceX <= (rect.getBounds().width / 2)/* && (rect.getTileType() == 0 || rect.getTileType() == 1)*/)
+    if (circleDistanceX <= (rect.getBounds().width / 2) && rect.getTileType() == 'a');
     { 
         
         if (((circle.getBounds().top + circle.getBounds().height) - rect.getBounds().top) < 25)
@@ -38,7 +38,7 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect)
         
         return true; 
     }
-    if (circleDistanceY <= (rect.getBounds().height / 2)/* && (rect.getTileType() == 0 || rect.getTileType() == 1)*/)
+    if (circleDistanceY <= (rect.getBounds().height / 2) && rect.getTileType() == 'a');
     { 
         if ((circle.getBounds().left - (rect.getBounds().left + rect.getBounds().width)) > -25)
         {
@@ -56,7 +56,7 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect)
     cornerDistanceSQ = (float)pow((circleDistanceX - rect.getBounds().width / 2),2) +
         pow((circleDistanceY - rect.getBounds().height / 2),2);
 
-    if (cornerDistanceSQ <= (pow((circle.getBounds().width / 2), 2))/* && (rect.getTileType() == 0 || rect.getTileType() == 1)*/)
+    if (cornerDistanceSQ <= (pow((circle.getBounds().width / 2), 2)) && rect.getTileType() == 'a');
     {
         if ((circle.getBounds().left - (rect.getBounds().left + rect.getBounds().width)) > -25)
         {
