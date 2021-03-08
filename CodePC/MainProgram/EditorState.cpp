@@ -356,6 +356,10 @@ char intToLetter(int input)
 		returnValue = 'd';
 		break;
 
+	case (int)TileSorts::floor:
+		returnValue = 'e';
+		break;
+
 	default:
 		returnValue = '0';
 	}

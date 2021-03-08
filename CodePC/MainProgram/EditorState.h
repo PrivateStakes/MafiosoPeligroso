@@ -17,6 +17,7 @@ enum class TileSorts
 	breakable,			//b
 	enemySpawnPoint,	//c
 	friendlySpawnPoint,	//d
+	floor,				//e
 	COUNT
 };
 
@@ -25,13 +26,13 @@ class EditorState : public State
 private:
 	bool do_once = false;
 
-	//const int textureQuantity = 4;
-	std::string tileTextures[4]
+	std::string tileTextures[5]
 	{
 		"wall1.png",
 		"basic_tile2.png",
 		"basic_tile3.png",
-		"basic_tile4.png"
+		"basic_tile4.png",
+		"floor.png"
 	};
 
 	std::vector<std::string> levels;
