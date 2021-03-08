@@ -42,9 +42,12 @@ private:
 	sf::Texture texture;
 
 	//Player + NPC
-	Player player;
+	Soldier *player;
 	NPC npc;
-	Bullet* bullets = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
+	Soldier soldiers[2];
+	Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
+	Bullet *bullets[100];
+	int amountOfBullets;
 
 	bool mouseVisability = true;
 

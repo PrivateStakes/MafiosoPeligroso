@@ -22,6 +22,11 @@ currentFileName(level)
 	cursor.setTexture(texture);
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
 	cursor.setScale(2, 2);
+	soldiers[0].setPosition(sf::Vector2f(200,200));
+	soldiers[0].setIsPlayer(true);
+	player = &soldiers[0];
+	soldiers[1].setPosition(sf::Vector2f(200, 200));
+	amountOfBullets = 0;
 
 	
 
@@ -78,8 +83,10 @@ GameState::~GameState()
 {
 	currentFileName = nullptr;
 	
-	delete bullets;
-	bullets = nullptr;
+	for (int i = 0; i < amountOfBullets; i++)
+	{
+		delete bullets[i];
+	}
 
 	for (int k = 0; k < tiles.size(); k++)
 	{
@@ -111,6 +118,21 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		window.setMouseCursorVisible(false);
 		mouseVisability = false;
 	}
+
+	for (int i = 1; i < 2; i++)
+	{
+		soldiers[i].move();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::T))
+	{
+		Soldier temp = soldiers[1];
+		soldiers[0].setIsPlayer(false);
+		soldiers[1] = soldiers[0];
+		soldiers[0] = temp;
+		soldiers[0].setIsPlayer(true);
+		player = &soldiers[0];
+		std::cout << "Switched\n";
+	}
 	
 	/*if (unpauseTimer < unpauseTimerElapsed)
 	{	
@@ -121,9 +143,10 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		}
 	}*/
 
-	player.rotateSprite(cursor.getPosition());
+	player->rotateSprite(cursor.getPosition());
+	//soldiers[0].rotateSprite(cursor.getPosition());
 
-	if (!CollissionMan().intersectCircCirc(player, npc))
+	if (!CollissionMan().intersectCircCirc(*player, npc))
 	{
 		
 	}
@@ -136,7 +159,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (tiles[i][j] != nullptr)
 			{
-				if (CollissionMan().intersectCircRect(player, *tiles[i][j]))
+				if (CollissionMan().intersectCircRect(*player, *tiles[i][j]))
 				{
 					collideCheck = true;
 				}
@@ -147,19 +170,19 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	if (collideCheck == false)
 	{
-		player.move();
-		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player.getPosition() - 2.f * player.getInputDirection()));
+		player->move();
+		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
 	}
 	
 
 	//camera.move(player.getInputDirection());
-	camera.setCenter(player.getPosition());
+	camera.setCenter(player->getPosition());
 	
 
-	mouse.setPosition(sf::Vector2i(player.getPosition()), window);
-	if (bullets != nullptr)
+	mouse.setPosition(sf::Vector2i(player->getPosition()), window);
+	for (int i = 0; i < amountOfBullets; i++)
 	{
-		bullets->update(deltaTime);
+		bullets[i]->update(deltaTime);
 	}
 	/*
 	if (!stateStack.get()->update(timePerFrame.asSeconds()))
@@ -167,24 +190,28 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		window.close();
 		gameOn = false;
 	}*/
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player.ableToShoot())
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
-		bullets = new Bullet(player.shoot((cursor.getPosition() - player.getPosition())));
+		bullets[amountOfBullets++] = new Bullet(player->shoot((cursor.getPosition() - player->getPosition())));
 	}
-	if (bullets != nullptr)
+	for (int i = 0; i < amountOfBullets; i++)
 	{
-		if (npc.gotHit(*bullets))
+		if (npc.gotHit(*bullets[i]))
 		{
-			npc.loseHealth(player.getDmg());
-			delete bullets;
-			bullets = nullptr;
+			npc.loseHealth(player->getDmg());
+			delete bullets[i];
+			if (i != (amountOfBullets - 1) && amountOfBullets > 1)
+			{
+				bullets[i] = bullets[amountOfBullets - 1];
+			}
+			amountOfBullets--;
 			if (npc.getHealth() <= 0)
 			{
 				npc.setPosition(sf::Vector2f(-100, -100));
 			}
 		}
-
 	}
+		
 	
 
 	return returnMessage;
@@ -192,9 +219,9 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 void GameState::render(sf::RenderWindow& window)
 {
-	if (bullets != nullptr)
+	for (int i = 0; i < amountOfBullets; i++)
 	{
-		window.draw(*bullets);
+		window.draw(*bullets[i]);
 	}
 
 	for (int i = 0; i < tiles.size(); i++)
@@ -205,9 +232,13 @@ void GameState::render(sf::RenderWindow& window)
 				tiles[i][j]->draw(window);
 		}
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		window.draw(soldiers[i]);
+	}
 
 	window.draw(npc);
-	window.draw(player);
+	//window.draw(*player);
 	window.draw(cursor);
 	window.setView(camera);
 }
