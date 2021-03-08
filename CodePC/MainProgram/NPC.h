@@ -9,5 +9,5 @@ public:
 
 	// Inherited via Soldier
 	virtual void update(const float deltaTime) override;
-	virtual void move() override;
+	void move();
 };
