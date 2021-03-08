@@ -21,6 +21,7 @@ MainProgram.vcxproj.user
 *.lo
 *.o
 *.obj
+*.pdn
 
 # Precompiled Headers
 *.gch
