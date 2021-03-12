@@ -22,10 +22,12 @@ currentFileName(level)
 	cursor.setTexture(texture);
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
 	cursor.setScale(2, 2);
-	soldiers[0].setPosition(sf::Vector2f(200,200));
+	soldiers[0].setPosition(sf::Vector2f(150,250));
 	soldiers[0].setIsPlayer(true);
+	soldiers[0].setID(ID++);
 	player = &soldiers[0];
 	soldiers[1].setPosition(sf::Vector2f(200, 200));
+	soldiers[1].setID(ID++);
 	amountOfBullets = 0;
 	amountOfEnemySpawnPoints = 0;
 	cap = 3;
@@ -114,6 +116,7 @@ currentFileName(level)
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
 		enemies[i].setPosition(*enemySpawnPointArray[i]);
+		enemies[i].setID(ID++);
 	}
 }
 
@@ -243,13 +246,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::T))
 	{
-		Soldier temp = soldiers[1];
-		soldiers[0].setIsPlayer(false);
-		soldiers[1] = soldiers[0];
-		soldiers[0] = temp;
-		soldiers[0].setIsPlayer(true);
-		player = &soldiers[0];
-		std::cout << "Switched\n";
 	}
 	
 	/*if (unpauseTimer < unpauseTimerElapsed)
@@ -298,11 +294,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			
 		}
 	}
-
+	player->move();
+	cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+	
 	if (collideCheck == false)
 	{
-		player->move();
-		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+		
 	}
 	
 
@@ -351,7 +348,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				}
 			}
 		}
-		if (player->gotHit(*bullets[i]))
+		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
 		{
 			player->loseHealth(1);
 			delete bullets[i];
@@ -362,7 +359,15 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			amountOfBullets--;
 			if (player->getHealth() <= 0)
 			{
+				Soldier temp = soldiers[1];
+				soldiers[0].setIsPlayer(false);
+				soldiers[1] = soldiers[0];
+				soldiers[0] = temp;
+				soldiers[0].setIsPlayer(true);
+				player = &soldiers[0];
+				std::cout << "Switched\n";
 				player->setPosition(sf::Vector2f(100, 100));
+				player->loseHealth(-3);
 			}
 		}
 		if (npc.gotHit(*bullets[i]))

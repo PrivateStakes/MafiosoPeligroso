@@ -12,6 +12,7 @@ private:
 protected:
     int health;
     float speed;
+    int ID;
 
     int updateTimer;
     int counter;
@@ -26,10 +27,13 @@ public:
     ~Soldier();
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
+    void setID(int ID);
     bool getIsPlayer()const;
     bool isAbleToShoot()const;
     int getHealth()const;
     int getDmg()const;
+    int getID()const;
+
     sf::Vector2f getInputDirection()const;
     void rotateSprite(sf::Vector2f pos);
 
