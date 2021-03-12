@@ -18,9 +18,11 @@ public:
 	CollissionMan();
 	~CollissionMan();
 
-	virtual bool intersectCircRect(GameEntity& circle, Tile& rect);
+	virtual bool intersectCircRect(GameEntity& circle, Tile& rect, char tileType);
 
 	virtual bool intersectCircCirc(GameEntity& circle1, GameEntity& circle2);
+
+	virtual bool intersectRectPoint(Tile& rect, sf::Vector2f);
 
 
 };

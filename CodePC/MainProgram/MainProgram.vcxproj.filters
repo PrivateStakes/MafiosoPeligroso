@@ -60,10 +60,10 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CityMap.cpp">
+    <ClCompile Include="CollissionMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CollissionMan.cpp">
+    <ClCompile Include="CityMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Communication.cpp">
@@ -110,10 +110,10 @@
     <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CityMap.h">
+    <ClInclude Include="CollissionMan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CollissionMan.h">
+    <ClInclude Include="CityMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Communication.h">

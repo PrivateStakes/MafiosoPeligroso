@@ -31,3 +31,43 @@ void Tile::setTileType(char input)
 {
 	tileType = input;
 }
+
+Tile* Tile::getPreviousNode()
+{
+	return previousNode;
+}
+
+void Tile::setPreviousNode(Tile* inputTile)
+{
+	previousNode = inputTile;
+}
+
+Tile* Tile::getNextNode()
+{
+	return nextNode;
+}
+
+void Tile::setNextNode(Tile* inputTile)
+{
+	nextNode = inputTile;
+}
+
+bool Tile::getVisitedByAlgorithm()
+{
+	return visitedByAlgorithm;
+}
+
+void Tile::setVisitedByAlgorithm(bool input)
+{
+	visitedByAlgorithm = input;
+}
+
+int Tile::getTravelDistance()
+{
+	return travelDistance;
+}
+
+void Tile::setTravelDistance(int input)
+{
+	travelDistance = input;
+}

@@ -8,6 +8,7 @@ GameEntity::GameEntity(std::string fileName)
 
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setScale(2.f, 2.f);
+	hasCustomCollider = false;
 }
 
 GameEntity::~GameEntity()
@@ -40,7 +41,17 @@ sf::Sprite GameEntity::getSprite()
 	return sprite;
 }
 
+void GameEntity::setCustomCollider(sf::FloatRect input)
+{
+	customCollider = input;
+	hasCustomCollider = true;
+}
+
 sf::FloatRect GameEntity::getBounds()
 {
-	return this->sprite.getGlobalBounds();
+	if (!hasCustomCollider)
+	{
+		return this->sprite.getGlobalBounds();
+	}
+	else return customCollider;
 }
