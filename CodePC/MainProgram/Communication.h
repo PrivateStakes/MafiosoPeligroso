@@ -2,12 +2,16 @@
 #include <SFML/Graphics.hpp>
 #include <cstring>
 
-class Communication : public sf::Drawable
+class Communication
 {
 protected:
-	sf::Sprite commSprite;
 	sf::Texture commTexture;
-	sf::Text commText;
+	sf::Sprite commSprite;
+	sf::Text commText1;
+	sf::Text commText2;
+	sf::Font commFont;
+	int choice;
+	bool isOpen;
 private:
 
 public:
@@ -16,6 +20,6 @@ public:
 
 	void openMenu();
 	void closeMenu();
-	sf::Sprite getSprite();
-
+	bool yesOpen();
+	std::string textBit(int id);
 };

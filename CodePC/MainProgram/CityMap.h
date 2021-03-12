@@ -1,9 +1,11 @@
 #pragma once
 #include "State.h"
+#include "Communication.h"
+#include <ctime>
 
 class StateStack;
 
-class CityMap : public State
+class CityMap : public State, public Communication
 {
 private:
 	sf::Texture cityTexture;
@@ -11,6 +13,8 @@ private:
 
 	sf::Texture squareTexture;
 	sf::Sprite squareSprite;
+
+	Communication communicator;
 
 	int returnMessage;
 
