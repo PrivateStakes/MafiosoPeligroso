@@ -94,11 +94,11 @@ bool CollissionMan::intersectRectPoint(Tile& rect, sf::Vector2f point)
 {
     sf::Vector2i tilePos_high(
         (rect.getPosition().x - (rect.getSprite().getLocalBounds().width * rect.getSprite().getScale().x) / 2),
-        (rect.getPosition().y - (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2)));
+        (rect.getPosition().y - (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2));
 
     sf::Vector2i tilePos_low(
         (rect.getPosition().x + (rect.getSprite().getLocalBounds().width * rect.getSprite().getScale().x) / 2),
-        (rect.getPosition().y + (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2)));
+        (rect.getPosition().y + (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2));
 
 
     return ((tilePos_high.x < point.x&& tilePos_low.x > point.x) && (tilePos_high.y < point.y&& tilePos_low.y > point.y));

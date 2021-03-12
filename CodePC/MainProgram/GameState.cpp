@@ -158,8 +158,8 @@ int GameState::backendUpdate()
 			}
 		}
 
-		int xOrigin = x;
-		int yOrigin = y;
+		xOrigin = x;
+		yOrigin = y;
 		
 		while (1)
 		{
