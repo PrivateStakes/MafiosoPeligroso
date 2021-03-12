@@ -52,7 +52,7 @@ private:
 	NPC npc;
 	Soldier soldiers[2];
 	Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
-	Bullet *bullets[100];
+	std::vector<Bullet*> bullets;
 	int amountOfBullets;
 
 	bool mouseVisability = true;

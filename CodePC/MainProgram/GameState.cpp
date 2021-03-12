@@ -283,15 +283,11 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (tiles[i][j] != nullptr)
 			{
-				if (tiles[i][j]->getTileType() == 'a')
+				if (CollissionMan().intersectCircRect(*player, *tiles[i][j], 'a'))
 				{
-					if (CollissionMan().intersectCircRect(*player, *tiles[i][j]))
-					{
-						collideCheck = true;
-					}
+					collideCheck = true;
 				}
 			}
-			
 		}
 	}
 	player->move();
@@ -308,7 +304,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	
 
 	mouse.setPosition(sf::Vector2i(player->getPosition()), window);
-	for (int i = 0; i < amountOfBullets; i++)
+	for (int i = 0; i < bullets.size(); i++)
 	{
 		bullets[i]->update(deltaTime);
 	}
@@ -320,16 +316,18 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	}*/
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
-		bullets[amountOfBullets++] = new Bullet(player->shoot((cursor.getPosition() - player->getPosition())));
-		if (amountOfBullets > 50)
+		bullets.push_back(new Bullet(player->shoot((cursor.getPosition() - player->getPosition()))));
+		if (bullets.size() > 50)
 		{
-			for (int i = 0; i < amountOfBullets; i++)
+			for (int i = 0; i < bullets.size(); i++)
 			{
 				delete bullets[i];
+				bullets[i] = nullptr;
+				bullets.pop_back();
 			}
 		}
 	}
-	for (int i = 0; i < amountOfBullets; i++)
+	for (int i = 0; i < bullets.size(); i++)
 	{
 		for (int j = 0; j < amountOfEnemySpawnPoints; j++)
 		{
@@ -337,11 +335,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				enemies[j].loseHealth(1);
 				delete bullets[i];
-				if (i != (amountOfBullets - 1) && amountOfBullets > 1)
-				{
-					bullets[i] = bullets[amountOfBullets - 1];
-				}
-				amountOfBullets--;
+				bullets[i] = nullptr;
+				bullets[i] = bullets.back();
+
+				delete bullets.back();
+				bullets.back() = nullptr;
+				bullets.pop_back();
 				if (enemies[j].getHealth() <= 0)
 				{
 					enemies[j].setPosition(sf::Vector2f(-100, -100));
@@ -352,11 +351,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			player->loseHealth(1);
 			delete bullets[i];
-			if (i != (amountOfBullets - 1) && amountOfBullets > 1)
-			{
-				bullets[i] = bullets[amountOfBullets - 1];
-			}
-			amountOfBullets--;
+			bullets[i] = nullptr;
+			bullets[i] = bullets.back();
+
+			delete bullets.back();
+			bullets.back() = nullptr;
+			bullets.pop_back();
 			if (player->getHealth() <= 0)
 			{
 				Soldier temp = soldiers[1];
@@ -367,18 +367,18 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				player = &soldiers[0];
 				std::cout << "Switched\n";
 				player->setPosition(sf::Vector2f(100, 100));
-				player->loseHealth(-3);
 			}
 		}
 		if (npc.gotHit(*bullets[i]))
 		{
 			npc.loseHealth(player->getDmg());
 			delete bullets[i];
-			if (i != (amountOfBullets - 1) && amountOfBullets > 1)
-			{
-				bullets[i] = bullets[amountOfBullets - 1];
-			}
-			amountOfBullets--;
+			bullets[i] = nullptr;
+			bullets[i] = bullets.back();
+
+			delete bullets.back();
+			bullets.back() = nullptr;
+			bullets.pop_back();
 			if (npc.getHealth() <= 0)
 			{
 				npc.setPosition(sf::Vector2f(-100, -100));
@@ -393,7 +393,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 void GameState::render(sf::RenderWindow& window)
 {
-	for (int i = 0; i < amountOfBullets; i++)
+	for (int i = 0; i < bullets.size(); i++)
 	{
 		window.draw(*bullets[i]);
 	}
