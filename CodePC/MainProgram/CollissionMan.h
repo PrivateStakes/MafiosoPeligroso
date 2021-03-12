@@ -22,5 +22,7 @@ public:
 
 	virtual bool intersectCircCirc(GameEntity& circle1, GameEntity& circle2);
 
+	virtual bool intersectRectPoint(Tile& rect, sf::Vector2f);
+
 
 };

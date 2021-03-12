@@ -33,6 +33,7 @@ private:
 	const int tileSizeX = 30;	//DO NOT CHANGE WÍTHOUT CHANGING IN EditorState.h AND REMOVING ALL SAVED LEVEL DATA!!
 	const int tileSizeY = 20;	// /\.. /\.. /\..
 	std::vector <std::vector<Tile*>> tiles;
+	std::vector <std::vector<Tile*>> floor;
 
 
 	//Cursor + camera
