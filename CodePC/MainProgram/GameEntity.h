@@ -8,9 +8,11 @@ class GameEntity : public sf::Drawable
 {
 protected:
 	sf::Sprite sprite;
+	bool hasCustomCollider;
 
 private:
 	sf::Texture texture;
+	sf::FloatRect customCollider;
 
 public:
 	GameEntity(std::string fileName);
@@ -22,6 +24,7 @@ public:
 
 	sf::Sprite getSprite();
 
+	void setCustomCollider(sf::FloatRect);
 	sf::FloatRect getBounds();
 
 	void setPosition(sf::Vector2f position);
