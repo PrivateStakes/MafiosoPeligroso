@@ -31,8 +31,6 @@ currentFileName(level)
 	cap = 3;
 	enemySpawnPointArray = new sf::Vector2f*[cap];
 
-	
-
 	std::ifstream loadStream;
 	loadStream.open(currentDirectory + *currentFileName);
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
@@ -44,6 +42,7 @@ currentFileName(level)
 	{
 		std::vector<Tile*> tempGrid;
 		std::vector<Tile*> tempTiles;
+		std::vector<Tile*> tempFloor;
 
 		std::string tileRow = "";
 		loadStream >> tileRow;
@@ -57,6 +56,7 @@ currentFileName(level)
 				(tempGrid.back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid.back()->getSprite().getGlobalBounds().height)) });
 
 			tempTiles.push_back(nullptr);
+			tempFloor.push_back(nullptr);
 			std::locale loc;
 			if (!std::isblank(tileRow[j], loc))
 			{
@@ -64,13 +64,12 @@ currentFileName(level)
 
 				if (saveFileInformation != -99 && saveFileInformation != '\0' && tempEditor.loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
 				{
+					bool addTile = true;
 					Tile tempTile = *tempEditor.loadTile((TileSorts)(saveFileInformation - 48));
-					tempTiles[j] = new Tile(tempTile.getTexturePath());
-					tempTiles[j]->setTileType(tempTile.getTileType());
-					tempTiles[j]->setPosition(tempGrid[j]->getPosition());
+
 					if (tempEditor.loadTile((TileSorts)(saveFileInformation - 48))->getTileType() == 'c')
 					{
-						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempTiles[j]->getPosition());
+						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempTiles[j]->getPosition());	//if the game crashes because of this, change to std::vector
 						if (amountOfEnemySpawnPoints == cap)
 						{
 							cap += 3;
@@ -83,6 +82,21 @@ currentFileName(level)
 							enemySpawnPointArray = temp;
 							temp = nullptr;
 						}
+					}
+					else if (tempEditor.loadTile((TileSorts)(saveFileInformation - 48))->getTileType() == 'e')
+					{
+						addTile = false;
+
+						tempFloor[j] = new Tile(tempTile.getTexturePath());
+						tempFloor[j]->setTileType(tempTile.getTileType());
+						tempFloor[j]->setPosition(tempGrid[j]->getPosition());
+					}
+
+					if (addTile)
+					{
+						tempTiles[j] = new Tile(tempTile.getTexturePath());
+						tempTiles[j]->setTileType(tempTile.getTileType());
+						tempTiles[j]->setPosition(tempGrid[j]->getPosition());
 					}
 				}
 			}
@@ -124,6 +138,81 @@ GameState::~GameState()
 
 int GameState::backendUpdate()
 {
+	for (int k = 0; k < amountOfEnemySpawnPoints; k++)
+	{
+		int x;
+		int y;
+
+		int xOrigin;
+		int yOrigin;
+
+		for (int i = 0; i < floor.size(); i++)
+		{
+			for (int j = 0; j < floor[i].size(); j++)
+			{
+				if (CollissionMan().intersectRectPoint(*floor[i][j], enemies[amountOfEnemySpawnPoints].getPosition()))
+				{
+					x = i;
+					y = j;
+				}
+			}
+		}
+
+		int xOrigin = x;
+		int yOrigin = y;
+		
+		while (1)
+		{
+			int tempX;
+			int tempY;
+			unsigned int shortestDistance = 0 - 1;
+
+			//each connection
+			if (!floor[x + 1][y + 1]->getVisitedByAlgorithm() | floor[x + 1][y + 1]->getTravelDistance() <= shortestDistance)
+			{
+				floor[x + 1][y + 1]->setTravelDistance(floor[x][y]->getTravelDistance() + 1);
+				floor[x + 1][y + 1]->setVisitedByAlgorithm(true);
+
+				shortestDistance = floor[x + 1][y + 1]->getTravelDistance();
+				tempX = x + 1;
+				tempY = y + 1;
+			}
+
+			if (!floor[x + 1][y - 1]->getVisitedByAlgorithm() | floor[x + 1][y - 1]->getTravelDistance() <= shortestDistance)
+			{
+				floor[x + 1][y - 1]->setTravelDistance(floor[x][y]->getTravelDistance() + 1);
+				floor[x + 1][y - 1]->setVisitedByAlgorithm(true);
+
+				shortestDistance = floor[x + 1][y - 1]->getTravelDistance();
+				tempX = x + 1;
+				tempY = y - 1;
+			}
+
+			if (!floor[x - 1][y - 1]->getVisitedByAlgorithm() | floor[x - 1][y - 1]->getTravelDistance() <= shortestDistance)
+			{
+				floor[x - 1][y - 1]->setTravelDistance(floor[x][y]->getTravelDistance() + 1);
+				floor[x - 1][y - 1]->setVisitedByAlgorithm(true);
+
+				shortestDistance = floor[x - 1][y - 1]->getTravelDistance();
+				tempX = x - 1;
+				tempY = y - 1;
+			}
+
+			if (!floor[x - 1][y + 1]->getVisitedByAlgorithm() | floor[x - 1][y + 1]->getTravelDistance() <= shortestDistance)
+			{
+				floor[x - 1][y + 1]->setTravelDistance(floor[x][y]->getTravelDistance() + 1);
+				floor[x - 1][y + 1]->setVisitedByAlgorithm(true);
+
+				shortestDistance = floor[x - 1][y + 1]->getTravelDistance();
+				tempX = x - 1;
+				tempY = y + 1;
+			}
+
+			x = tempX;
+			y = tempY;
+		}
+	}
+
 	return 0;
 }
 
