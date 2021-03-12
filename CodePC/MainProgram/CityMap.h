@@ -14,6 +14,10 @@ private:
 	sf::Texture squareTexture;
 	sf::Sprite squareSprite;
 
+	sf::Texture blueSquareTexture;
+	sf::Sprite blueSquareSprite;
+	sf::Mouse kms;
+
 	Communication communicator;
 
 	int returnMessage;

@@ -12,6 +12,10 @@ CityMap::CityMap(StateID InputStateId, StateStack& stateStack)
    squareSprite.setTexture(squareTexture); 
    squareSprite.setPosition(30, 425);
    squareSprite.setScale(0.3, 0.5);
+   blueSquareTexture.loadFromFile("../Images/BlueSquare.png");
+   blueSquareSprite.setTexture(blueSquareTexture);
+   blueSquareSprite.setPosition(239, 425);
+   blueSquareSprite.setScale(0.3, 0.5);
 
    srand(time(NULL));
    
@@ -38,7 +42,8 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && kms.getPosition().x > 365 && kms.getPosition().x < 575 
+        && kms.getPosition().y > 470 && kms.getPosition().y < 750)
     {
         communicator.openMenu();
         commText1.setString(textBit(-1));
@@ -69,6 +74,7 @@ void CityMap::render(sf::RenderWindow& window)
 {
     window.draw(citySprite);
     window.draw(squareSprite);
+    window.draw(blueSquareSprite);
     if (communicator.yesOpen())
     {
         window.draw(commSprite);
