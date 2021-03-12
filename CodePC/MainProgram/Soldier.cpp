@@ -25,6 +25,11 @@ void Soldier::setIsPlayer(bool state)
 	this->isPlayer = state;
 }
 
+void Soldier::setID(int ID)
+{
+	this->ID = ID;
+}
+
 bool Soldier::getIsPlayer() const
 {
 	return this->isPlayer;
@@ -43,6 +48,11 @@ int Soldier::getHealth() const
 int Soldier::getDmg() const
 {
 	return this->currentWeapon->getDmg();
+}
+
+int Soldier::getID() const
+{
+	return this->ID;
 }
 
 sf::Vector2f Soldier::getInputDirection() const
@@ -138,7 +148,7 @@ Bullet Soldier::shoot(sf::Vector2f direction)
 
 	this->reloading = true;
 
-	return Bullet(rotation, direction, this->sprite.getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed());
+	return Bullet(rotation, direction, this->sprite.getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
 }
 
 void Soldier::update(const float deltaTime)

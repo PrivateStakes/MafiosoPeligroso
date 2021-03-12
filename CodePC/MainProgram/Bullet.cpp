@@ -5,8 +5,8 @@ void Bullet::move()
 	this->sprite.move(this->speed*this->xDir, this->speed*this->yDir);
 }
 
-Bullet::Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg, float speed)
-	:GameEntity("Bullet2.png"), xDir(direction.x), yDir(direction.y), dmg(dmg), speed(speed)
+Bullet::Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg, float speed, int ID)
+	:GameEntity("Bullet2.png"), xDir(direction.x), yDir(direction.y), dmg(dmg), speed(speed), ID(ID)
 {
 	this->sprite.setPosition(position);
 	this->sprite.setRotation(rotation);
@@ -14,6 +14,11 @@ Bullet::Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, in
 
 Bullet::~Bullet()
 {
+}
+
+int Bullet::getID() const
+{
+	return this->ID;
 }
 
 sf::FloatRect Bullet::getBounds() const

@@ -24,6 +24,7 @@ private:
 	const float width;
 	const float height;
 	bool collideCheck;
+	int ID = 0;
 
 	sf::Font font;
 
