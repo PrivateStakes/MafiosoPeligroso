@@ -289,7 +289,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (tiles[i][j]->getTileType() == 'a')
 				{
-					if (CollissionMan().intersectCircRect(*player, *tiles[i][j]))
+					if (CollissionMan().intersectCircRect(*player, *tiles[i][j], 'a'))
 					{
 						collideCheck = true;
 					}
@@ -298,11 +298,11 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			
 		}
 	}
-
+	player->move();
+	cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
 	if (collideCheck == false)
 	{
-		player->move();
-		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+		
 	}
 	
 
@@ -397,8 +397,7 @@ void GameState::render(sf::RenderWindow& window)
 	{
 		for (int j = 0; j < tiles[i].size(); j++)
 		{
-			if (tiles[i][j] != nullptr)
-				tiles[i][j]->draw(window);
+			if (tiles[i][j] != nullptr) tiles[i][j]->draw(window);
 		}
 	}
 	for (int i = 0; i < 2; i++)
