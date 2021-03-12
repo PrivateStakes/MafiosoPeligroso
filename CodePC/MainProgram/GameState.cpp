@@ -283,15 +283,11 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (tiles[i][j] != nullptr)
 			{
-				if (tiles[i][j]->getTileType() == 'a')
+				if (CollissionMan().intersectCircRect(*player, *tiles[i][j], 'a'))
 				{
-					if (CollissionMan().intersectCircRect(*player, *tiles[i][j]))
-					{
-						collideCheck = true;
-					}
+					collideCheck = true;
 				}
 			}
-			
 		}
 	}
 	player->move();
