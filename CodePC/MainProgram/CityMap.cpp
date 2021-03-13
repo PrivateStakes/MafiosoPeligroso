@@ -60,7 +60,6 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
             && kms.getPosition().y > 990 && kms.getPosition().y < 1010) choice = 2;
         else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
             && kms.getPosition().y > 1030 && kms.getPosition().y < 1050) choice = 3;
-        std::cout << kms.getPosition().x << " " << kms.getPosition().y << std::endl;
     }
     if (communicator.yesOpen() && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
