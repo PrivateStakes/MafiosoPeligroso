@@ -8,19 +8,24 @@
 #include "MenuState.h"
 #include "EditorState.h"
 #include "CityMap.h"
+#include "Soldier.h"
 
 StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) :
 	windowWidth(inputWindowWidth),
 	windowHeight(inputWindowHeight)
 {
+	soldiers.push_back(new Soldier());
+	soldiers[0]->setIsPlayer(true);
+	soldiers[0]->setID(ID++);
+
 	currentLevelIndex = 0;
-	//load from 'save' later
-	//currentLevel = new Levels(Levels::level1);
 
 	states = new State*[statesCapacity];
 	stateQuantity = -1; //first object becomes 0
 	for (int i = 0; i < statesCapacity; i++)
-	{ states[i] = nullptr; }
+	{ 
+		states[i] = nullptr; 
+	}
 
 	std::ifstream loadStream;
 	loadStream.open("../Saves/save.txt");
@@ -56,7 +61,6 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	loadStream.close();
 
 	//push(StateID::MainMenuState);
-	//push(StateID::GameState);
 	push(StateID::CityMapState);
 }
 
@@ -92,7 +96,7 @@ void StateStack::push(StateID id)
 		{
 		case StateID::GameState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel);
+			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel, soldiers);
 			break;
 		case StateID::PauseMenuState:
 			stateQuantity++;
@@ -105,10 +109,10 @@ void StateStack::push(StateID id)
 
 		case StateID::EditorState:
 
-			/*if (stateQuantity - 1 <= 0 && stateQuantity + 1 != 0)
+			if (stateQuantity - 1 <= 0 && stateQuantity + 1 != 0)
 			{
 				if (states[stateQuantity]->getStateID() == StateID::EditorState) pop();
-			}*/
+			}
 
 			stateQuantity++;
 			if (stateQuantity != -1) states[stateQuantity] = new EditorState(StateID::EditorState, *this, currentLevel);
@@ -171,7 +175,6 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 				break;
 
 			case stateEvent::LaunchEditor:
-				//pop();
 				push(StateID::EditorState);
 				break;
 			}
@@ -180,4 +183,14 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 	}
 
 	return gameOn;
+}
+
+int StateStack::getID()
+{
+	return ID;
+}
+
+void StateStack::setID(int input)
+{
+	ID = input;
 }

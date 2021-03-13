@@ -25,6 +25,7 @@ enum class StateID
 };
 
 class State;
+class Soldier;
 class StateStack
 {
 private:
@@ -32,6 +33,8 @@ private:
 	const int statesCapacity = 10;
 	State** states;
 	
+	std::vector<Soldier*> soldiers;
+	int ID = 0;
 
 	int currentStateEvent = 0;
 	bool gameOn = true;
@@ -48,6 +51,9 @@ public:
 	void pop();
 	void render(sf::RenderWindow& window);
 	bool update(const float aDeltaTime, sf::RenderWindow& window);
+
+	int getID();
+	void setID(int input);
 	
 	int currentLevelIndex = 1;
 	const int windowWidth, windowHeight;

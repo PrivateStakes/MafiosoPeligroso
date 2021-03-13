@@ -24,7 +24,6 @@ private:
 	const float width;
 	const float height;
 	bool collideCheck;
-	int ID = 0;
 
 	sf::Font font;
 
@@ -44,21 +43,22 @@ private:
 	sf::Texture texture;
 
 	//Player + NPC
-	Soldier *player;
+	Soldier* player;
+	std::vector<Soldier*> soldiers;
+
 	sf::Vector2f* *enemySpawnPointArray;
 	int amountOfEnemySpawnPoints;
 	int cap;
 	Soldier* enemies;
-	NPC npc;
-	Soldier soldiers[2];
-	Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
+	
+	///Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;
 
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soliderHierarchy);
 	~GameState() override;
 
 	int backendUpdate();

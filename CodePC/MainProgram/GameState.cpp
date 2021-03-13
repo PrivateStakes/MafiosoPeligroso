@@ -9,28 +9,31 @@
 #include <sstream>
 #include <assert.h>
 
-GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level) :
+GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soliderHierarchy) :
 State(InputStateId),
 width(stateStack.windowWidth),
 height(stateStack.windowHeight),
 currentFileName(level)
 {
 	camera.setCenter(0, 0);
-	camera.setSize(1280, 720);
+	//camera.setSize(1280, 720);
+	camera.setSize(width, height);
+
+	for (int i = 0; i < soliderHierarchy.size(); i++)
+	{
+		soldiers.push_back(soliderHierarchy[i]);
+	}
+	
+	player = soldiers[0];
 	float temp = 0.f;
 	texture.loadFromFile("../Images/cursor.png");
 	cursor.setTexture(texture);
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
 	cursor.setScale(2, 2);
-	soldiers[0].setPosition(sf::Vector2f(150,250));
-	soldiers[0].setIsPlayer(true);
-	soldiers[0].setID(ID++);
-	player = &soldiers[0];
-	soldiers[1].setPosition(sf::Vector2f(200, 200));
-	soldiers[1].setID(ID++);
+
 	amountOfBullets = 0;
 	amountOfEnemySpawnPoints = 0;
-	cap = 3;
+	cap = 32;
 	enemySpawnPointArray = new sf::Vector2f*[cap];
 
 	std::ifstream loadStream;
@@ -71,7 +74,7 @@ currentFileName(level)
 
 					if (tempEditor.loadTile((TileSorts)(saveFileInformation - 48))->getTileType() == 'c')
 					{
-						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempTiles[j]->getPosition());	//if the game crashes because of this, change to std::vector
+						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempGrid[j]->getPosition());	//if the game crashes because of this, change to std::vector
 						if (amountOfEnemySpawnPoints == cap)
 						{
 							cap += 3;
@@ -80,6 +83,7 @@ currentFileName(level)
 							{
 								temp[i] = enemySpawnPointArray[i];
 							}
+
 							delete[] enemySpawnPointArray;
 							enemySpawnPointArray = temp;
 							temp = nullptr;
@@ -113,20 +117,26 @@ currentFileName(level)
 	}
 	loadStream.close();
 	enemies = new Soldier[amountOfEnemySpawnPoints];
+
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
 		enemies[i].setPosition(*enemySpawnPointArray[i]);
-		enemies[i].setID(ID++);
+		stateStack.setID(stateStack.getID() + 1);
+		enemies[i].setID(stateStack.getID());
+		
 	}
 }
 
 GameState::~GameState()
 {
 	currentFileName = nullptr;
+	delete player;
+	player = nullptr;
 	
-	for (int i = 0; i < amountOfBullets; i++)
+	for (int i = 0; i < bullets.size(); i++)
 	{
 		delete bullets[i];
+		bullets[i] = nullptr;
 	}
 
 	for (int k = 0; k < tiles.size(); k++)
@@ -135,6 +145,15 @@ GameState::~GameState()
 		{
 			delete tiles[k][i];
 			tiles[k][i] = nullptr;
+		}
+	}
+
+	for (int k = 0; k < floor.size(); k++)
+	{
+		for (int i = 0; i < floor[k].size(); i++)
+		{
+			delete floor[k][i];
+			floor[k][i] = nullptr;
 		}
 	}
 }
@@ -240,30 +259,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		mouseVisability = false;
 	}
 
-	for (int i = 1; i < 2; i++)
+	for (int i = 1; i < soldiers.size(); i++)
 	{
-		soldiers[i].move();
+		soldiers[i]->move();
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::T))
-	{
-	}
-	
-	/*if (unpauseTimer < unpauseTimerElapsed)
-	{	
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		{
-			unpauseTimerElapsed = 0.f;
-			returnMessage = (int)stateEvent::PauseState;
-		}
-	}*/
 
 	player->rotateSprite(cursor.getPosition());
-	//soldiers[0].rotateSprite(cursor.getPosition());
-
-	if (!CollissionMan().intersectCircCirc(*player, npc))
-	{
-		
-	}
 
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
@@ -290,13 +291,15 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			}
 		}
 	}
-	player->move();
-	cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
-	
+
 	if (collideCheck == false)
 	{
-		
+		player->move();
+		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
 	}
+
+	player->move();
+	cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
 	
 
 	//camera.move(player.getInputDirection());
@@ -308,12 +311,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		bullets[i]->update(deltaTime);
 	}
-	/*
-	if (!stateStack.get()->update(timePerFrame.asSeconds()))
-	{
-		window.close();
-		gameOn = false;
-	}*/
+
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
 		bullets.push_back(new Bullet(player->shoot((cursor.getPosition() - player->getPosition()))));
@@ -323,10 +321,15 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				delete bullets[i];
 				bullets[i] = nullptr;
+				bullets[i] = bullets.back();
+
+				delete bullets.back();
+				bullets.back() = nullptr;
 				bullets.pop_back();
 			}
 		}
 	}
+
 	for (int i = 0; i < bullets.size(); i++)
 	{
 		for (int j = 0; j < amountOfEnemySpawnPoints; j++)
@@ -347,6 +350,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				}
 			}
 		}
+
 		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
 		{
 			player->loseHealth(1);
@@ -359,17 +363,36 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			bullets.pop_back();
 			if (player->getHealth() <= 0)
 			{
-				Soldier temp = soldiers[1];
-				soldiers[0].setIsPlayer(false);
-				soldiers[1] = soldiers[0];
-				soldiers[0] = temp;
-				soldiers[0].setIsPlayer(true);
-				player = &soldiers[0];
+				if (soldiers.size() > 1)
+				{
+
+				}
+				else
+				{
+					//u lost xP
+				}
+				Soldier* temp = new Soldier(*soldiers[1]);
+				soldiers[0]->setIsPlayer(false);
+				delete soldiers[0];
+				soldiers[0] = nullptr;
+
+				delete soldiers[1];
+				soldiers[1] = nullptr;
+				soldiers[1] = soldiers.back();
+				soldiers.pop_back();
+
+				soldiers[0] = new Soldier(*temp);
+				soldiers[0]->setIsPlayer(true);
+				player = soldiers[0];
 				std::cout << "Switched\n";
 				player->setPosition(sf::Vector2f(100, 100));
+				
+				delete temp;
+				temp = nullptr;
 			}
 		}
-		if (npc.gotHit(*bullets[i]))
+
+		/*if (npc.gotHit(*bullets[i]))
 		{
 			npc.loseHealth(player->getDmg());
 			delete bullets[i];
@@ -379,11 +402,9 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			delete bullets.back();
 			bullets.back() = nullptr;
 			bullets.pop_back();
-			if (npc.getHealth() <= 0)
-			{
-				npc.setPosition(sf::Vector2f(-100, -100));
-			}
-		}
+
+			if (npc.getHealth() <= 0) npc.setPosition(sf::Vector2f(-100, -100));
+		}*/
 	}
 		
 	
@@ -402,13 +423,21 @@ void GameState::render(sf::RenderWindow& window)
 	{
 		for (int j = 0; j < tiles[i].size(); j++)
 		{
-			if (tiles[i][j] != nullptr)
-				tiles[i][j]->draw(window);
+			if (tiles[i][j] != nullptr) tiles[i][j]->draw(window);
 		}
 	}
-	for (int i = 0; i < 2; i++)
+
+	for (int i = 0; i < floor.size(); i++)
 	{
-		window.draw(soldiers[i]);
+		for (int j = 0; j < floor[i].size(); j++)
+		{
+			if (floor[i][j] != nullptr) floor[i][j]->draw(window);
+		}
+	}
+
+	for (int i = 0; i < soldiers.size(); i++)
+	{
+		window.draw(*soldiers[i]);
 	}
 
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
@@ -416,8 +445,6 @@ void GameState::render(sf::RenderWindow& window)
 		window.draw(enemies[i]);
 	}
 
-	window.draw(npc);
-	//window.draw(*player);
 	window.draw(cursor);
 	window.setView(camera);
 }
