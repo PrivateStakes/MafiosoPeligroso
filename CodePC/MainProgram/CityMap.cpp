@@ -42,13 +42,16 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
+
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && kms.getPosition().x > 365 && kms.getPosition().x < 575 
         && kms.getPosition().y > 470 && kms.getPosition().y < 750)
     {
         communicator.openMenu();
         commText1.setString(textBit(-1));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) communicator.closeMenu();
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) recruiter.closeMenu();
+
     if (communicator.yesOpen())
     {
         if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) && choice > 1) choice--;
@@ -61,6 +64,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
             && kms.getPosition().y > 1030 && kms.getPosition().y < 1050) choice = 3;
     }
+
     if (communicator.yesOpen() && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
         if (choice == 1)
@@ -77,6 +81,17 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         }
     }
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+    {
+        recruiter.openMenu();
+        randomCharacter();
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::I))
+    {
+        randomCharacter();
+    }
+
     return returnMessage;
 }
 
@@ -90,5 +105,12 @@ void CityMap::render(sf::RenderWindow& window)
         window.draw(commSprite);
         window.draw(commText1);
         window.draw(commText2);
+    }
+    if (recruiter.yesOpen())
+    {
+        window.draw(bodySprite);
+        window.draw(mouthSprite);
+        window.draw(faceSprite);
+        window.draw(hatSprite);
     }
 }

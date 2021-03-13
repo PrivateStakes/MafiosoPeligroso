@@ -1,11 +1,12 @@
 #pragma once
 #include "State.h"
 #include "Communication.h"
+#include "Recruitment.h"
 #include <ctime>
 
 class StateStack;
 
-class CityMap : public State, public Communication
+class CityMap : public State, public Communication, public Recruitment
 {
 private:
 	sf::Texture cityTexture;
@@ -19,6 +20,7 @@ private:
 	sf::Mouse kms;
 
 	Communication communicator;
+	Recruitment recruiter;
 
 	int returnMessage;
 
