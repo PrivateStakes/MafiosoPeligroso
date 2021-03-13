@@ -44,8 +44,8 @@ private:
 	const int tileSizeX = 30;
 	const int tileSizeY = 20;
 	
-	std::vector <std::vector<Tile*>> grid;
-	std::vector <std::vector<Tile*>> tiles;
+	std::vector <std::vector<Tile*>*> grid;
+	std::vector <std::vector<Tile*>*> tiles;
 
 	Tile* currentBrush;
 	std::unordered_map<TileSorts, std::unique_ptr<Tile>> tileCache;
@@ -66,7 +66,7 @@ public:
 	void render(sf::RenderWindow& window) override;
 	
 	int consoleMenu(bool pallete, int highestNumber);
-	bool hasClickedOnTile(int index_i, int index_j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window);
+	bool hasClickedOnTile(int index_i, int index_j, std::vector <std::vector<Tile*>*> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window);
 	bool writeLevel();
 	Tile* loadTile(TileSorts whichTile);
 

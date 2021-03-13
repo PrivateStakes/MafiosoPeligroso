@@ -73,6 +73,16 @@ StateStack::~StateStack()
 	}
 	delete[] states;
 
+	for (int i = 0; i < soldiers.size(); i++)
+	{
+		if (soldiers[i] != nullptr)
+		{
+			//delete soldiers[i];
+			soldiers[i] = nullptr;
+		}
+	}
+	soldiers.clear();
+
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
 	if (saveStream.is_open())
