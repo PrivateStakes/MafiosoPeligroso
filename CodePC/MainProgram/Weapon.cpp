@@ -1,36 +1,41 @@
 #include "Weapon.h"
 
-Weapon::Weapon(GunType gunType)
+//Weapon::Weapon(GunType gunType)
+//{
+//	switch (gunType)
+//	{
+//	case GunType::pistol:
+//		this->gunType = "Pistol";
+//		this->dmg = 3;
+//		this->reloadTime = 30;
+//		this->spreadMultiplier = 1;
+//		this->speed = 35.f;
+//		this->multiShot = false;
+//		break;
+//
+//	case GunType::shotgun:
+//		this->gunType = "Shotgun";
+//		this->dmg = 1;
+//		this->reloadTime = 60;
+//		this->spreadMultiplier = 0;
+//		this->speed = 25.f;
+//		this->multiShot = true;
+//		break;
+//
+//	case GunType::sniper:
+//		this->gunType = "Sniper";
+//		this->dmg = 5;
+//		this->reloadTime = 120;
+//		this->spreadMultiplier = 0;
+//		this->speed = 60.f;
+//		this->multiShot = false;
+//		break;
+//	}
+//}
+
+Weapon::Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed)
+	:dmg(dmg), reloadTime(reloadTime), spreadMultiplier(spreadMultiplier), ammo(ammo), speed(speed)
 {
-	switch (gunType)
-	{
-	case GunType::pistol:
-		this->gunType = "Pistol";
-		this->dmg = 3;
-		this->reloadTime = 30;
-		this->spreadMultiplier = 1;
-		this->speed = 35.f;
-		this->multiShot = false;
-		break;
-
-	case GunType::shotgun:
-		this->gunType = "Shotgun";
-		this->dmg = 1;
-		this->reloadTime = 60;
-		this->spreadMultiplier = 0;
-		this->speed = 25.f;
-		this->multiShot = true;
-		break;
-
-	case GunType::sniper:
-		this->gunType = "Sniper";
-		this->dmg = 5;
-		this->reloadTime = 120;
-		this->spreadMultiplier = 0;
-		this->speed = 60.f;
-		this->multiShot = false;
-		break;
-	}
 }
 
 Weapon::~Weapon()
@@ -40,6 +45,11 @@ Weapon::~Weapon()
 std::string Weapon::getGunType() const
 {
 	return this->gunType;
+}
+
+int Weapon::getMaxAmmo() const
+{
+	return this->ammo;
 }
 
 int Weapon::getDmg() const
@@ -56,6 +66,8 @@ int Weapon::getSpreadMultiplier() const
 {
 	return this->spreadMultiplier;
 }
+
+
 
 float Weapon::getSpeed() const
 {
