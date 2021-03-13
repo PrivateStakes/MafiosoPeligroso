@@ -49,9 +49,20 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         commText1.setString(textBit(-1));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) communicator.closeMenu();
-    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) && choice >1) choice--;
-    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) && choice <3) choice++;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
+    if (communicator.yesOpen())
+    {
+        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) && choice > 1) choice--;
+        else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) && choice < 3) choice++;
+
+        if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+            && kms.getPosition().y > 950 && kms.getPosition().y < 970) choice = 1;
+        else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+            && kms.getPosition().y > 990 && kms.getPosition().y < 1010) choice = 2;
+        else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+            && kms.getPosition().y > 1030 && kms.getPosition().y < 1050) choice = 3;
+        std::cout << kms.getPosition().x << " " << kms.getPosition().y << std::endl;
+    }
+    if (communicator.yesOpen() && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
         if (choice == 1)
         {
