@@ -9,7 +9,8 @@ Tile::Tile(std::string filename) :
 
 Tile::~Tile()
 {
-
+	previousNode = nullptr;
+	nextNode = nullptr;
 }
 
 void Tile::update(const float deltaTime)

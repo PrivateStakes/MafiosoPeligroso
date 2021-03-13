@@ -73,8 +73,8 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
-		std::vector<Tile*> tempGrid;
-		std::vector<Tile*> tempTiles;
+		std::vector<Tile*>* tempGrid = new std::vector<Tile*>;
+		std::vector<Tile*>* tempTiles = new std::vector<Tile*>;
 
 		std::string tileRow = "";
 		loadStream >> tileRow;
@@ -83,12 +83,12 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 
 		for (int j = 0; j < tileSizeX; j++)
 		{
-			tempGrid.push_back(new Tile("basic_tile.png"));
-			tempGrid.back()->setPosition({
-				(tempGrid.back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid.back()->getSprite().getGlobalBounds().width)),
-				(tempGrid.back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid.back()->getSprite().getGlobalBounds().height)) });
+			tempGrid->push_back(new Tile("basic_tile.png"));
+			tempGrid->back()->setPosition({
+				(tempGrid->back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid->back()->getSprite().getGlobalBounds().width)),
+				(tempGrid->back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid->back()->getSprite().getGlobalBounds().height)) });
 			
-			tempTiles.push_back(nullptr);
+			tempTiles->push_back(nullptr);
 			if (!loadEmptyLevel) 
 			{
 				std::locale loc;
@@ -98,8 +98,8 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 
 					if (saveFileInformation != -99 && saveFileInformation != '\0' && loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
 					{
-						tempTiles[j] = new Tile(*loadTile((TileSorts)(saveFileInformation - 48)));
-						tempTiles[j]->setPosition(tempGrid[j]->getPosition());
+						tempTiles->at(j) = new Tile(*loadTile((TileSorts)(saveFileInformation - 48)));
+						tempTiles->at(j)->setPosition(tempGrid->at(j)->getPosition());
 					}
 				}
 			}
@@ -116,21 +116,32 @@ EditorState::~EditorState()
 {
 	for (int i = 0; i < grid.size(); i++)
 	{
-		for (int j = 0; j < grid[i].size(); j++)
+		for (int j = 0; j < grid[i]->size(); j++)
 		{
-			delete grid[i][j];
-			grid[i][j] = nullptr;
+			if (grid[i]->at(j) != nullptr)
+			{
+				delete grid[i]->at(j);
+				grid[i]->at(j) = nullptr;
+			}
+			
 		}
+		grid[i]->clear();
 	}
+	grid.clear();
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		for (int j = 0; j < tiles[i].size(); j++)
+		for (int j = 0; j < tiles[i]->size(); j++)
 		{
-			delete tiles[i][j];
-			tiles[i][j] = nullptr;
+			if (tiles[i]->at(j) != nullptr)
+			{
+				delete tiles[i]->at(j);
+				tiles[i]->at(j) = nullptr;
+			}
 		}
+		tiles[i]->clear();
 	}
+	tiles.clear();
 
 	currentBrush = nullptr;
 	tileCache.clear();
@@ -152,17 +163,17 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	//Update all tiles
 	for (int i = 0; i < grid.size(); i++)
 	{
-		for (int j = 0; j < grid[i].size(); j++)
+		for (int j = 0; j < grid[i]->size(); j++)
 		{
-			grid[i][j]->update(deltaTime);
+			grid[i]->at(j)->update(deltaTime);
 		}
 	}
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		for (int j = 0; j < tiles[i].size(); j++)
+		for (int j = 0; j < tiles[i]->size(); j++)
 		{
-			if (tiles[i][j] != nullptr) tiles[i][j]->update(deltaTime);
+			if (tiles[i]->at(j) != nullptr) tiles[i]->at(j)->update(deltaTime);
 		}
 	}
 
@@ -210,31 +221,34 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		for (int i = 0; i < grid.size(); i++)
 		{
-			for (int j = 0; j < grid[i].size(); j++)
+			for (int j = 0; j < grid[i]->size(); j++)
 			{
-				if (tiles[i][j] == nullptr && hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
+				if (tiles[i] != nullptr)
 				{
-					tiles[i][j] = new Tile(*currentBrush);
-					tiles[i][j]->setPosition(grid[i][j]->getPosition());
-				}
-				else if (
-				(currentBrush->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || currentBrush->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint)) &&
-				hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
-				{
-					bool do_not_place = false;
-
-					if (tiles[i][j] != nullptr)
+					if (tiles[i]->at(j) == nullptr && hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
 					{
-						if (tiles[i][j]->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || tiles[i][j]->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint))
-						{
-							do_not_place = true;
-						}
+						tiles[i]->at(j) = new Tile(*currentBrush);
+						tiles[i]->at(j)->setPosition(grid[i]->at(j)->getPosition());
 					}
-					
-					if (!do_not_place)
+					else if (
+						(currentBrush->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || currentBrush->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint)) &&
+						hasClickedOnTile(i, j, grid, mouse.getPosition(window), window))
 					{
-						tiles[i][j] = new Tile(*currentBrush);
-						tiles[i][j]->setPosition(grid[i][j]->getPosition());
+						bool do_not_place = false;
+
+						if (tiles[i]->at(j) != nullptr)
+						{
+							if (tiles[i]->at(j)->getTileType() == intToLetter((int)TileSorts::enemySpawnPoint) || tiles[i]->at(j)->getTileType() == intToLetter((int)TileSorts::friendlySpawnPoint))
+							{
+								do_not_place = true;
+							}
+						}
+
+						if (!do_not_place)
+						{
+							tiles[i]->at(j) = new Tile(*currentBrush);
+							tiles[i]->at(j)->setPosition(grid[i]->at(j)->getPosition());
+						}
 					}
 				}
 			}
@@ -245,15 +259,14 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		for (size_t i = 0; i < tiles.size(); i++)
 		{
-			for (int j = 0; j < tiles[i].size(); j++)
+			for (int j = 0; j < tiles[i]->size(); j++)
 			{
-				if (tiles[i][j] != nullptr)
+				if (tiles[i]->at(j) != nullptr)
 				{
 					if (hasClickedOnTile(i, j, tiles, mouse.getPosition(window), window))
 					{
-						tiles[i][j] = tiles[i].back();
-						tiles[i].back() = nullptr;
-						//tiles[i].pop_back();
+						tiles[i]->at(j) = tiles[i]->back();
+						tiles[i]->back() = nullptr;
 					}
 				}
 			}
@@ -263,16 +276,16 @@ int EditorState::update(const float deltaTime, sf::RenderWindow& window)
 	return returnMessage;
 }
 
-bool EditorState::hasClickedOnTile(int i, int j, std::vector <std::vector<Tile*>> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window)
+bool EditorState::hasClickedOnTile(int i, int j, std::vector <std::vector<Tile*>*> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window)
 {
 	bool hasBeenClickedOn = false;
 	sf::Vector2i tilePos_high = window.mapCoordsToPixel(sf::Vector2f(
-		(inputTiles[i][j]->getPosition().x - (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2),
-		(inputTiles[i][j]->getPosition().y - (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2)));
+		(inputTiles[i]->at(j)->getPosition().x  - (inputTiles[i]->at(j)->getSprite().getLocalBounds().width  * inputTiles[i]->at(j)->getSprite().getScale().x) / 2),
+		(inputTiles[i]->at(j)->getPosition().y - (inputTiles[i]->at(j)->getSprite().getLocalBounds().height * inputTiles[i]->at(j)->getSprite().getScale().y) / 2)));
 
 	sf::Vector2i tilePos_low = window.mapCoordsToPixel(sf::Vector2f(
-		(inputTiles[i][j]->getPosition().x + (inputTiles[i][j]->getSprite().getLocalBounds().width * inputTiles[i][j]->getSprite().getScale().x) / 2),
-		(inputTiles[i][j]->getPosition().y + (inputTiles[i][j]->getSprite().getLocalBounds().height * inputTiles[i][j]->getSprite().getScale().y) / 2)));
+		(inputTiles[i]->at(j)->getPosition().x + (inputTiles[i]->at(j)->getSprite().getLocalBounds().width  * inputTiles[i]->at(j)->getSprite().getScale().x) / 2),
+		(inputTiles[i]->at(j)->getPosition().y + (inputTiles[i]->at(j)->getSprite().getLocalBounds().height * inputTiles[i]->at(j)->getSprite().getScale().y) / 2)));
 
 
 	if (tilePos_high.x < mousePos.x && tilePos_low.x > mousePos.x)
@@ -296,17 +309,17 @@ void EditorState::render(sf::RenderWindow& window)
 
 	for (int i = 0; i < grid.size(); i++)
 	{
-		for (int j = 0; j < grid[i].size(); j++)
+		for (int j = 0; j < grid[i]->size(); j++)
 		{
-			grid[i][j]->draw(window);
+			grid[i]->at(j)->draw(window);
 		}
 	}
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
-		for (int j = 0; j < tiles[i].size(); j++)
+		for (int j = 0; j < tiles[i]->size(); j++)
 		{
-			if (tiles[i][j] != nullptr) tiles[i][j]->draw(window);
+			if (tiles[i]->at(j) != nullptr) tiles[i]->at(j)->draw(window);
 		}
 	}
 
@@ -427,12 +440,12 @@ bool EditorState::writeLevel()
 	{
 		for (int i = 0; i < tiles.size(); i++)
 		{
-			for (int j = 0; j <= tiles[i].size(); j++)
+			for (int j = 0; j <= tiles[i]->size(); j++)
 			{
-				if (j == tiles[i].size()) saveStream << std::endl;
-				else if (tiles[i][j] != nullptr)
+				if (j == tiles[i]->size()) saveStream << std::endl;
+				else if (tiles[i]->at(j) != nullptr)
 				{
-					if (tiles[i][j]->getTileType() != '\0') saveStream << tiles[i][j]->getTileType();
+					if (tiles[i]->at(j)->getTileType() != '\0') saveStream << tiles[i]->at(j)->getTileType();
 				}
 				else saveStream << '0';
 			}

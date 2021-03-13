@@ -31,9 +31,9 @@ private:
 	std::string* currentFileName;
 	std::string currentDirectory = "../Saves/";
 	const int tileSizeX = 30;	//DO NOT CHANGE WÍTHOUT CHANGING IN EditorState.h AND REMOVING ALL SAVED LEVEL DATA!!
-	const int tileSizeY = 20;	// /\.. /\.. /\..
-	std::vector <std::vector<Tile*>> tiles;
-	std::vector <std::vector<Tile*>> floor;
+	const int tileSizeY = 20;	// /\__ /\__ /\__
+	std::vector <std::vector<Tile*>*> tiles;
+	std::vector <std::vector<Tile*>*> floor;
 
 
 	//Cursor + camera
@@ -46,12 +46,11 @@ private:
 	Soldier* player;
 	std::vector<Soldier*> soldiers;
 
-	sf::Vector2f* *enemySpawnPointArray;
+	sf::Vector2f** enemySpawnPointArray;
 	int amountOfEnemySpawnPoints;
 	int cap;
 	Soldier* enemies;
 	
-	///Bullet* bullets1 = nullptr; //<-- only 1 bulet? if so: make vector or something containing bullets, else: keep track of bullet quantity
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;
 

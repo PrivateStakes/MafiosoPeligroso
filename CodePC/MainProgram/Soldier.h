@@ -1,7 +1,8 @@
 #pragma once
 #include "GameEntity.h"
-#include "Weapon.h"
 #include "Bullet.h"
+
+class WeaponType;
 
 class Soldier : public GameEntity
 {
@@ -20,7 +21,7 @@ protected:
     bool isPlayer;
     bool reloading;
     sf::Vector2f inputDirection;
-    Weapon* currentWeapon;
+    WeaponType* currentWeapon;
 
 public:
     Soldier(std::string fileName = "character.png", std::string name = "joe", int health = 3);
@@ -28,6 +29,7 @@ public:
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
     void setID(int ID);
+    void setWeapon(WeaponType &sourceWeapon);
     bool getIsPlayer()const;
     bool isAbleToShoot()const;
     int getHealth()const;

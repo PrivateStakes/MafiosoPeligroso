@@ -1,12 +1,6 @@
+#pragma once
 #include <iostream>
 #include <cstring>
-
-enum class GunType
-{
-	pistol, 
-	shotgun,
-	sniper
-};
 
 class Weapon
 {
@@ -15,13 +9,15 @@ private:
 	int dmg;
 	int reloadTime;
 	int spreadMultiplier;
+	int ammo;
 	float speed;
 	bool multiShot;
 
 public:
-	Weapon(GunType gunType = GunType::pistol);
+	//Weapon(GunType gunType = GunType::pistol);
+	Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed);
 	~Weapon();
-
+	int getMaxAmmo()const;
 	std::string getGunType()const;
 	int getDmg()const;
 	int getReloadTime()const;

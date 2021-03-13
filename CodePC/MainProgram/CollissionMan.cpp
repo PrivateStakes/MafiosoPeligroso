@@ -22,22 +22,22 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect, char tileT
         if ((circle.getBounds().left - (rect.getBounds().left + rect.getBounds().width)) > -25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x + 0.4, circle.getPosition().y));
-            std::cout << "RIGHT\n";
+            //std::cout << "RIGHT\n";
         }
         else if (((circle.getBounds().left + circle.getBounds().width) - rect.getBounds().left) < 25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x - 0.4, circle.getPosition().y));
-            std::cout << "LEFT\n";
+            //std::cout << "LEFT\n";
         }
         else if (((circle.getBounds().top + circle.getBounds().height) - rect.getBounds().top) < 25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x, circle.getPosition().y - 0.4));
-            std::cout << "UP\n";
+            //std::cout << "UP\n";
         }
         else if ((circle.getBounds().top - (rect.getBounds().top + rect.getBounds().height)) > -25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x), circle.getPosition().y + 0.4));
-            std::cout << "DOWN\n";
+            //std::cout << "DOWN\n";
         }
         else
         {
@@ -51,22 +51,22 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect, char tileT
       if ((circle.getBounds().left - (rect.getBounds().left + rect.getBounds().width)) > -25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x + 0.4, circle.getPosition().y));
-            std::cout << "RIGHT\n";
+            //std::cout << "RIGHT\n";
         }
         else if (((circle.getBounds().left + circle.getBounds().width) - rect.getBounds().left) < 25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x - 0.4, circle.getPosition().y));
-            std::cout << "LEFT\n";
+            //std::cout << "LEFT\n";
         }
         else if (((circle.getBounds().top + circle.getBounds().height) - rect.getBounds().top) < 25)
         {
             circle.setPosition(sf::Vector2f(circle.getPosition().x, circle.getPosition().y - 0.4));
-            std::cout << "UP\n";
+            //std::cout << "UP\n";
         }
         else if ((circle.getBounds().top - (rect.getBounds().top + rect.getBounds().height)) > -25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x), circle.getPosition().y + 0.4));
-            std::cout << "DOWN\n";
+            //std::cout << "DOWN\n";
         }
         return true;
     }
