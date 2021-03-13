@@ -1,18 +1,20 @@
 #include "Soldier.h"
+#include "WeaponType.h"
 
 Soldier::Soldier(std::string fileName, std::string name, int health):
 	GameEntity(fileName),
 	health(health),
 	speed(5),
 	isPlayer(false),
-	reloading(false)
+	reloading(false),
+	currentWeapon(nullptr)
 {	
-	this->currentWeapon = new Weapon(GunType::pistol);
 }
 
 Soldier::~Soldier()
 {
-	//delete this->currentWeapon;
+	delete currentWeapon;
+	currentWeapon = nullptr;
 }
 
 void Soldier::loseHealth(int dmg)
@@ -28,6 +30,11 @@ void Soldier::setIsPlayer(bool state)
 void Soldier::setID(int ID)
 {
 	this->ID = ID;
+}
+
+void Soldier::setWeapon(WeaponType &sourceWeapon)
+{
+	currentWeapon = &sourceWeapon;
 }
 
 bool Soldier::getIsPlayer() const
