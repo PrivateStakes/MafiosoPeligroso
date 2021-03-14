@@ -29,7 +29,7 @@ public:
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
     void setID(int ID);
-    void setWeapon(WeaponType &sourceWeapon);
+    void setWeapon(WeaponType *sourceWeapon);
     bool getIsPlayer()const;
     bool isAbleToShoot()const;
     int getHealth()const;

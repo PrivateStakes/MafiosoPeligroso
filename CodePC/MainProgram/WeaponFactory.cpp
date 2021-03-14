@@ -2,20 +2,20 @@
 #include "Weapon.h"
 #include "WeaponType.h"
 
-WeaponType WeaponFactory::buildWeapon(GunType gunType)
+WeaponType* WeaponFactory::buildWeapon(GunType gunType)
 {
     switch (gunType)
     {
         case GunType::pistol:
-            return WeaponType(&pistolParent);
+            return new WeaponType(&pistolParent);
             break;
         
         case GunType::minigun:
-            return WeaponType(&minigunParent);
+            return new WeaponType(&minigunParent);
         	break;
         
         case GunType::sniper:
-            return WeaponType(&sniperParent);
+            return new WeaponType(&sniperParent);
             break;
     }
 }

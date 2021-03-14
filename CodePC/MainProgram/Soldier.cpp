@@ -32,9 +32,9 @@ void Soldier::setID(int ID)
 	this->ID = ID;
 }
 
-void Soldier::setWeapon(WeaponType &sourceWeapon)
+void Soldier::setWeapon(WeaponType *sourceWeapon)
 {
-	currentWeapon = &sourceWeapon;
+	currentWeapon = sourceWeapon;
 }
 
 bool Soldier::getIsPlayer() const
