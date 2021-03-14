@@ -1,0 +1,30 @@
+Mafia Dialogue
+
+The following is the dialogue spoken by the fellow with the cigar and the trenchcoat who's name is now "Colton Smith" because I want it to be.
+
+Dialogue spoken when greeting the player:
+
+"Got something to say cat?"
+
+The following is simply said when the talk option is selected:
+
+"Don't think just 'cause you bumped off the boss that you got it all figured out big six. Every rube in the city wants yer seat, the real test is keeping it."
+
+"You gotta take someone for a ride? Drop the evidence off at the Milson brother's place. Their pigs will eat anything."
+
+"The fuzz ain't no thing in this city, our erstwhile boss had that covered, now it's you who covers that expense *hur-hur-hur*."
+
+"Don't hire a man who can't look 'em in the eye when they pop 'em, can't trust a fink."
+
+"Used to be easy riding the Muddy Miss to the Cajun fer business. But their hooch turned to panther sweat, then to coffin varnish, now the fuzz won't let up."
+
+"Seen the Gams on Swanson in the picture show? Hot-damn if I could have those I'd be just ducky."
+
+"Don't ask me fer a smoke, can't stand a bushwa dewdropper."
+
+"Get yer fellas some o' those new electric windshield wipers. So they don't have to drive stick in the rain while operating their wipers with a lever and defogging the interior with their jacket sleeve. Lose a lotta good hooch otherwise."
+
+"The coat? Yeah, makes me look dangerous. Could have a chopper up my sleeve and you wouldn't see it coming! *hur-hur-hur-cough*."
+
+"Need to make a new run to the bayou, got too many dead soldiers lining the bar shelves."
+
