@@ -5,6 +5,8 @@
 #include "StateStack.h"
 #include "Player.h"
 #include "NPC.h"
+#include "WeaponFactory.h"
+#include "WeaponType.h"
 
 class StateStack;
 class Player;
@@ -50,6 +52,7 @@ private:
 	int amountOfEnemySpawnPoints;
 	int cap;
 	Soldier* enemies;
+	WeaponFactory weaponFactory;
 	
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;

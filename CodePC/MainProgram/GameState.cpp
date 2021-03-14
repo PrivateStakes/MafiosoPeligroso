@@ -42,6 +42,11 @@ currentFileName(level)
 
 	EditorState tempEditor(InputStateId, stateStack, level);
 
+	for (int i = 0; i < soldiers.size(); i++)
+	{
+		soldiers[i]->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+	}
+
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
@@ -126,7 +131,7 @@ currentFileName(level)
 		enemies[i].setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i].setID(stateStack.getID());
-		
+		enemies[i].setWeapon(weaponFactory.buildWeapon(GunType::pistol));
 	}
 }
 
@@ -317,6 +322,22 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				{
 					collideCheck = true;
 				}
+				for (int k = 0; k < bullets.size(); k++)
+				{
+					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'a'))
+					{
+						/*delete bullets[k];
+						bullets[k] = nullptr;
+						bullets[k] = new Bullet(*bullets.back());
+						if (bullets.back() != nullptr)
+						{
+							delete bullets.back();
+							bullets.back() = nullptr;
+						}
+						bullets.pop_back();*/
+					}
+					
+				}
 			}
 		}
 	}
@@ -334,18 +355,18 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	mouse.setPosition(sf::Vector2i(player->getPosition()), window);
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		bullets[i]->update(deltaTime);
+		if (bullets[i] != nullptr) bullets[i]->update(deltaTime);
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
 		bullets.push_back(new Bullet(player->shoot((cursor.getPosition() - player->getPosition()))));
-		if (bullets.size() > 100)
+		/*if (bullets.size() > 100)
 		{
 			delete bullets.back();
 			bullets.back() = nullptr;
 			bullets.pop_back();
-		}
+		}*/
 	}
 
 	for (int i = 0; i < bullets.size(); i++)
@@ -353,12 +374,16 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		bool deleteBullet = false;
 		for (int j = 0; j < amountOfEnemySpawnPoints; j++)
 		{
-			if (enemies[j].gotHit(*bullets[i]))
+			if (bullets.size() > 0 && i < bullets.size())
 			{
-				enemies[j].loseHealth(1);
-				deleteBullet = true;
-				if (enemies[j].getHealth() <= 0) enemies[j].setPosition(sf::Vector2f(-100, -100));
+				if (enemies[j].gotHit(*bullets[i]))
+				{
+					enemies[j].loseHealth(1);
+					deleteBullet = true;
+					if (enemies[j].getHealth() <= 0) enemies[j].setPosition(sf::Vector2f(-100, -100));
+				}
 			}
+			
 		}
 
 		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
@@ -383,7 +408,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 					soldiers[0] = new Soldier(*temp);
 					soldiers[0]->setIsPlayer(true);
 					player = soldiers[0];
-					std::cout << "Switched\n";
 					player->setPosition(sf::Vector2f(100, 100));
 
 					delete temp;
@@ -400,10 +424,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			delete bullets[i];
 			bullets[i] = nullptr;
-			bullets[i] = bullets.back();
-
-			delete bullets.back();
-			bullets.back() = nullptr;
+			bullets[i] = new Bullet(*bullets.back());
+			if (bullets.back() != nullptr)
+			{
+				delete bullets.back();
+				bullets.back() = nullptr;
+			}
 			bullets.pop_back();
 		}
 	}
@@ -430,7 +456,7 @@ void GameState::render(sf::RenderWindow& window)
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		window.draw(*bullets[i]);
+		if (bullets[i] != nullptr) window.draw(*bullets[i]);
 	}
 
 	for (int i = 0; i < soldiers.size(); i++)
