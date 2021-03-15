@@ -422,14 +422,20 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		if (deleteBullet)
 		{
-			delete bullets[i];
-			bullets[i] = nullptr;
-			bullets[i] = new Bullet(*bullets.back());
+			if (bullets[i] != bullets.back())
+			{
+				delete bullets[i];
+				bullets[i] = nullptr;
+				bullets[i] = new Bullet(*bullets.back());
+				
+			}
+
 			if (bullets.back() != nullptr)
 			{
 				delete bullets.back();
 				bullets.back() = nullptr;
 			}
+			
 			bullets.pop_back();
 		}
 	}

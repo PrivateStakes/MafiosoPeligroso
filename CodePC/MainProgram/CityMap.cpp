@@ -2,8 +2,9 @@
 #include "StateStack.h"
 #include <iostream>
 
-CityMap::CityMap(StateID InputStateId, StateStack& stateStack)
-    :State(InputStateId)
+CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy):
+    State(InputStateId),
+    soldiers(soliderHierarchy)
 {
    cityTexture.loadFromFile("../Images/citymap.png");
    citySprite.setTexture(cityTexture);
@@ -18,7 +19,6 @@ CityMap::CityMap(StateID InputStateId, StateStack& stateStack)
    blueSquareSprite.setScale(0.3, 0.5);
 
    srand(time(NULL));
-   
 }
 
 CityMap::~CityMap()
@@ -27,7 +27,7 @@ CityMap::~CityMap()
 
 int CityMap::update(const float deltaTime, sf::RenderWindow& window)
 {
-    returnMessage = 0;
+    int returnMessage = 0;
     if (choice == 1)
     {
         commText2.setString("SELECT:\n\nTALK<-\n\nATTACK\n\nCLOSE");
