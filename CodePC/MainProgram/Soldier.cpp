@@ -1,5 +1,6 @@
 #include "Soldier.h"
 #include "WeaponType.h"
+#include "Tile.h"
 
 Soldier::Soldier(std::string fileName, std::string name, int health):
 	GameEntity(fileName),
@@ -9,6 +10,16 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 	reloading(false),
 	currentWeapon(nullptr)
 {	
+	for (int i = 0; i < 100; i++)
+	{
+		std::vector<Tile*> tempNodes;
+
+		for (int j = 0; j < 100; j++)
+		{
+			tempNodes.push_back(nullptr);
+		}
+		nodes->push_back(&tempNodes);
+	}
 }
 
 Soldier::~Soldier()
@@ -162,4 +173,17 @@ void Soldier::update(const float deltaTime)
 {
 }
 
+std::vector<std::vector<Tile*>*>* Soldier::getNodes()
+{
+	return nodes;
+}
 
+void Soldier::addNode(int x, int y, Tile* inputNode)
+{
+	nodes->at(x)->at(y) = inputNode;
+}
+
+void Soldier::setNodes(std::vector <std::vector<Tile*>*>* inputNodes)
+{
+	nodes = inputNodes;
+}

@@ -9,7 +9,7 @@
 #include <sstream>
 #include <assert.h>
 
-GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soliderHierarchy) :
+GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soldierHierarchy) :
 State(InputStateId),
 width(stateStack.windowWidth),
 height(stateStack.windowHeight),
@@ -19,9 +19,9 @@ currentFileName(level)
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
 
-	for (int i = 0; i < soliderHierarchy.size(); i++)
+	for (int i = 0; i < soldierHierarchy.size(); i++)
 	{
-		soldiers.push_back(soliderHierarchy[i]);
+		soldiers.push_back(soldierHierarchy[i]);
 	}
 	
 	player = soldiers[0];
@@ -202,27 +202,31 @@ int GameState::backendUpdate()
 		int xOrigin;
 		int yOrigin;
 
-		distance;
-		visited;
-		preD;
-		minimum;
-
 
 		for (int i = 0; i < floor.size(); i++)
 		{
 			for (int j = 0; j < floor[i]->size(); j++)
 			{
+				floor[i]->at(j)->setVisitedByAlgorithm(false);
+
+				if (floor[i]->at(j)->getTravelDistance() == 0) floor[i]->at(j)->setTravelDistance(999999999);
+
 				if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[amountOfEnemySpawnPoints].getPosition()))
 				{
-					x = i;
-					y = j;
+					//floor[i]->at(j)->setVisitedByAlgorithm(true);
+					floor[i]->at(j)->setTravelDistance(0);
+					
+					xOrigin = i;
+					yOrigin = j;
 				}
 			}
 		}
 
-		xOrigin = x;
-		yOrigin = y;
+		x = xOrigin;
+		y = yOrigin;
 		
+
+
 		/*while (1)
 		{
 			int tempX;
