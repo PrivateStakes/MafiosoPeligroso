@@ -18,6 +18,7 @@ enum class TileSorts
 	enemySpawnPoint,	//c
 	friendlySpawnPoint,	//d
 	floor,				//e
+	brakeableWall,		//f
 	COUNT
 };
 
@@ -33,6 +34,7 @@ private:
 		"basic_tile3.png",
 		"basic_tile4.png",
 		"floor.png"
+		"brakeableWall.png"
 	};
 
 	std::vector<std::string> levels;
