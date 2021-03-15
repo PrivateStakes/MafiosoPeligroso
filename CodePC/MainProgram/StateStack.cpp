@@ -130,7 +130,7 @@ void StateStack::push(StateID id)
 
 		case StateID::CityMapState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this);
+			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this, soldiers);
 			break;
 		}
 	}

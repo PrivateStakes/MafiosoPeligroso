@@ -5,6 +5,7 @@
 #include <ctime>
 
 class StateStack;
+class Soldier;
 
 class CityMap : public State, public Communication, public Recruitment
 {

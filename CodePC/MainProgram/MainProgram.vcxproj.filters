@@ -18,6 +18,18 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CityMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CollissionMan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="EditorState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,7 +45,16 @@
     <ClCompile Include="MenuState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recruitment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Soldier.cpp">
@@ -51,32 +72,26 @@
     <ClCompile Include="Weapon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CollissionMan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CityMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Communication.cpp">
+    <ClCompile Include="WeaponFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WeaponType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recruitment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CityMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollissionMan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="EditorState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -89,7 +104,16 @@
     <ClInclude Include="MenuState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Recruitment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Soldier.h">
@@ -107,28 +131,10 @@
     <ClInclude Include="Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CollissionMan.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CityMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Communication.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WeaponType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Recruitment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

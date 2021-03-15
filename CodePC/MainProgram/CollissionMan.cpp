@@ -15,7 +15,7 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect, char tileT
     circleDistanceY = abs(circle.getBounds().top - rect.getBounds().top);
 
     if (circleDistanceX > (rect.getBounds().width/2 + circle.getBounds().width/2)) return hasCollided;
-    if (circleDistanceY > (rect.getBounds().height/2 + circle.getBounds().width/2)) return hasCollided;
+    if (circleDistanceY > (rect.getBounds().height/2 + circle.getBounds().height/2)) return hasCollided;
 
     if (circleDistanceY <= (rect.getBounds().width / 2) && rect.getTileType() == tileType);
     { 

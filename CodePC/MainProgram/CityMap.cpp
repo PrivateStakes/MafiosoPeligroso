@@ -1,6 +1,7 @@
 #include "CityMap.h"
 #include "StateStack.h"
 #include <iostream>
+#include "Soldier.h"
 
 CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy):
     State(InputStateId),
@@ -84,12 +85,21 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
     {
         recruiter.openMenu();
-        randomCharacter();
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::I))
+    if (recruiter.yesOpen())
     {
-        randomCharacter();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::I))
+        {
+            randomCharacter();
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) recruiter.closeMenu();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
+        {
+            recruit(deleteSoon);
+        }
     }
 
     return returnMessage;
