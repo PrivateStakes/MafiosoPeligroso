@@ -42,6 +42,7 @@ soldiers(soldierHierarchy)
 	//Arms soldiers
 	for (int i = 0; i < soldiers->size(); i++)
 	{
+		soldiers->at(i)->setWeapon(nullptr);
 		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
 	}
 
@@ -205,7 +206,6 @@ GameState::~GameState()
 
 int GameState::backendUpdate()	
 {
-
 	//do onnce every 2-3 seconds
 	for (int k = 0; k < amountOfEnemySpawnPoints; k++)
 	{
@@ -362,12 +362,12 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
-		//enemies[i].move();
+		enemies[i].move();
 		enemies[i].rotateSprite(player->getPosition());
-		/*if (enemies[i].isAbleToShoot())
+		if (enemies[i].isAbleToShoot())
 		{
-			bullets[amountOfBullets++] = new Bullet(enemies[i].shoot((player->getPosition() - enemies[i].getPosition())));
-		}*/
+			//bullets.push_back(new Bullet(enemies[i].shoot((soldiers->at(rand()%soldiers->size())->getPosition() - enemies[i].getPosition()))));
+		}
 	}
 
 	collideCheck = false;
@@ -382,19 +382,25 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				{
 					collideCheck = true;
 				}
+
 				for (int k = 0; k < bullets.size(); k++)
 				{
 					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'a'))
 					{
-						/*delete bullets[k];
-						bullets[k] = nullptr;
-						bullets[k] = new Bullet(*bullets.back());
-						if (bullets.back() != nullptr)
+						if (bullets[k] != bullets.back())
+						{
+							delete bullets[k];
+							bullets[k] = nullptr;
+							bullets[k] = new Bullet(*bullets.back());
+
+						}
+						else if (bullets.back() != nullptr)
 						{
 							delete bullets.back();
 							bullets.back() = nullptr;
 						}
-						bullets.pop_back();*/
+
+						bullets.pop_back();
 					}
 					
 				}
@@ -443,7 +449,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 					if (enemies[j].getHealth() <= 0) enemies[j].setPosition(sf::Vector2f(-100, -100));
 				}
 			}
-			
 		}
 
 		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
@@ -455,23 +460,22 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (soldiers->size() > 1)	//looks dangerous, if soldiers cause crashes: try popping the stack done proper
 				{
-					Soldier* temp = new Soldier(*soldiers->at(1));
 					soldiers->at(0)->setIsPlayer(false);
 					delete soldiers->at(0);
 					soldiers->at(0) = nullptr;
 
-					delete soldiers->at(1);
+					soldiers->at(0) = new Soldier(*soldiers->at(1));
 					soldiers->at(1) = nullptr;
-					soldiers->at(1) = soldiers->back();
-					soldiers->pop_back();
 
-					soldiers->at(0) = new Soldier(*temp);
+					if (soldiers->at(1) != soldiers->back())
+					{
+						soldiers->at(1) = new Soldier(*soldiers->back());
+						soldiers->back() = nullptr;
+					}
+					
+					soldiers->pop_back();
 					soldiers->at(0)->setIsPlayer(true);
 					player = soldiers->at(0);
-					player->setPosition(sf::Vector2f(100, 100));
-
-					delete temp;
-					temp = nullptr;
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
 			}
@@ -486,8 +490,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				bullets[i] = new Bullet(*bullets.back());
 				
 			}
-
-			if (bullets.back() != nullptr)
+			else if (bullets.back() != nullptr)
 			{
 				delete bullets.back();
 				bullets.back() = nullptr;
