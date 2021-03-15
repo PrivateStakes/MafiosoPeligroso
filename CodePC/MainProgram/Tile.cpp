@@ -5,6 +5,8 @@ Tile::Tile(std::string filename) :
 	texturePath(filename)
 {
 	tileType = 0;
+	travelDistance = 999999999;
+	visitedByAlgorithm = false;
 }
 
 Tile::~Tile()

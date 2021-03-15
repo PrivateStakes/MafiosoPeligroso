@@ -3,6 +3,7 @@
 #include "Bullet.h"
 
 class WeaponType;
+class Tile;
 
 class Soldier : public GameEntity
 {
@@ -22,6 +23,8 @@ protected:
     bool reloading;
     sf::Vector2f inputDirection;
     WeaponType* currentWeapon;
+
+    std::vector<std::vector<Tile*>*>* nodes;
 
 public:
     Soldier(std::string fileName = "character.png", std::string name = "joe", int health = 3);
@@ -44,4 +47,8 @@ public:
 
     // Inherited via GameEntity
     virtual void update(const float deltaTime) override;
+
+    std::vector<std::vector<Tile*>*>* getNodes();
+    void addNode(int positionX, int positionY, Tile*);
+    void setNodes(std::vector <std::vector<Tile*>*>* inputNodes);
 };

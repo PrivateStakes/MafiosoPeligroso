@@ -38,10 +38,7 @@ private:
 	std::vector <std::vector<Tile*>*> floor;
 	
 	//Pathfinding
-	std::vector<int> distance;
-	std::vector<int> visited;
-	std::vector<int> preD;
-	int minimum;
+
 
 	//Cursor + camera
 	sf::Sprite cursor;
@@ -65,7 +62,7 @@ private:
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soliderHierarchy);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soldierHierarchy);
 	~GameState() override;
 
 	int backendUpdate();
