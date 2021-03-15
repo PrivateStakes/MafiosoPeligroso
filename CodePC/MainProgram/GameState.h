@@ -36,7 +36,12 @@ private:
 	const int tileSizeY = 20;	// /\__ /\__ /\__
 	std::vector <std::vector<Tile*>*> tiles;
 	std::vector <std::vector<Tile*>*> floor;
-
+	
+	//Pathfinding
+	std::vector<int> distance;
+	std::vector<int> visited;
+	std::vector<int> preD;
+	int minimum;
 
 	//Cursor + camera
 	sf::Sprite cursor;
