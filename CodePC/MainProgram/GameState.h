@@ -48,7 +48,7 @@ private:
 
 	//Player + NPC
 	Soldier* player;
-	std::vector<Soldier*> soldiers;
+	std::vector<Soldier*>* soldiers;
 
 	sf::Vector2f** enemySpawnPointArray;
 	int amountOfEnemySpawnPoints;
@@ -62,10 +62,10 @@ private:
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soldierHierarchy);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy);
 	~GameState() override;
 
-	int backendUpdate();
+	int backendUpdate();	//non-deltaTime reliant code
 	int update(const float deltaTime, sf::RenderWindow& window) override;
 	void render(sf::RenderWindow& window) override;
 };

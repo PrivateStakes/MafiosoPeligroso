@@ -14,9 +14,9 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	windowWidth(inputWindowWidth),
 	windowHeight(inputWindowHeight)
 {
-	soldiers.push_back(new Soldier());
-	soldiers[0]->setIsPlayer(true);
-	soldiers[0]->setID(ID++);
+	soldiers->push_back(new Soldier());
+	soldiers->at(0)->setIsPlayer(true);
+	soldiers->at(0)->setID(ID++);
 
 	currentLevelIndex = 0;
 
@@ -73,15 +73,16 @@ StateStack::~StateStack()
 	}
 	delete[] states;
 
-	for (int i = 0; i < soldiers.size(); i++)
+	for (int i = 0; i < soldiers->size(); i++)
 	{
-		if (soldiers[i] != nullptr)
+		if (soldiers->at(i) != nullptr)
 		{
 			//delete soldiers[i];
-			soldiers[i] = nullptr;
+			soldiers->at(i) = nullptr;
 		}
 	}
-	soldiers.clear();
+	soldiers->clear();
+	soldiers = nullptr;
 
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
@@ -159,6 +160,10 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		if (states[stateQuantity] != nullptr)
 		{
+			if (states[stateQuantity]->getStateID() == StateID::GameState)
+			{
+				dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
+			}
 			int tempInt = states[stateQuantity]->update(deltaTime, window);
 
 			switch ((stateEvent)tempInt)
