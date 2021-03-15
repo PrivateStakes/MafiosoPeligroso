@@ -138,7 +138,7 @@ void Recruitment::randomCharacter()
 		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
 	}
 
-	temp = rand() % 3;
+	temp = rand() % 4;
 
 	updateText();
 }

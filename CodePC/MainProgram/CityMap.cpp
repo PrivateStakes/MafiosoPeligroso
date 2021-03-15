@@ -74,7 +74,17 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         }
         else if (choice == 2)
         {
-            returnMessage = (int)stateEvent::GameState;
+            std::cout << "How many soldiers do you want to send into combat? (You have " << soldiers.size() << " soldiers)\n";
+            std::cin >> temp;
+            if (temp <= soldiers.size() && temp > 0)
+            {
+                returnMessage = (int)stateEvent::GameState;
+            }
+            else
+            {
+                std::cout << "Not within area of selection Please insert something between 1 and " << soldiers.size() << std::endl;
+            }
+            
         }
         else if (choice == 3)
         {
@@ -98,8 +108,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
         {
-            tempVect.push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(deleteSoon), 3));
-            std::cout << tempVect.size() << std::endl;
+            soldiers.push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(deleteSoon), 3));
         }
     }
 
