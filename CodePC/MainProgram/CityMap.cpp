@@ -1,6 +1,7 @@
 #include "CityMap.h"
 #include "StateStack.h"
 #include <iostream>
+#include "Soldier.h"
 
 CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy):
     State(InputStateId),
