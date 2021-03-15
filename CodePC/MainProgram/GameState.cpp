@@ -405,7 +405,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 						deleteBullet = true;
 						if (tiles[i]->at(j)->getTileType() == 'f')
 						{
-							tiles[i]->at(j)->setHP(1);
+							tiles[i]->at(j)->setHP(bullets[k]->getDamage());
 							if (tiles[i]->at(j)->getHP() <= 0)
 							{
 								floor[i]->at(j) = new Tile(*tempEditor->loadTile(TileSorts::floor));
@@ -476,7 +476,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (enemies[j].gotHit(*bullets[i]) && bullets[i]->getID() != enemies[j].getID())
 				{
-					enemies[j].loseHealth(1);
+					enemies[j].loseHealth(bullets[i]->getDamage());
 					deleteBullet = true;
 					if (enemies[j].getHealth() <= 0) enemies[j].setPosition(sf::Vector2f(-100, -100));
 				}
@@ -485,7 +485,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
 		{
-			player->loseHealth(1);
+			player->loseHealth(bullets[i]->getDamage());
 			deleteBullet = true;
 
 			if (player->getHealth() <= 0)

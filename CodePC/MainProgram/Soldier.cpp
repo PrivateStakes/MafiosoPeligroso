@@ -157,7 +157,7 @@ Bullet Soldier::shoot(sf::Vector2f direction)
 
 	this->reloading = true;
 
-	return Bullet(rotation, direction, this->sprite.getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
+	return Bullet(rotation, direction, this->getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
 }
 
 void Soldier::update(const float deltaTime)
