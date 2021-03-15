@@ -33,8 +33,8 @@ private:
 	//Level loading
 	std::string* currentFileName;
 	std::string currentDirectory = "../Saves/";
-	const int tileSizeX = 30;	//DO NOT CHANGE WÍTHOUT CHANGING IN EditorState.h AND REMOVING ALL SAVED LEVEL DATA!!
-	const int tileSizeY = 20;	// /\__ /\__ /\__
+	int tileSizeX;
+	int tileSizeY;
 	std::vector <std::vector<Tile*>*> tiles;
 	std::vector <std::vector<Tile*>*> floor;
 	

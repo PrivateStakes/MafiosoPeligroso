@@ -79,22 +79,22 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect, char tileT
         if ((circle.getBounds().left - (rect.getBounds().left + rect.getBounds().width)) > -25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x + 0.2), circle.getPosition().y));
-            std::cout << "RIGHT\n";
+            //std::cout << "RIGHT\n";
         }
         else if (((circle.getBounds().left + circle.getBounds().width) - rect.getBounds().left) < 25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x - 0.2), circle.getPosition().y));
-            std::cout << "LEFT\n";
+            //std::cout << "LEFT\n";
         }
         else if (((circle.getBounds().top + circle.getBounds().height) - rect.getBounds().top) < 25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x), circle.getPosition().y - 0.2));
-            std::cout << "UP\n";
+            //std::cout << "UP\n";
         }
         else if ((circle.getBounds().top - (rect.getBounds().top + rect.getBounds().height)) > -25)
         {
             circle.setPosition(sf::Vector2f((circle.getPosition().x), circle.getPosition().y + 0.2));
-            std::cout << "DOWN\n";
+            //std::cout << "DOWN\n";
         }
         return true;
     }
@@ -105,22 +105,21 @@ bool CollissionMan::intersectCircRect(GameEntity& circle, Tile& rect, char tileT
 bool CollissionMan::intersectCircCirc(GameEntity& circle1, GameEntity& circle2)
 {
     return (pow(((circle2.getBounds().left + (circle2.getBounds().width / 2)) - (circle1.getBounds().left + (circle1.getBounds().width) / 2)), 2) +
-        pow(((circle1.getBounds().top + (circle1.getBounds().height / 2)) - (circle2.getBounds().top + (circle2.getBounds().height) / 2)), 2) <=
-        pow((circle1.getBounds().height / 2) + (circle2.getBounds().height / 2), 2));
+            pow(((circle1.getBounds().top + (circle1.getBounds().height / 2)) - (circle2.getBounds().top + (circle2.getBounds().height) / 2)), 2) <=
+            pow((circle1.getBounds().height / 2) + (circle2.getBounds().height / 2), 2));
 }
 
 bool CollissionMan::intersectRectPoint(Tile& rect, sf::Vector2f point)
 {
     sf::Vector2i tilePos_high(
-        (rect.getPosition().x - (rect.getSprite().getLocalBounds().width * rect.getSprite().getScale().x) / 2),
-        (rect.getPosition().y - (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2));
+        (rect.getPosition().x - (rect.getSprite().getGlobalBounds().width / 2)),
+        (rect.getPosition().y - (rect.getSprite().getGlobalBounds().height / 2)));
 
     sf::Vector2i tilePos_low(
-        (rect.getPosition().x + (rect.getSprite().getLocalBounds().width * rect.getSprite().getScale().x) / 2),
-        (rect.getPosition().y + (rect.getSprite().getLocalBounds().height * rect.getSprite().getScale().y) / 2));
+        (rect.getPosition().x + (rect.getSprite().getGlobalBounds().width / 2)),
+        (rect.getPosition().y + (rect.getSprite().getGlobalBounds().height / 2)));
 
-
-    return ((tilePos_high.x < point.x&& tilePos_low.x > point.x) && (tilePos_high.y < point.y&& tilePos_low.y > point.y));
+    return ((tilePos_high.x < point.x && tilePos_low.x > point.x) && (tilePos_high.y < point.y && tilePos_low.y > point.y));
 }
 
 

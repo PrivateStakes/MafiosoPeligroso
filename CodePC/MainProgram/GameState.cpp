@@ -15,14 +15,15 @@ width(stateStack.windowWidth),
 height(stateStack.windowHeight),
 currentFileName(level),
 soldiers(soldierHierarchy)
-
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
 	tempEditor = new EditorState(InputStateId, stateStack, level);
-	
+	tileSizeX = tempEditor->getGridSizeX();
+	tileSizeY = tempEditor->getGridSizeY();
+
 	player = soldiers->at(0);
 	float temp = 0.f;
 	texture.loadFromFile("../Images/cursor.png");
@@ -212,14 +213,14 @@ int GameState::backendUpdate()
 	//do onnce every 2-3 seconds
 	for (int k = 0; k < amountOfEnemySpawnPoints; k++)
 	{
-		int x;
-		int y;
+		int x = 0;
+		int y = 0;
 
-		int xOrigin;
-		int yOrigin;
+		int xOrigin = 0;
+		int yOrigin = 0;
 
-		int xTarget;
-		int yTarget;
+		int xTarget = 0;
+		int yTarget = 0;
 
 		for (int i = 0; i < floor.size(); i++)
 		{
@@ -227,7 +228,7 @@ int GameState::backendUpdate()
 			{
 				if (floor[i]->at(j) != nullptr)
 				{
-					floor[i]->at(j)->setVisitedByAlgorithm(false);
+					//floor[i]->at(j)->setVisitedByAlgorithm(false);
 
 					if (floor[i]->at(j)->getTravelDistance() == 0) floor[i]->at(j)->setTravelDistance(999999999);
 
@@ -235,6 +236,7 @@ int GameState::backendUpdate()
 					{
 						floor[i]->at(j)->setVisitedByAlgorithm(true);
 						floor[i]->at(j)->setTravelDistance(0);
+						floor[i]->at(j)->setColour(sf::Color::Green); //<---------------
 
 						xOrigin = i;
 						yOrigin = j;
@@ -254,12 +256,12 @@ int GameState::backendUpdate()
 		*/
 
 		//if this tanks framerate, change to using the 'backendUpdate' function for looping -- make the below code part of an if-statement
-		bool allNodesVisited = true;
-		while (!allNodesVisited)
+		bool done = false;
+		/*while (!done)
 		{
 			x = xOrigin;
 			y = yOrigin;
-			allNodesVisited = true;
+			done = true;
 
 			for (int i = 0; i < floor.size(); i++)
 			{
@@ -267,15 +269,12 @@ int GameState::backendUpdate()
 				{
 					if (floor[i]->at(j) != nullptr)
 					{
-						if (floor[i]->at(j)->getVisitedByAlgorithm() == false) allNodesVisited = false;
+						if (floor[i]->at(j)->getVisitedByAlgorithm() == false) done = false;
 						else floor[i]->at(j)->setColour(sf::Color::Green);
 					}
 				}
 			}
-		}
-
-		
-		
+		}*/
 
 
 
@@ -541,6 +540,8 @@ void GameState::render(sf::RenderWindow& window)
 		for (int j = 0; j < floor[i]->size(); j++)
 		{
 			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'e') floor[i]->at(j)->draw(window);
+			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'c') floor[i]->at(j)->draw(window);
+			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'd') floor[i]->at(j)->draw(window);
 		}
 	}
 
