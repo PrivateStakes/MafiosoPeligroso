@@ -21,6 +21,11 @@ int Bullet::getID() const
 	return this->ID;
 }
 
+int Bullet::getDamage() const
+{
+	return this->dmg;
+}
+
 sf::FloatRect Bullet::getBounds() const
 {
 	return this->sprite.getGlobalBounds();
