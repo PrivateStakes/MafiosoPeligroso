@@ -53,8 +53,9 @@ private:
 
 	sf::Vector2f** enemySpawnPointArray;
 	int amountOfEnemySpawnPoints;
+	int enemyAmount;
 	int cap;
-	Soldier* enemies;
+	Soldier* *enemies;
 	WeaponFactory weaponFactory;
 	EditorState* tempEditor;
 	

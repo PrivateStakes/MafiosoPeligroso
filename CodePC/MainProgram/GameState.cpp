@@ -129,7 +129,7 @@ soldiers(soldierHierarchy)
 		}
 	}
 	loadStream.close();
-	enemies = new Soldier[amountOfEnemySpawnPoints];
+	enemies = new Soldier*[amountOfEnemySpawnPoints];
 
 	//Generates enemies
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
@@ -140,11 +140,13 @@ soldiers(soldierHierarchy)
 		else tempTexture = "evil_character_2.png";
 
 		//enemies[i] = Soldier(tempTexture, "Joe", 2);
-		enemies[i].setPosition(*enemySpawnPointArray[i]);
+		enemies[i] = new Soldier();
+		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
-		enemies[i].setID(stateStack.getID());
-		enemies[i].setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		enemies[i]->setID(stateStack.getID());
+		enemies[i]->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
 	}
+	enemyAmount = amountOfEnemySpawnPoints;
 }
 
 GameState::~GameState()
@@ -231,7 +233,7 @@ int GameState::backendUpdate()
 
 					if (floor[i]->at(j)->getTravelDistance() == 0) floor[i]->at(j)->setTravelDistance(999999999);
 
-					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[amountOfEnemySpawnPoints].getPosition()))
+					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[amountOfEnemySpawnPoints]->getPosition()))
 					{
 						floor[i]->at(j)->setVisitedByAlgorithm(true);
 						floor[i]->at(j)->setTravelDistance(0);
@@ -363,17 +365,17 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	player->rotateSprite(cursor.getPosition());
 
-	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+	for (int i = 0; i < enemyAmount; i++)
 	{
-		enemies[i].move();
-		if (enemies[i].isAbleToShoot())
+		enemies[i]->move();
+		if (enemies[i]->isAbleToShoot())
 		{
 			for (int j = 0; j < soldiers->size(); j++)
 			{
-				if (abs(enemies[i].getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i].getPosition().y - soldiers->at(j)->getPosition().y) < 100)
+				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 100)
 				{
-					enemies[i].rotateSprite(soldiers->at(j)->getPosition());
-					bullets.push_back(new Bullet(enemies[i].shoot((soldiers->at(j)->getPosition() - enemies[i].getPosition()))));
+					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
+					bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
 				}
 			}
 			
@@ -470,15 +472,23 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	for (int i = 0; i < bullets.size(); i++)
 	{
 		bool deleteBullet = false;
-		for (int j = 0; j < amountOfEnemySpawnPoints; j++)
+		for (int j = 0; j < enemyAmount; j++)
 		{
 			if (bullets.size() > 0 && i < bullets.size())
 			{
-				if (enemies[j].gotHit(*bullets[i]) && bullets[i]->getID() != enemies[j].getID())
+				if (enemies[j]->gotHit(*bullets[i]) && bullets[i]->getID() != enemies[j]->getID())
 				{
-					enemies[j].loseHealth(bullets[i]->getDamage());
+					enemies[j]->loseHealth(bullets[i]->getDamage());
 					deleteBullet = true;
-					if (enemies[j].getHealth() <= 0) enemies[j].setPosition(sf::Vector2f(-100, -100));
+					if (enemies[j]->getHealth() <= 0)
+					{
+						delete enemies[j];
+						if (enemyAmount > 1 && j != enemyAmount-1)
+						{
+							enemies[j] = enemies[enemyAmount - 1];
+						}
+						enemyAmount--;
+					}
 				}
 			}
 		}
@@ -562,9 +572,9 @@ void GameState::render(sf::RenderWindow& window)
 		window.draw(*soldiers->at(i));
 	}
 
-	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+	for (int i = 0; i < enemyAmount; i++)
 	{
-		window.draw(enemies[i]);
+		window.draw(*enemies[i]);
 	}
 
 	window.draw(cursor);
