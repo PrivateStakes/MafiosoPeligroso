@@ -23,7 +23,7 @@ private:
 	Communication communicator;
 	Recruitment recruiter;
 
-	std::vector<Soldier*> soldiers;
+	std::vector<Soldier*>* soldiers;
 
 public:
 	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy);
