@@ -87,19 +87,58 @@ void Recruitment::randomCharacter()
 	{
 		name = "Jörgen";
 	}
+	else if (temp == 1)
+	{
+		name = "Morgan";
+	}
+	else if (temp == 2)
+	{
+		name = "Josef";
+	}
+	else if (temp == 3)
+	{
+		name = "Sten";
+	}
 
-	age = rand()%80 + 10;
+	age = rand()%60 + 14;
 
 	temp = rand() % 4;
 	if (temp == 0)
 	{
 		occupation = "Blacksmith";
 	}
+	else if (temp == 1)
+	{
+		occupation = "Doctor";
+	}
+	else if (temp == 2)
+	{
+		occupation = "Author";
+	}
+	else if (temp == 3)
+	{
+		occupation = "Teacher";
+	}
+
 	temp = rand() % 4;
 	if (temp == 0)
 	{
-		backstory = "His wife left \nhim for some other guy. \n\nso he left his old life \nto hunt her down";
+		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
 	}
+	else if (temp == 1)
+	{
+		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+	}
+	else if (temp == 2)
+	{
+		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+	}
+	else if (temp == 3)
+	{
+		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+	}
+
+	temp = rand() % 3;
 
 	updateText();
 }

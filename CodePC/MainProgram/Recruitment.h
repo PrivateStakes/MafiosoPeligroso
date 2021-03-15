@@ -28,12 +28,13 @@ protected:
 
 	bool isOpen;
 	int deleteSoon;
+	int temp;
 private:
 	std::string name;
 	int age;
 	std::string occupation;
 	std::string backstory;
-	int temp;
+	
 	
 
 public:
