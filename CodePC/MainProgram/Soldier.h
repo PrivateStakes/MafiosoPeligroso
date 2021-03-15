@@ -27,7 +27,7 @@ protected:
     std::vector<std::vector<Tile*>*>* nodes;
 
 public:
-    Soldier(std::string fileName = "character.png", std::string name = "joe", int health = 3);
+    Soldier(std::string fileName = "character_1.png", std::string name = "joe", int health = 3);
     ~Soldier();
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
