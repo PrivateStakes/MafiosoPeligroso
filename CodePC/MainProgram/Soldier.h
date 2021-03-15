@@ -24,7 +24,7 @@ protected:
     sf::Vector2f inputDirection;
     WeaponType* currentWeapon;
 
-    std::vector<std::vector<Tile*>*>* nodes;
+    std::vector<Tile*> nodes;
 
 public:
     Soldier(std::string fileName = "character_1.png", std::string name = "joe", int health = 3);
@@ -48,7 +48,8 @@ public:
     // Inherited via GameEntity
     virtual void update(const float deltaTime) override;
 
-    std::vector<std::vector<Tile*>*>* getNodes();
-    void addNode(int positionX, int positionY, Tile*);
-    void setNodes(std::vector <std::vector<Tile*>*>* inputNodes);
+    std::vector<Tile*>& getNodes();
+    void addNode(Tile*);
+    void setNodes(std::vector<Tile*>& inputNodes);
+    void emplaceNode(int previousNode, Tile*); //place node after given position
 };

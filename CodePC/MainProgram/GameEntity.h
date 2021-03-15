@@ -30,5 +30,6 @@ public:
 	void setPosition(sf::Vector2f position);
 	sf::Vector2f getPosition();
 
+	void setColour(sf::Color);
 };
 

@@ -9,7 +9,7 @@
 #include <sstream>
 #include <assert.h>
 
-GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>& soldierHierarchy) :
+GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy) :
 State(InputStateId),
 width(stateStack.windowWidth),
 height(stateStack.windowHeight),
@@ -20,12 +20,13 @@ currentFileName(level)
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
 
-	for (int i = 0; i < soldierHierarchy.size(); i++)
+	//Copies soldiers
+	for (int i = 0; i < soldierHierarchy->size(); i++)
 	{
-		soldiers.push_back(soldierHierarchy[i]);
+		soldiers->push_back(soldierHierarchy->at(i));
 	}
 	
-	player = soldiers[0];
+	player = soldiers->at(0);
 	float temp = 0.f;
 	texture.loadFromFile("../Images/cursor.png");
 	cursor.setTexture(texture);
@@ -43,9 +44,10 @@ currentFileName(level)
 
 	EditorState tempEditor(InputStateId, stateStack, level);
 
-	for (int i = 0; i < soldiers.size(); i++)
+	//Arms soldiers
+	for (int i = 0; i < soldiers->size(); i++)
 	{
-		soldiers[i]->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
 	}
 
 	//Loads level data
@@ -94,10 +96,16 @@ currentFileName(level)
 
 							delete[] enemySpawnPointArray;
 							enemySpawnPointArray = temp;
+
+							for (int i = 0; i < amountOfEnemySpawnPoints; i++)
+							{
+								temp[i] = nullptr;
+							}
 							temp = nullptr;
 						}
 					}
-					else if (tempTile.getTileType() == 'e')
+					
+					if (tempTile.getTileType() == 'e' || tempTile.getTileType() == 'c' || tempTile.getTileType() == 'd')
 					{
 						addTile = false;
 
@@ -127,11 +135,15 @@ currentFileName(level)
 	loadStream.close();
 	enemies = new Soldier[amountOfEnemySpawnPoints];
 
+	//Generates enemies
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
 		int whichTexture = rand() % 2;
+		std::string tempTexture;
+		if (whichTexture == 1) tempTexture = "evil_character_1.png";
+		else tempTexture = "evil_character_2.png";
 
-		//enemies[i] = new Soldier();
+		//enemies[i] = Soldier(tempTexture, "Joe", 2);
 		enemies[i].setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i].setID(stateStack.getID());
@@ -186,18 +198,20 @@ GameState::~GameState()
 	}
 	floor.clear();
 
-	while (soldiers.size() > 0)
+	/*while (soldiers->size() > 0)
 	{
 		//delete soldiers[soldiers.size() - 1];
-		soldiers[soldiers.size() - 1] = nullptr;
-		soldiers.pop_back();
-	}
-	//soldiers.clear();
+		soldiers->at(soldiers->size() - 1) = nullptr;
+		soldiers->pop_back();
+	}*/
+	soldiers = nullptr;
 	player = nullptr;
 }
 
-int GameState::backendUpdate()
+int GameState::backendUpdate()	
 {
+
+	//do onnce every 2-3 seconds
 	for (int k = 0; k < amountOfEnemySpawnPoints; k++)
 	{
 		int x;
@@ -206,29 +220,66 @@ int GameState::backendUpdate()
 		int xOrigin;
 		int yOrigin;
 
+		int xTarget;
+		int yTarget;
 
 		for (int i = 0; i < floor.size(); i++)
 		{
 			for (int j = 0; j < floor[i]->size(); j++)
 			{
-				floor[i]->at(j)->setVisitedByAlgorithm(false);
-
-				if (floor[i]->at(j)->getTravelDistance() == 0) floor[i]->at(j)->setTravelDistance(999999999);
-
-				if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[amountOfEnemySpawnPoints].getPosition()))
+				if (floor[i]->at(j) != nullptr)
 				{
-					//floor[i]->at(j)->setVisitedByAlgorithm(true);
-					floor[i]->at(j)->setTravelDistance(0);
-					
-					xOrigin = i;
-					yOrigin = j;
+					floor[i]->at(j)->setVisitedByAlgorithm(false);
+
+					if (floor[i]->at(j)->getTravelDistance() == 0) floor[i]->at(j)->setTravelDistance(999999999);
+
+					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[amountOfEnemySpawnPoints].getPosition()))
+					{
+						floor[i]->at(j)->setVisitedByAlgorithm(true);
+						floor[i]->at(j)->setTravelDistance(0);
+
+						xOrigin = i;
+						yOrigin = j;
+					}
+
+					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), soldiers->at(0)->getPosition()))
+					{
+						xTarget = i;
+						yTarget = j;
+					}
 				}
 			}
 		}
 
-		x = xOrigin;
-		y = yOrigin;
+		/*
+		Consider adding an x and y locally to each tile, making them aware of their own position
+		*/
+
+		//if this tanks framerate, change to using the 'backendUpdate' function for looping -- make the below code part of an if-statement
+		bool allNodesVisited = true;
+		while (!allNodesVisited)
+		{
+			x = xOrigin;
+			y = yOrigin;
+			allNodesVisited = true;
+
+			for (int i = 0; i < floor.size(); i++)
+			{
+				for (int j = 0; j < floor[i]->size(); j++)
+				{
+					if (floor[i]->at(j) != nullptr)
+					{
+						if (floor[i]->at(j)->getVisitedByAlgorithm() == false) allNodesVisited = false;
+						else floor[i]->at(j)->setColour(sf::Color::Green);
+					}
+				}
+			}
+		}
+
 		
+		
+
+
 
 
 		/*while (1)
@@ -307,9 +358,9 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		mouseVisability = false;
 	}
 
-	for (int i = 1; i < soldiers.size(); i++)
+	for (int i = 1; i < soldiers->size(); i++)
 	{
-		soldiers[i]->move();
+		soldiers->at(i)->move();
 	}
 
 	player->rotateSprite(cursor.getPosition());
@@ -407,30 +458,27 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 			if (player->getHealth() <= 0)
 			{
-				if (soldiers.size() > 1)
+				if (soldiers->size() > 1)	//looks dangerous, if soldiers cause crashes: try popping the stack done proper
 				{
-					Soldier* temp = new Soldier(*soldiers[1]);
-					soldiers[0]->setIsPlayer(false);
-					delete soldiers[0];
-					soldiers[0] = nullptr;
+					Soldier* temp = new Soldier(*soldiers->at(1));
+					soldiers->at(0)->setIsPlayer(false);
+					delete soldiers->at(0);
+					soldiers->at(0) = nullptr;
 
-					delete soldiers[1];
-					soldiers[1] = nullptr;
-					soldiers[1] = soldiers.back();
-					soldiers.pop_back();
+					delete soldiers->at(1);
+					soldiers->at(1) = nullptr;
+					soldiers->at(1) = soldiers->back();
+					soldiers->pop_back();
 
-					soldiers[0] = new Soldier(*temp);
-					soldiers[0]->setIsPlayer(true);
-					player = soldiers[0];
+					soldiers->at(0) = new Soldier(*temp);
+					soldiers->at(0)->setIsPlayer(true);
+					player = soldiers->at(0);
 					player->setPosition(sf::Vector2f(100, 100));
 
 					delete temp;
 					temp = nullptr;
 				}
-				else
-				{
-					returnMessage = (int)stateEvent::ExitGame;
-				}
+				else returnMessage = (int)stateEvent::ExitGame;
 			}
 		}
 
@@ -458,14 +506,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 void GameState::render(sf::RenderWindow& window)
 {
-	for (int i = 0; i < tiles.size(); i++)
-	{
-		for (int j = 0; j < tiles[i]->size(); j++)
-		{
-			if (tiles[i]->at(j) != nullptr) tiles[i]->at(j)->draw(window);
-		}
-	}
-
 	for (int i = 0; i < floor.size(); i++)
 	{
 		for (int j = 0; j < floor[i]->size(); j++)
@@ -474,14 +514,22 @@ void GameState::render(sf::RenderWindow& window)
 		}
 	}
 
+	for (int i = 0; i < tiles.size(); i++)
+	{
+		for (int j = 0; j < tiles[i]->size(); j++)
+		{
+			if (tiles[i]->at(j) != nullptr) tiles[i]->at(j)->draw(window);
+		}
+	}
+
 	for (int i = 0; i < bullets.size(); i++)
 	{
 		if (bullets[i] != nullptr) window.draw(*bullets[i]);
 	}
 
-	for (int i = 0; i < soldiers.size(); i++)
+	for (int i = 0; i < soldiers->size(); i++)
 	{
-		window.draw(*soldiers[i]);
+		window.draw(*soldiers->at(i));
 	}
 
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)

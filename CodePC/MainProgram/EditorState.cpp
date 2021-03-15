@@ -59,6 +59,7 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 			{
 				levels.push_back(tileRow);
 				std::cout << levels[i] << std::endl;
+				//printf("%s\n", levels[i]);
 			}
 			else break;
 			i++;

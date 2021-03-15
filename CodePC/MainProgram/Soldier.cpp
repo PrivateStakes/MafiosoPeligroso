@@ -10,19 +10,7 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 	reloading(false),
 	currentWeapon(nullptr)
 {	
-	nodes = nullptr;
-	nodes = new std::vector<std::vector<Tile*>*>;
 
-	for (int i = 0; i < 100; i++)
-	{
-		std::vector<Tile*> tempNodes;
-
-		for (int j = 0; j < 100; j++)
-		{
-			tempNodes.push_back(nullptr);
-		}
-		nodes->push_back((new std::vector<Tile*>(tempNodes)));
-	}
 }
 
 Soldier::~Soldier()
@@ -176,17 +164,36 @@ void Soldier::update(const float deltaTime)
 {
 }
 
-std::vector<std::vector<Tile*>*>* Soldier::getNodes()
+std::vector<Tile*> &Soldier::getNodes()
 {
 	return nodes;
 }
 
-void Soldier::addNode(int x, int y, Tile* inputNode)
+void Soldier::addNode(Tile* inputNode)
 {
-	nodes->at(x)->at(y) = inputNode;
+	nodes.push_back(inputNode);
 }
 
-void Soldier::setNodes(std::vector <std::vector<Tile*>*>* inputNodes)
+void Soldier::emplaceNode(int previousNode, Tile* inputNode)
+{
+
+	for (int i = previousNode; i < nodes.size(); i++)
+	{
+		if (previousNode != 0)
+		{
+			Tile tempTile = *nodes[i];
+			delete nodes[i];
+			nodes[i] = nullptr;
+			nodes.pop_back();
+
+			nodes.push_back(new Tile(tempTile));
+		}
+		
+		if (i == previousNode) nodes.push_back(inputNode);
+	}
+}
+
+void Soldier::setNodes(std::vector<Tile*> &inputNodes)
 {
 	nodes = inputNodes;
 }

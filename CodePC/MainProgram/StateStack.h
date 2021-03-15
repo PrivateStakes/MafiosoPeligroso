@@ -33,7 +33,7 @@ private:
 	const int statesCapacity = 10;
 	State** states;
 	
-	std::vector<Soldier*> soldiers;
+	std::vector<Soldier*>* soldiers;
 	int ID = 0;
 
 	int currentStateEvent = 0;

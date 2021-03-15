@@ -36,6 +36,11 @@ sf::Vector2f GameEntity::getPosition()
 	return sprite.getPosition();
 }
 
+void GameEntity::setColour(sf::Color input)
+{
+	sprite.setColor(input);
+}
+
 sf::Sprite GameEntity::getSprite()
 {
 	return sprite;

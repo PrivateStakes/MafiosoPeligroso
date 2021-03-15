@@ -20,7 +20,7 @@ int Player::biggerOrNot(int firstValue, int secondValue)
 }
 
 Player::Player(std::string name, int health, float speed)
-	:Soldier("character.png", name, health), counter(0), reloading(false)
+	:Soldier("character_1.png", name, health), counter(0), reloading(false)
 {
 	//this->currentWeapon = new Weapon(GunType::pistol);
 }
