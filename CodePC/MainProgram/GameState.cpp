@@ -15,6 +15,7 @@ width(stateStack.windowWidth),
 height(stateStack.windowHeight),
 currentFileName(level)
 {
+	srand(time(NULL));
 	camera.setCenter(0, 0);
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
@@ -128,6 +129,9 @@ currentFileName(level)
 
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
+		int whichTexture = rand() % 2;
+
+		//enemies[i] = new Soldier();
 		enemies[i].setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i].setID(stateStack.getID());
@@ -184,11 +188,11 @@ GameState::~GameState()
 
 	while (soldiers.size() > 0)
 	{
-		delete soldiers[soldiers.size() - 1];
+		//delete soldiers[soldiers.size() - 1];
 		soldiers[soldiers.size() - 1] = nullptr;
 		soldiers.pop_back();
 	}
-	soldiers.clear();
+	//soldiers.clear();
 	player = nullptr;
 }
 

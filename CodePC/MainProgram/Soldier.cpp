@@ -10,6 +10,9 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 	reloading(false),
 	currentWeapon(nullptr)
 {	
+	nodes = nullptr;
+	nodes = new std::vector<std::vector<Tile*>*>;
+
 	for (int i = 0; i < 100; i++)
 	{
 		std::vector<Tile*> tempNodes;
@@ -18,7 +21,7 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 		{
 			tempNodes.push_back(nullptr);
 		}
-		nodes->push_back(&tempNodes);
+		nodes->push_back((new std::vector<Tile*>(tempNodes)));
 	}
 }
 
