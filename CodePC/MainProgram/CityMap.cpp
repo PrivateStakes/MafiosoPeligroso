@@ -98,7 +98,10 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
         {
+            soldiers.push_back(new Soldier);
+            //temp[deleteSoon].setName;
             recruit(deleteSoon);
+            std::cout << soldiers.size() << std::endl;
         }
     }
 
@@ -118,9 +121,14 @@ void CityMap::render(sf::RenderWindow& window)
     }
     if (recruiter.yesOpen())
     {
+        window.draw(backgroundSprite);
         window.draw(bodySprite);
         window.draw(mouthSprite);
         window.draw(faceSprite);
         window.draw(hatSprite);
+        window.draw(recText1);
+        window.draw(recText2);
+        window.draw(recText3);
+        window.draw(recText4);
     }
 }

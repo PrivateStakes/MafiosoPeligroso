@@ -24,6 +24,7 @@ private:
 	Recruitment recruiter;
 
 	std::vector<Soldier*> soldiers;
+	std::vector<Soldier*> temp;
 
 public:
 	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy);

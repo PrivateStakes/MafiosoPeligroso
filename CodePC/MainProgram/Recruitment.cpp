@@ -3,7 +3,7 @@
 Recruitment::Recruitment()
 {
 	isOpen = false;
-	deleteSoon = 2147483647;
+	deleteSoon = 1;
 
 	randomCharacter();
 
