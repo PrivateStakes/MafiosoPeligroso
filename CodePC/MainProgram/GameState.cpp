@@ -13,18 +13,13 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 State(InputStateId),
 width(stateStack.windowWidth),
 height(stateStack.windowHeight),
-currentFileName(level)
+currentFileName(level),
+soldiers(soldierHierarchy)
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
-
-	//Copies soldiers
-	for (int i = 0; i < soldierHierarchy->size(); i++)
-	{
-		soldiers->push_back(soldierHierarchy->at(i));
-	}
 	
 	player = soldiers->at(0);
 	float temp = 0.f;

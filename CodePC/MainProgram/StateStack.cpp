@@ -14,6 +14,8 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	windowWidth(inputWindowWidth),
 	windowHeight(inputWindowHeight)
 {
+	soldiers = nullptr;
+	soldiers = new std::vector<Soldier*>;
 	soldiers->push_back(new Soldier());
 	soldiers->at(0)->setIsPlayer(true);
 	soldiers->at(0)->setID(ID++);
