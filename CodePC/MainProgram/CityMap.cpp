@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Soldier.h"
 
-CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>*& soliderHierarchy):
+CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy):
     State(InputStateId),
     soldiers(soliderHierarchy)
 {
