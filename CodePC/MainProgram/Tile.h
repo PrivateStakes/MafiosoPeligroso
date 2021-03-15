@@ -12,6 +12,7 @@ private:
 	Tile* nextNode;
 	bool visitedByAlgorithm;
 	int travelDistance;
+	int hp;
 
 public:
 	Tile(std::string filename);
@@ -34,5 +35,8 @@ public:
 
 	int getTravelDistance();
 	void setTravelDistance(int);
+
+	int getHP();
+	void setHP(int);
 };
 

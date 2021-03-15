@@ -8,7 +8,8 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 	speed(5),
 	isPlayer(false),
 	reloading(false),
-	currentWeapon(nullptr)
+	currentWeapon(nullptr),
+	counter(0)
 {	
 
 }
@@ -114,7 +115,6 @@ void Soldier::move()
 	{
 		//AI movement
 		this->sprite.move((rand() % 3 - 1) * 5, (rand() % 3 - 1) * 5);
-		this->sprite.setRotation(((rand() % 360) / 180.f) * 3.141592);
 	}
 
 	if (this->reloading)

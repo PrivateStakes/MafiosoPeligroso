@@ -22,18 +22,18 @@ enum class TileSorts
 	COUNT
 };
 
-class EditorState : public State
+class EditorState: public State
 {
 private:
 	bool do_once = false;
 
-	std::string tileTextures[5]
+	std::string tileTextures[6]
 	{
 		"wall1.png",
 		"basic_tile2.png",
-		"basic_tile3.png",
+		"floor.png",
 		"basic_tile4.png",
-		"floor.png"
+		"floor.png",
 		"brakeableWall.png"
 	};
 
@@ -62,6 +62,7 @@ private:
 
 public:
 	EditorState(const StateID InputStateId, StateStack& stateStack, std::string* level);
+	EditorState(const EditorState& editorState) = default;
 	~EditorState() override;
 
 	int update(const float deltaTime, sf::RenderWindow& window) override;
