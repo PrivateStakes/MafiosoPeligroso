@@ -22,10 +22,10 @@ private:
 	Communication communicator;
 	Recruitment recruiter;
 
-	int returnMessage;
+	std::vector<Soldier*> soldiers;
 
 public:
-	CityMap(const StateID InputStateId, StateStack& stateStack);
+	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>& soliderHierarchy);
 	~CityMap() override;
 
 	// Inherited via State
