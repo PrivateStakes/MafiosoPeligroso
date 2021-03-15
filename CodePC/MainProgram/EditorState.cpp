@@ -374,6 +374,10 @@ char intToLetter(int input)
 		returnValue = 'e';
 		break;
 
+	case (int)TileSorts::brakeableWall:
+		returnValue = 'f';
+		break;
+
 	default:
 		returnValue = '0';
 	}

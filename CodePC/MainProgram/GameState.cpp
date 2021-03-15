@@ -2,12 +2,12 @@
 #include "StateStack.h"
 #include "CollissionMan.h"
 #include "Tile.h"
-#include "EditorState.h"
 #include <iostream>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <assert.h>
+#include "EditorState.h"
 
 GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy) :
 State(InputStateId),
@@ -15,11 +15,13 @@ width(stateStack.windowWidth),
 height(stateStack.windowHeight),
 currentFileName(level),
 soldiers(soldierHierarchy)
+
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
 	//camera.setSize(1280, 720);
 	camera.setSize(width, height);
+	tempEditor = new EditorState(InputStateId, stateStack, level);
 	
 	player = soldiers->at(0);
 	float temp = 0.f;
@@ -36,8 +38,6 @@ soldiers(soldierHierarchy)
 	std::ifstream loadStream;
 	loadStream.open(currentDirectory + *currentFileName);
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
-
-	EditorState tempEditor(InputStateId, stateStack, level);
 
 	//Arms soldiers
 	for (int i = 0; i < soldiers->size(); i++)
@@ -71,10 +71,10 @@ soldiers(soldierHierarchy)
 			{
 				char saveFileInformation = (char)tileRow[j] - 48;
 
-				if (saveFileInformation != -99 && saveFileInformation != '\0' && tempEditor.loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
+				if (saveFileInformation != -99 && saveFileInformation != '\0' && tempEditor->loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
 				{
 					bool addTile = true;
-					Tile tempTile = *tempEditor.loadTile((TileSorts)(saveFileInformation - 48));
+					Tile tempTile = *tempEditor->loadTile((TileSorts)(saveFileInformation - 48));
 
 					if (tempTile.getTileType() == 'c')
 					{
@@ -202,6 +202,9 @@ GameState::~GameState()
 	}*/
 	soldiers = nullptr;
 	player = nullptr;
+
+	delete tempEditor;
+	tempEditor = nullptr;
 }
 
 int GameState::backendUpdate()	
@@ -363,14 +366,22 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
 	{
 		enemies[i].move();
-		enemies[i].rotateSprite(player->getPosition());
 		if (enemies[i].isAbleToShoot())
 		{
-			//bullets.push_back(new Bullet(enemies[i].shoot((soldiers->at(rand()%soldiers->size())->getPosition() - enemies[i].getPosition()))));
+			for (int j = 0; j < soldiers->size(); j++)
+			{
+				if (abs(enemies[i].getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i].getPosition().y - soldiers->at(j)->getPosition().y) < 100)
+				{
+					enemies[i].rotateSprite(soldiers->at(j)->getPosition());
+					bullets.push_back(new Bullet(enemies[i].shoot((soldiers->at(j)->getPosition() - enemies[i].getPosition()))));
+				}
+			}
+			
 		}
 	}
 
 	collideCheck = false;
+	bool deleteBullet = false;
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
@@ -387,6 +398,28 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				{
 					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'a'))
 					{
+						deleteBullet = true;
+					}
+					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'f'))
+					{
+						deleteBullet = true;
+						if (tiles[i]->at(j)->getTileType() == 'f')
+						{
+							tiles[i]->at(j)->setHP(1);
+							if (tiles[i]->at(j)->getHP() <= 0)
+							{
+								floor[i]->at(j) = new Tile(*tempEditor->loadTile(TileSorts::floor));
+								floor[i]->at(j)->setTileType('e');
+								floor[i]->at(j)->setPosition(tiles[i]->at(j)->getPosition());
+								delete tiles[i]->at(j);
+								tiles[i]->at(j) = nullptr;
+							}
+						}
+						
+					}
+
+					if (deleteBullet)
+					{
 						if (bullets[k] != bullets.back())
 						{
 							delete bullets[k];
@@ -402,7 +435,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 						bullets.pop_back();
 					}
-					
 				}
 			}
 		}
@@ -442,7 +474,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (bullets.size() > 0 && i < bullets.size())
 			{
-				if (enemies[j].gotHit(*bullets[i]))
+				if (enemies[j].gotHit(*bullets[i]) && bullets[i]->getID() != enemies[j].getID())
 				{
 					enemies[j].loseHealth(1);
 					deleteBullet = true;

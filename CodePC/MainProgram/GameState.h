@@ -13,6 +13,7 @@ class Player;
 class GameEntity;
 class Tile;
 class CollissionMan;
+class EditorState;
 
 enum class GameEntityCollision
 {
@@ -55,6 +56,7 @@ private:
 	int cap;
 	Soldier* enemies;
 	WeaponFactory weaponFactory;
+	EditorState* tempEditor;
 	
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;

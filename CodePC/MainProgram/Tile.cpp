@@ -2,7 +2,8 @@
 
 Tile::Tile(std::string filename) :
 	GameEntity(filename),
-	texturePath(filename)
+	texturePath(filename),
+	hp(5)
 {
 	tileType = 0;
 	travelDistance = 999999999;
@@ -73,4 +74,14 @@ int Tile::getTravelDistance()
 void Tile::setTravelDistance(int input)
 {
 	travelDistance = input;
+}
+
+int Tile::getHP()
+{
+	return hp;
+}
+
+void Tile::setHP(int dmg)
+{
+	hp -= dmg;
 }
