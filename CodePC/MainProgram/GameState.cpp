@@ -202,6 +202,12 @@ int GameState::backendUpdate()
 		int xOrigin;
 		int yOrigin;
 
+		distance;
+		visited;
+		preD;
+		minimum;
+
+
 		for (int i = 0; i < floor.size(); i++)
 		{
 			for (int j = 0; j < floor[i]->size(); j++)
@@ -217,7 +223,7 @@ int GameState::backendUpdate()
 		xOrigin = x;
 		yOrigin = y;
 		
-		while (1)
+		/*while (1)
 		{
 			int tempX;
 			int tempY;
@@ -266,7 +272,7 @@ int GameState::backendUpdate()
 
 			x = tempX;
 			y = tempY;
-		}
+		}*/
 	}
 
 	return 0;
