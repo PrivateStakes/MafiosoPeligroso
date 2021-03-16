@@ -3,7 +3,6 @@
 Recruitment::Recruitment()
 {
 	isOpen = false;
-	deleteSoon = 1;
 
 	randomCharacter();
 
@@ -49,9 +48,11 @@ Recruitment::Recruitment()
 	recText3.setFillColor(sf::Color::Black);
 
 	recText4.setFont(recFont);
-	recText4.setString("TO RECRUIT HIT 'ENTER'\n(Current Soldiers: " + std::to_string(deleteSoon) + ")");
+	recText4.setString("TO RECRUIT HIT 'ENTER'\n(Current Soldiers: " + std::to_string(counter) + ")");
 	recText4.setCharacterSize(20);
 	recText4.setFillColor(sf::Color::Black);
+
+	updateText();
 }
 
 Recruitment::~Recruitment()
@@ -146,13 +147,12 @@ void Recruitment::randomCharacter()
 void Recruitment::updateText()
 {
 	recText3.setString("NAME: " + name + "\n\n\n\n\n\nAGE: " + std::to_string(age) + "\n\n\n\n\n\nOCCUPATION: " + occupation + "\n\n\n\n\n\nBACKSTORY: " + backstory);
-	recText4.setString("TO RECRUIT HIT 'ENTER'\n(Current Soldiers: " + std::to_string(deleteSoon) + ")");
+	recText4.setString("TO RECRUIT HIT 'ENTER'\n(Current Soldiers: " + std::to_string(counter) + ")");
 }
 
 std::string Recruitment::recruit(int& counter)
 {
-	counter++;
+	//counter++;
 	randomCharacter();
-	updateText();
 	return name;
 }

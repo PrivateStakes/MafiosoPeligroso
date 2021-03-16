@@ -20,6 +20,9 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	soldiers->at(0)->setIsPlayer(true);
 	soldiers->at(0)->setID(ID++);
 
+	soldierSent = nullptr;
+	soldierSent = new int;
+
 	currentLevelIndex = 0;
 
 	states = new State*[statesCapacity];
@@ -86,6 +89,8 @@ StateStack::~StateStack()
 	soldiers->clear();
 	soldiers = nullptr;
 
+	soldierSent = nullptr;
+
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
 	if (saveStream.is_open())
@@ -109,7 +114,7 @@ void StateStack::push(StateID id)
 		{
 		case StateID::GameState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel, soldiers);
+			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel, soldiers, soldierSent);
 			break;
 		case StateID::PauseMenuState:
 			stateQuantity++;
@@ -133,7 +138,7 @@ void StateStack::push(StateID id)
 
 		case StateID::CityMapState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this, soldiers);
+			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this, soldiers, soldierSent);
 			break;
 		}
 	}
