@@ -31,7 +31,7 @@ private:
 	{
 		"wall1.png",
 		"basic_tile2.png",
-		"floor.png",
+		"basic_tile3.png",
 		"basic_tile4.png",
 		"floor.png",
 		"brakeableWall.png"
@@ -43,8 +43,8 @@ private:
 
 	const float width;
 	const float height;
-	const int tileSizeX = 30;
-	const int tileSizeY = 20;
+	const int tileSizeX = 60;
+	const int tileSizeY = 60;
 	
 	std::vector <std::vector<Tile*>*> grid;
 	std::vector <std::vector<Tile*>*> tiles;
@@ -72,6 +72,9 @@ public:
 	bool hasClickedOnTile(int index_i, int index_j, std::vector <std::vector<Tile*>*> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window);
 	bool writeLevel();
 	Tile* loadTile(TileSorts whichTile);
+
+	int getGridSizeX();
+	int getGridSizeY();
 
 	//std::string* getTileTexturePaths();
 	//int getTileTextureQuantity();

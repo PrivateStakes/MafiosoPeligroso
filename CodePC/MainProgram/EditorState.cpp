@@ -483,3 +483,13 @@ bool EditorState::writeLevel()
 
 	return saveSuccessful;
 }
+
+int EditorState::getGridSizeX()
+{
+	return tileSizeX;
+}
+
+int EditorState::getGridSizeY()
+{
+	return tileSizeY;
+}
