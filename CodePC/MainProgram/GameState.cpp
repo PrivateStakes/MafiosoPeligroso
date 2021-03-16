@@ -9,12 +9,13 @@
 #include <assert.h>
 #include "EditorState.h"
 
-GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy) :
-State(InputStateId),
-width(stateStack.windowWidth),
-height(stateStack.windowHeight),
-currentFileName(level),
-soldiers(soldierHierarchy)
+GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*> *soldierHierarchy, int* solderSent) :
+	State(InputStateId),
+	width(stateStack.windowWidth),
+	height(stateStack.windowHeight),
+	currentFileName(level),
+	soldiers(soldierHierarchy),
+	soldierRecieved(solderSent)
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
@@ -23,6 +24,9 @@ soldiers(soldierHierarchy)
 	tempEditor = new EditorState(InputStateId, stateStack, level);
 	tileSizeX = tempEditor->getGridSizeX();
 	tileSizeY = tempEditor->getGridSizeY();
+	bulletTexture.loadFromFile("../Images/Bullet2.png");
+	bulletSprite.setTexture(bulletTexture);
+	bulletSprite.setScale(2,2);
 
 	player = soldiers->at(0);
 	float temp = 0.f;
@@ -41,18 +45,22 @@ soldiers(soldierHierarchy)
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
 
 	//Arms soldiers
-	for (int i = 0; i < soldiers->size(); i++)
+	for (int i = 0; i < *soldierRecieved; i++)
 	{
 		soldiers->at(i)->setWeapon(nullptr);
-		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		//soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
+		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType::minigun)));
 	}
+
+	
 
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
 		std::vector<Tile*> tempGrid;
-		std::vector<Tile*>* tempTiles = new std::vector<Tile*>;
-		std::vector<Tile*>* tempFloor = new std::vector<Tile*>;
+		tempTiles = new std::vector<Tile*>;
+		tempFloor = new std::vector<Tile*>;	
+		
 
 		std::string tileRow = "";
 		loadStream >> tileRow;
@@ -72,10 +80,10 @@ soldiers(soldierHierarchy)
 			{
 				char saveFileInformation = (char)tileRow[j] - 48;
 
-				if (saveFileInformation != -99 && saveFileInformation != '\0' && tempEditor->loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
+				if (saveFileInformation != -99 && saveFileInformation != '\0')
 				{
 					bool addTile = true;
-					Tile tempTile = *tempEditor->loadTile((TileSorts)(saveFileInformation - 48));
+					Tile tempTile = tempEditor->loadTile((TileSorts)(saveFileInformation - 48));
 
 					if (tempTile.getTileType() == 'c')
 					{
@@ -121,13 +129,25 @@ soldiers(soldierHierarchy)
 			}
 		}
 		tiles.push_back(tempTiles);
+		holder[i] = tempTiles;
 		floor.push_back(tempFloor);
+		holder2[i] = tempFloor;
 
 		for (int k = 0; k < tempGrid.size(); k++)
 		{
 			delete tempGrid[k];
 			tempGrid[k] = nullptr;
 		}
+		/*for (int k = 0; k < tempFloor->size(); k++)
+		{
+			delete tempFloor->at(k);
+			tempFloor->at(k) = nullptr;
+		}
+		for (int k = 0; k < tempTiles->size(); k++)
+		{
+			delete tempTiles->at(k);
+			tempTiles->at(k) = nullptr;
+		}*/
 	}
 	loadStream.close();
 	enemies = new Soldier*[amountOfEnemySpawnPoints];
@@ -145,14 +165,21 @@ soldiers(soldierHierarchy)
 		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i]->setID(stateStack.getID());
-		enemies[i]->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		enemies[i]->setWeapon(weaponFactory.buildWeapon((GunType)(rand()%3)));
 	}
 	enemyAmount = amountOfEnemySpawnPoints;
 }
 
 GameState::~GameState()
 {
+	delete tempEditor;
+	tempEditor = nullptr;
 	currentFileName = nullptr;
+
+	for (int i = 0; i < enemyAmount; i++)
+	{
+		delete enemies[i];
+	}
 	delete[] enemies;
 	
 	for (int i = 0; i < amountOfEnemySpawnPoints; i++)
@@ -176,8 +203,8 @@ GameState::~GameState()
 			if (tiles[i]->at(j) != nullptr)
 			{
 				delete tiles[i]->at(j);
-				tiles[i]->at(j) = nullptr;
 			}
+			tiles[i]->at(j) = nullptr;
 		}
 		tiles[i]->clear();
 	}
@@ -190,8 +217,8 @@ GameState::~GameState()
 			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'e')
 			{
 				delete floor[i]->at(j);
-				floor[i]->at(j) = nullptr;
 			}
+			floor[i]->at(j) = nullptr;
 		}
 		floor[i]->clear();
 	}
@@ -205,9 +232,26 @@ GameState::~GameState()
 	}*/
 	soldiers = nullptr;
 	player = nullptr;
+	
+	for (int i = 0; i < tileSizeY; i++)
+	{
+		if (holder[i] != nullptr)
+		{
+			delete holder[i];
+			holder[i] = nullptr;
+		}
+	}
+	for (int i = 0; i < tileSizeY; i++)
+	{
+		if (holder2[i] != nullptr)
+		{
+			delete holder2[i];
+			holder2[i] = nullptr;
+		}
+	}
+	
 
-	delete tempEditor;
-	tempEditor = nullptr;
+	
 }
 
 int GameState::backendUpdate()	
@@ -357,7 +401,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		mouseVisability = false;
 	}
 
-	for (int i = 1; i < soldiers->size(); i++)
+	for (int i = 1; i < *soldierRecieved; i++)
 	{
 		soldiers->at(i)->move();
 	}
@@ -367,14 +411,16 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	for (int i = 0; i < enemyAmount; i++)
 	{
 		enemies[i]->move();
-		if (enemies[i]->isAbleToShoot())
+		if (enemies[i]->isAbleToShoot() && rand()%5 == 0)
 		{
-			for (int j = 0; j < soldiers->size(); j++)
+			bool shot = false;
+			for (int j = 0; j < *soldierRecieved && shot != true; j++)
 			{
 				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 100)
 				{
 					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
 					bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
+					shot = true;
 				}
 			}
 			
@@ -393,49 +439,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				if (CollissionMan().intersectCircRect(*player, *tiles[i]->at(j), 'a'))
 				{
 					collideCheck = true;
-				}
-
-				for (int k = 0; k < bullets.size(); k++)
-				{
-					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'a'))
-					{
-						deleteBullet = true;
-					}
-					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'f'))
-					{
-						deleteBullet = true;
-						if (tiles[i]->at(j)->getTileType() == 'f')
-						{
-							tiles[i]->at(j)->setHP(bullets[k]->getDamage());
-							if (tiles[i]->at(j)->getHP() <= 0)
-							{
-								floor[i]->at(j) = new Tile(*tempEditor->loadTile(TileSorts::floor));
-								floor[i]->at(j)->setTileType('e');
-								floor[i]->at(j)->setPosition(tiles[i]->at(j)->getPosition());
-								delete tiles[i]->at(j);
-								tiles[i]->at(j) = nullptr;
-							}
-						}
-						
-					}
-
-					if (deleteBullet)
-					{
-						if (bullets[k] != bullets.back())
-						{
-							delete bullets[k];
-							bullets[k] = nullptr;
-							bullets[k] = new Bullet(*bullets.back());
-
-						}
-						else if (bullets.back() != nullptr)
-						{
-							delete bullets.back();
-							bullets.back() = nullptr;
-						}
-
-						bullets.pop_back();
-					}
 				}
 			}
 		}
@@ -468,21 +471,50 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		}*/
 	}
 
-	for (int i = 0; i < bullets.size(); i++)
+	for (int k = 0; k < bullets.size(); k++)
 	{
 		bool deleteBullet = false;
+
+		for (int i = 0; i < tiles.size(); i++)
+		{
+			for (int j = 0; j < tiles[i]->size(); j++)
+			{
+				if (tiles[i]->at(j) != nullptr)
+				{
+					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'f'))
+					{
+						deleteBullet = true;
+
+						if (tiles[i]->at(j)->getTileType() == 'f')
+						{
+							tiles[i]->at(j)->setHP(bullets[k]->getDamage());
+							if (tiles[i]->at(j)->getHP() <= 0)
+							{
+								floor[i]->at(j) = new Tile(tempEditor->loadTile(TileSorts::floor));
+								floor[i]->at(j)->setTileType('e');
+								floor[i]->at(j)->setPosition(tiles[i]->at(j)->getPosition());
+								delete tiles[i]->at(j);
+								tiles[i]->at(j) = nullptr;
+							}
+						}
+
+					}
+				}
+			}
+		}
+
 		for (int j = 0; j < enemyAmount; j++)
 		{
-			if (bullets.size() > 0 && i < bullets.size())
+			if (bullets.size() > 0 && k < bullets.size())
 			{
-				if (enemies[j]->gotHit(*bullets[i]) && bullets[i]->getID() != enemies[j]->getID())
+				if (CollissionMan().intersectCircCirc(*bullets[k], *enemies[j]) && bullets[k]->getID() != enemies[j]->getID())
 				{
-					enemies[j]->loseHealth(bullets[i]->getDamage());
+					enemies[j]->loseHealth(bullets[k]->getDamage());
 					deleteBullet = true;
 					if (enemies[j]->getHealth() <= 0)
 					{
 						delete enemies[j];
-						if (enemyAmount > 1 && j != enemyAmount-1)
+						if (enemyAmount > 1 && j != enemyAmount - 1)
 						{
 							enemies[j] = enemies[enemyAmount - 1];
 						}
@@ -492,9 +524,9 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			}
 		}
 
-		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
+		if (CollissionMan().intersectCircCirc(*player, *bullets[k]) && bullets[k]->getID() != player->getID())
 		{
-			player->loseHealth(bullets[i]->getDamage());
+			player->loseHealth(bullets[k]->getDamage());
 			deleteBullet = true;
 
 			if (player->getHealth() <= 0)
@@ -505,18 +537,19 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 					delete soldiers->at(0);
 					soldiers->at(0) = nullptr;
 
-					soldiers->at(0) = new Soldier(*soldiers->at(1));
+					soldiers->at(0) = soldiers->at(1);
 					soldiers->at(1) = nullptr;
 
 					if (soldiers->at(1) != soldiers->back())
 					{
-						soldiers->at(1) = new Soldier(*soldiers->back());
+						soldiers->at(1) = soldiers->back();
 						soldiers->back() = nullptr;
 					}
-					
+
 					soldiers->pop_back();
 					soldiers->at(0)->setIsPlayer(true);
 					player = soldiers->at(0);
+					//soldierRecieved--;
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
 			}
@@ -524,19 +557,20 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		if (deleteBullet)
 		{
-			if (bullets[i] != bullets.back())
+			if (bullets[k] != bullets.back())
 			{
-				delete bullets[i];
-				bullets[i] = nullptr;
-				bullets[i] = new Bullet(*bullets.back());
-				
+				delete bullets[k];
+				bullets[k] = nullptr;
+				bullets[k] = bullets[bullets.size()-1];
+				bullets[bullets.size() - 1] = nullptr;
+
 			}
 			else if (bullets.back() != nullptr)
 			{
 				delete bullets.back();
 				bullets.back() = nullptr;
 			}
-			
+
 			bullets.pop_back();
 		}
 	}
@@ -565,10 +599,16 @@ void GameState::render(sf::RenderWindow& window)
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		if (bullets[i] != nullptr) window.draw(*bullets[i]);
+		if (bullets[i] != nullptr)
+		{
+			bulletSprite.setPosition(bullets[i]->getPosition());
+			bulletSprite.setRotation(bullets[i]->getRotation());
+			window.draw(bulletSprite);
+		}
+		//window.draw(*bullets[i]);
 	}
 
-	for (int i = 0; i < soldiers->size(); i++)
+	for (int i = 0; i < *soldierRecieved; i++)
 	{
 		window.draw(*soldiers->at(i));
 	}

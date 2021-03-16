@@ -71,7 +71,12 @@ public:
 	int consoleMenu(bool pallete, int highestNumber);
 	bool hasClickedOnTile(int index_i, int index_j, std::vector <std::vector<Tile*>*> inputTiles, sf::Vector2i mousePos, sf::RenderWindow& window);
 	bool writeLevel();
-	Tile* loadTile(TileSorts whichTile);
+	Tile loadTile(TileSorts whichTile);
+
+	std::vector<Tile*>* tempGrid;
+	std::vector<Tile*>* tempTiles;
+	std::vector<Tile*>* holder[60];
+	std::vector<Tile*>* holder2[60];
 
 	int getGridSizeX();
 	int getGridSizeY();

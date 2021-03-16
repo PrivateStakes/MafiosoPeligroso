@@ -27,8 +27,8 @@ protected:
 	sf::Font recFont;
 
 	bool isOpen;
-	int deleteSoon;
 	int temp;
+	int counter;
 private:
 	std::string name;
 	int age;

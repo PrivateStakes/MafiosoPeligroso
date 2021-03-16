@@ -20,6 +20,9 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	soldiers->at(0)->setIsPlayer(true);
 	soldiers->at(0)->setID(ID++);
 
+	soldierSent = nullptr;
+	soldierSent = new int;
+
 	currentLevelIndex = 0;
 
 	states = new State*[statesCapacity];
@@ -79,12 +82,17 @@ StateStack::~StateStack()
 	{
 		if (soldiers->at(i) != nullptr)
 		{
-			//delete soldiers[i];
+			delete soldiers->at(i);
 			soldiers->at(i) = nullptr;
 		}
 	}
 	soldiers->clear();
+	delete soldiers;
 	soldiers = nullptr;
+	
+	delete soldierSent;
+	soldierSent = nullptr;
+	
 
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
@@ -94,6 +102,9 @@ StateStack::~StateStack()
 		saveStream << *currentLevel;
 	}
 	saveStream.close();
+
+	delete currentLevel;
+	currentLevel = nullptr;
 }
 
 State* StateStack::top()
@@ -109,7 +120,7 @@ void StateStack::push(StateID id)
 		{
 		case StateID::GameState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel, soldiers);
+			if (stateQuantity != -1) states[stateQuantity] = new GameState(StateID::GameState, *this, currentLevel, soldiers, soldierSent);
 			break;
 		case StateID::PauseMenuState:
 			stateQuantity++;
@@ -133,7 +144,7 @@ void StateStack::push(StateID id)
 
 		case StateID::CityMapState:
 			stateQuantity++;
-			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this, soldiers);
+			if (stateQuantity != -1) states[stateQuantity] = new CityMap(StateID::CityMapState, *this, soldiers, soldierSent);
 			break;
 		}
 	}
@@ -164,7 +175,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (states[stateQuantity]->getStateID() == StateID::GameState)
 			{
-				dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
+				//dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
 			}
 			int tempInt = states[stateQuantity]->update(deltaTime, window);
 

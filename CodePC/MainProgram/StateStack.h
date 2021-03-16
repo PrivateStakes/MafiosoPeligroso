@@ -34,6 +34,7 @@ private:
 	State** states;
 	
 	std::vector<Soldier*>* soldiers;
+	int* soldierSent;
 	int ID = 0;
 
 	int currentStateEvent = 0;

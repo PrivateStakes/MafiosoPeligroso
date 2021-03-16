@@ -16,8 +16,15 @@ Soldier::Soldier(std::string fileName, std::string name, int health):
 
 Soldier::~Soldier()
 {
-	delete currentWeapon;
-	currentWeapon = nullptr;
+	if (currentWeapon != nullptr)
+	{
+		delete currentWeapon;
+		currentWeapon = nullptr;
+	}
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		delete nodes[i];
+	}
 }
 
 void Soldier::loseHealth(int dmg)

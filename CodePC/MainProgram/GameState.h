@@ -37,12 +37,18 @@ private:
 	int tileSizeY;
 	std::vector <std::vector<Tile*>*> tiles;
 	std::vector <std::vector<Tile*>*> floor;
+	std::vector<Tile*>* tempTiles;
+	std::vector<Tile*>* tempFloor;
+	std::vector<Tile*>* holder[60];
+	std::vector<Tile*>* holder2[60];
 	
 	//Pathfinding
 
 
 	//Cursor + camera
 	sf::Sprite cursor;
+	sf::Sprite bulletSprite;
+	sf::Texture bulletTexture;
 	sf::View camera;
 	sf::Mouse mouse;
 	sf::Texture texture;
@@ -55,6 +61,7 @@ private:
 	int amountOfEnemySpawnPoints;
 	int enemyAmount;
 	int cap;
+	int* soldierRecieved;
 	Soldier* *enemies;
 	WeaponFactory weaponFactory;
 	EditorState* tempEditor;
@@ -65,7 +72,7 @@ private:
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*> *soldierHierarchy, int* solderSent);
 	~GameState() override;
 
 	int backendUpdate();	//non-deltaTime reliant code
