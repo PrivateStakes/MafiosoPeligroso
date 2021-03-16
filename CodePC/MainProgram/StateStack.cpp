@@ -82,14 +82,16 @@ StateStack::~StateStack()
 	{
 		if (soldiers->at(i) != nullptr)
 		{
-			//delete soldiers[i];
 			soldiers->at(i) = nullptr;
+			delete soldiers->at(i);
 		}
 	}
 	soldiers->clear();
 	soldiers = nullptr;
+	delete[] soldiers;
 
 	soldierSent = nullptr;
+	delete soldierSent;
 
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
