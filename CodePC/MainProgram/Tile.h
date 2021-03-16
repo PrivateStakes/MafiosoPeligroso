@@ -8,8 +8,6 @@ private:
 	std::string texturePath;
 
 	//Djikstra stuff
-	Tile* previousNode;
-	Tile* nextNode;
 	bool visitedByAlgorithm;
 	int travelDistance;
 	int hp;
@@ -23,12 +21,6 @@ public:
 	void setTileType(char input);
 	virtual void update(const float deltaTime) override;
 
-
-	Tile* getPreviousNode();
-	void setPreviousNode(Tile*);
-
-	Tile* getNextNode();
-	void setNextNode(Tile*);
 
 	bool getVisitedByAlgorithm();
 	void setVisitedByAlgorithm(bool);

@@ -12,10 +12,7 @@ Tile::Tile(std::string filename) :
 
 Tile::~Tile()
 {
-	delete previousNode;
-	previousNode = nullptr;
-	delete nextNode;
-	nextNode = nullptr;
+
 }
 
 void Tile::update(const float deltaTime)
@@ -36,26 +33,6 @@ char Tile::getTileType()
 void Tile::setTileType(char input)
 {
 	tileType = input;
-}
-
-Tile* Tile::getPreviousNode()
-{
-	return previousNode;
-}
-
-void Tile::setPreviousNode(Tile* inputTile)
-{
-	previousNode = inputTile;
-}
-
-Tile* Tile::getNextNode()
-{
-	return nextNode;
-}
-
-void Tile::setNextNode(Tile* inputTile)
-{
-	nextNode = inputTile;
 }
 
 bool Tile::getVisitedByAlgorithm()
