@@ -37,6 +37,10 @@ private:
 	int tileSizeY;
 	std::vector <std::vector<Tile*>*> tiles;
 	std::vector <std::vector<Tile*>*> floor;
+	std::vector<Tile*>* tempTiles;
+	std::vector<Tile*>* tempFloor;
+	std::vector<Tile*>* holder[60];
+	std::vector<Tile*>* holder2[60];
 	
 	//Pathfinding
 

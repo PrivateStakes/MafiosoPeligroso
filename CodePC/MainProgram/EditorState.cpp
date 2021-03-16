@@ -74,8 +74,8 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
 	{
-		std::vector<Tile*>* tempGrid = new std::vector<Tile*>;
-		std::vector<Tile*>* tempTiles = new std::vector<Tile*>;
+		tempGrid = new std::vector<Tile*>;
+		tempTiles = new std::vector<Tile*>;
 
 		std::string tileRow = "";
 		loadStream >> tileRow;
@@ -88,25 +88,29 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 			tempGrid->back()->setPosition({
 				(tempGrid->back()->getSprite().getGlobalBounds().width / 2) + ((j * tempGrid->back()->getSprite().getGlobalBounds().width)),
 				(tempGrid->back()->getSprite().getGlobalBounds().height / 2) + ((i * tempGrid->back()->getSprite().getGlobalBounds().height)) });
-			
+
 			tempTiles->push_back(nullptr);
-			if (!loadEmptyLevel) 
+			if (!loadEmptyLevel)
 			{
 				std::locale loc;
 				if (!std::isblank(tileRow[j], loc))
 				{
 					char saveFileInformation = (char)tileRow[j] - 48;
 
-					if (saveFileInformation != -99 && saveFileInformation != '\0' && loadTile((TileSorts)(saveFileInformation - 48)) != nullptr)
+					if (saveFileInformation != -99 && saveFileInformation != '\0')
 					{
-						tempTiles->at(j) = new Tile(*loadTile((TileSorts)(saveFileInformation - 48)));
+						tempTiles->at(j) = new Tile(loadTile((TileSorts)(saveFileInformation - 48)));
 						tempTiles->at(j)->setPosition(tempGrid->at(j)->getPosition());
 					}
 				}
 			}
 		}
 		grid.push_back(tempGrid);
+		holder[i] = tempGrid;
+		
 		tiles.push_back(tempTiles);
+		holder2[i] = tempTiles;
+		
 	}
 	loadStream.close();
 
@@ -119,10 +123,13 @@ EditorState::~EditorState()
 	{
 		for (int j = 0; j < grid[i]->size(); j++)
 		{
-			if (grid[i]->at(j) != nullptr)
+			if (grid[i] != nullptr)
 			{
-				delete grid[i]->at(j);
-				grid[i]->at(j) = nullptr;
+				if (grid[i]->at(j) != nullptr)
+				{
+					delete grid[i]->at(j);
+					grid[i]->at(j) = nullptr;
+				}
 			}
 			
 		}
@@ -144,10 +151,29 @@ EditorState::~EditorState()
 	}
 	tiles.clear();
 
+	//delete currentBrush;
 	currentBrush = nullptr;
 	tileCache.clear();
 
+	for (int i = 0; i < tileSizeY; i++)
+	{
+		if (holder[i] != nullptr)
+		{
+			delete holder[i];
+			holder[i] = nullptr;
+		}
+	}
+	for (int i = 0; i < tileSizeY; i++)
+	{
+		if (holder2[i] != nullptr)
+		{
+			delete holder2[i];
+			holder2[i] = nullptr;
+		}
+	}
+
 	currentFileName = nullptr;
+	
 }
 
 int EditorState::update(const float deltaTime, sf::RenderWindow& window)
@@ -328,14 +354,12 @@ void EditorState::render(sf::RenderWindow& window)
 	window.setView(camera);
 }
 
-Tile* EditorState::loadTile(TileSorts whichTile)
+Tile EditorState::loadTile(TileSorts whichTile)
 {
-	Tile* returnTile = nullptr;
+	Tile returnTile = (*tileCache[whichTile].get());
+	//returnTile = (*tileCache[TileSorts::wall].get());
 
-	returnTile = new Tile(*tileCache[whichTile].get());
-	if (returnTile == nullptr) returnTile = new Tile(*tileCache[TileSorts::wall].get());
-
-	returnTile->setTileType(intToLetter((int)whichTile));
+	returnTile.setTileType(intToLetter((int)whichTile));
 	return returnTile;
 }
 

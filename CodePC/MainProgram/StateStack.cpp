@@ -82,16 +82,17 @@ StateStack::~StateStack()
 	{
 		if (soldiers->at(i) != nullptr)
 		{
-			soldiers->at(i) = nullptr;
 			delete soldiers->at(i);
+			soldiers->at(i) = nullptr;
 		}
 	}
 	soldiers->clear();
+	delete soldiers;
 	soldiers = nullptr;
-	delete[] soldiers;
-
-	soldierSent = nullptr;
+	
 	delete soldierSent;
+	soldierSent = nullptr;
+	
 
 	std::ofstream saveStream;
 	saveStream.open("../Saves/save.txt", std::ofstream::out | std::ofstream::trunc);
@@ -101,6 +102,9 @@ StateStack::~StateStack()
 		saveStream << *currentLevel;
 	}
 	saveStream.close();
+
+	delete currentLevel;
+	currentLevel = nullptr;
 }
 
 State* StateStack::top()
@@ -171,7 +175,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (states[stateQuantity]->getStateID() == StateID::GameState)
 			{
-				dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
+				//dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
 			}
 			int tempInt = states[stateQuantity]->update(deltaTime, window);
 

@@ -77,7 +77,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         }
         else if (choice == 2)
         {
-            std::cout << "How many soldiers do you want to send into combat? (You have " << soldiers->size() << " soldiers)\n";
+            std::cout << "How many soldiers do you want to have in combat at once? (You have " << soldiers->size() << " soldiers)\n";
             std::cin >> *soldierRecieved;
             if (*soldierRecieved <= soldiers->size() && *soldierRecieved > 0)
             {
