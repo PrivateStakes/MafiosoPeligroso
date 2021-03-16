@@ -144,7 +144,7 @@ soldiers(soldierHierarchy)
 		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i]->setID(stateStack.getID());
-		enemies[i]->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		enemies[i]->setWeapon(weaponFactory.buildWeapon(GunType::minigun));
 	}
 	enemyAmount = amountOfEnemySpawnPoints;
 }
@@ -368,14 +368,16 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	for (int i = 0; i < enemyAmount; i++)
 	{
 		enemies[i]->move();
-		if (enemies[i]->isAbleToShoot())
+		if (enemies[i]->isAbleToShoot() && rand()%5 == 0)
 		{
-			for (int j = 0; j < soldiers->size(); j++)
+			bool shot = false;
+			for (int j = 0; j < soldiers->size() && shot != true; j++)
 			{
 				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 100)
 				{
 					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
 					bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
+					shot = true;
 				}
 			}
 			
@@ -493,7 +495,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			}
 		}
 
-		if (!CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
+		if (CollissionMan().intersectCircCirc(*player, *bullets[i]) && bullets[i]->getID() != player->getID())
 		{
 			player->loseHealth(bullets[i]->getDamage());
 			deleteBullet = true;
