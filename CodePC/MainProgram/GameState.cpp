@@ -48,8 +48,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	for (int i = 0; i < *soldierRecieved; i++)
 	{
 		soldiers->at(i)->setWeapon(nullptr);
-		//soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
-		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType::minigun)));
+		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
 	}
 
 	
@@ -87,6 +86,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 
 					if (tempTile.getTileType() == 'c')
 					{
+						addTile = false;
 						enemySpawnPointArray[amountOfEnemySpawnPoints++] = new sf::Vector2f(tempGrid[j]->getPosition());	//if the game crashes because of this, change to std::vector
 						if (amountOfEnemySpawnPoints == cap)
 						{
@@ -138,16 +138,6 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 			delete tempGrid[k];
 			tempGrid[k] = nullptr;
 		}
-		/*for (int k = 0; k < tempFloor->size(); k++)
-		{
-			delete tempFloor->at(k);
-			tempFloor->at(k) = nullptr;
-		}
-		for (int k = 0; k < tempTiles->size(); k++)
-		{
-			delete tempTiles->at(k);
-			tempTiles->at(k) = nullptr;
-		}*/
 	}
 	loadStream.close();
 	enemies = new Soldier*[amountOfEnemySpawnPoints];
@@ -160,8 +150,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 		if (whichTexture == 1) tempTexture = "evil_character_1.png";
 		else tempTexture = "evil_character_2.png";
 
-		//enemies[i] = Soldier(tempTexture, "Joe", 2);
-		enemies[i] = new Soldier();
+		enemies[i] = new Soldier(tempTexture, "Joe", 2);
 		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i]->setID(stateStack.getID());
@@ -410,7 +399,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	for (int i = 0; i < enemyAmount; i++)
 	{
-		enemies[i]->move();
+		//enemies[i]->move();
 		if (enemies[i]->isAbleToShoot() && rand()%5 == 0)
 		{
 			bool shot = false;
@@ -440,24 +429,42 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				{
 					if (CollissionMan().intersectCircRect(*soldiers->at(k), *tiles[i]->at(j), 'a'))
 					{
-						collideCheck = true;
-					}
-
-					if (!collideCheck)
-					{
-						soldiers->at(k)->move();
-						if (k == 0)
-						{
-							cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
-						}
+						soldiers->at(k)->setColl(true);
 					}
 				}
-				if (CollissionMan().intersectCircRect(*player, *tiles[i]->at(j), 'a'))
+				for (int k = 0; k < enemyAmount; k++)
 				{
-					collideCheck = true;
+					if (CollissionMan().intersectCircRect(*enemies[k], *tiles[i]->at(j), 'a'))
+					{
+						enemies[k]->setColl(true);
+					}
 				}
+				collideCheck = false;
 			}
 		}
+	}
+	for (int k = 0; k < *soldierRecieved; k++)
+	{
+		if (!soldiers->at(k)->getColl())
+		{
+			soldiers->at(k)->move();
+			if (k == 0)
+			{
+				cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+			}
+		}
+		soldiers->at(k)->setColl(false);
+	}
+
+	for (int k = 0; k < enemyAmount; k++)
+	{
+		if (!enemies[k]->getColl())
+		{
+			enemies[k]->move();
+			
+			
+		}
+		enemies[k]->setColl(false);
 	}
 
 	//camera.move(player.getInputDirection());
@@ -473,12 +480,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
 		bullets.push_back(new Bullet(player->shoot((cursor.getPosition() - player->getPosition()))));
-		/*if (bullets.size() > 100)
-		{
-			delete bullets.back();
-			bullets.back() = nullptr;
-			bullets.pop_back();
-		}*/
 	}
 
 	for (int k = 0; k < bullets.size(); k++)
@@ -615,12 +616,16 @@ void GameState::render(sf::RenderWindow& window)
 			bulletSprite.setRotation(bullets[i]->getRotation());
 			window.draw(bulletSprite);
 		}
-		//window.draw(*bullets[i]);
+
 	}
 
 	for (int i = 0; i < *soldierRecieved; i++)
 	{
-		window.draw(*soldiers->at(i));
+		if (soldiers->at(i) != nullptr)
+		{
+			window.draw(*soldiers->at(i));
+		}
+		
 	}
 
 	for (int i = 0; i < enemyAmount; i++)

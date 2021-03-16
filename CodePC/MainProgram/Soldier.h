@@ -15,6 +15,7 @@ protected:
     int health;
     float speed;
     int ID;
+    bool collided;
 
     int updateTimer;
     int counter;
@@ -35,6 +36,8 @@ public:
     void setWeapon(WeaponType *sourceWeapon);
     bool getIsPlayer()const;
     bool isAbleToShoot()const;
+    bool getColl()const;
+    void setColl(bool thing);
     int getHealth()const;
     int getDmg()const;
     int getID()const;

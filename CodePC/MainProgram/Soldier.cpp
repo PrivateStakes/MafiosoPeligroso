@@ -2,14 +2,15 @@
 #include "WeaponType.h"
 #include "Tile.h"
 
-Soldier::Soldier(std::string fileName, std::string name, int health):
+Soldier::Soldier(std::string fileName, std::string name, int health) :
 	GameEntity(fileName),
 	health(health),
 	speed(5),
 	isPlayer(false),
 	reloading(false),
 	currentWeapon(nullptr),
-	counter(0)
+	counter(0),
+	collided(false)
 {	
 
 }
@@ -55,6 +56,16 @@ bool Soldier::getIsPlayer() const
 bool Soldier::isAbleToShoot() const
 {
 	return !this->reloading;
+}
+
+bool Soldier::getColl() const
+{
+	return collided;
+}
+
+void Soldier::setColl(bool thing)
+{
+	collided = thing;
 }
 
 int Soldier::getHealth() const
@@ -136,35 +147,38 @@ void Soldier::move()
 
 Bullet Soldier::shoot(sf::Vector2f direction)
 {
-	//float offset1 = (abs(this->sprite.getPosition().x - direction.x) + abs(this->sprite.getPosition().y - direction.y))/2;
-	sf::Vector2f offset = (direction / 100.f);
-	float rotation = 0;
-	direction.x += (int(offset.x) * (rand() % 3 - 1) * (rand() % 10)) * this->currentWeapon->getSpreadMultiplier();
-	direction.y += (int(offset.y) * (rand() % 3 - 1) * (rand() % 10)) * this->currentWeapon->getSpreadMultiplier();
-
-	float squaredLength = direction.x * direction.x + direction.y * direction.y;
-
-	if (direction.x > 0)
+	if (currentWeapon != nullptr)
 	{
-		rotation = (asin((direction.y) / sqrt(squaredLength)) / 3.141592) * 180;
+		//float offset1 = (abs(this->sprite.getPosition().x - direction.x) + abs(this->sprite.getPosition().y - direction.y))/2;
+		sf::Vector2f offset = (direction / 100.f);
+		float rotation = 0;
+		direction.x += (int(offset.x) * (rand() % 3 - 1) * (rand() % 10)) * this->currentWeapon->getSpreadMultiplier();
+		direction.y += (int(offset.y) * (rand() % 3 - 1) * (rand() % 10)) * this->currentWeapon->getSpreadMultiplier();
+
+		float squaredLength = direction.x * direction.x + direction.y * direction.y;
+
+		if (direction.x > 0)
+		{
+			rotation = (asin((direction.y) / sqrt(squaredLength)) / 3.141592) * 180;
+		}
+
+		else if (direction.x < 0)
+		{
+			rotation = 180 - (asin((direction.y) / sqrt(squaredLength)) / 3.141592) * 180;
+		}
+
+		//Normalises direction
+
+		if (squaredLength > 0)
+		{
+			direction.x /= sqrt(squaredLength);
+			direction.y /= sqrt(squaredLength);
+		}
+
+		this->reloading = true;
+
+		return Bullet(rotation, direction, this->getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
 	}
-
-	else if (direction.x < 0)
-	{
-		rotation = 180 - (asin((direction.y) / sqrt(squaredLength)) / 3.141592) * 180;
-	}
-
-	//Normalises direction
-
-	if (squaredLength > 0)
-	{
-		direction.x /= sqrt(squaredLength);
-		direction.y /= sqrt(squaredLength);
-	}
-
-	this->reloading = true;
-
-	return Bullet(rotation, direction, this->getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
 }
 
 void Soldier::update(const float deltaTime)
