@@ -3,8 +3,12 @@
 
 GameEntity::GameEntity(std::string fileName)
 {
-	texture.loadFromFile("../Images/"+fileName);
-	sprite.setTexture(texture);
+	if (fileName != "Bullet2.png")
+	{
+		texture.loadFromFile("../Images/" + fileName);
+		sprite.setTexture(texture);
+	}
+	
 
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setScale(2.f, 2.f);

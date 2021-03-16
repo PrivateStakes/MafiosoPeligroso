@@ -24,6 +24,9 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	tempEditor = new EditorState(InputStateId, stateStack, level);
 	tileSizeX = tempEditor->getGridSizeX();
 	tileSizeY = tempEditor->getGridSizeY();
+	bulletTexture.loadFromFile("../Images/Bullet2.png");
+	bulletSprite.setTexture(bulletTexture);
+	bulletSprite.setScale(2,2);
 
 	player = soldiers->at(0);
 	float temp = 0.f;
@@ -568,7 +571,13 @@ void GameState::render(sf::RenderWindow& window)
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		if (bullets[i] != nullptr) window.draw(*bullets[i]);
+		if (bullets[i] != nullptr)
+		{
+			bulletSprite.setPosition(bullets[i]->getPosition());
+			bulletSprite.setRotation(bullets[i]->getRotation());
+			window.draw(bulletSprite);
+		}
+		//window.draw(*bullets[i]);
 	}
 
 	for (int i = 0; i < soldiers->size(); i++)

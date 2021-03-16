@@ -6,6 +6,7 @@ private:
 	float speed;
 	float xDir;
 	float yDir;
+	float rotation;
 
 	int dmg;
 	int ID;
@@ -17,6 +18,7 @@ public:
 	int getID()const;
 	int getDamage()const;
 	sf::FloatRect getBounds()const;
+	float getRotation()const;
 
 	// Inherited via GameEntity
 	virtual void update(const float deltaTime) override;

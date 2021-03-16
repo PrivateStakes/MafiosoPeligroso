@@ -43,6 +43,8 @@ private:
 
 	//Cursor + camera
 	sf::Sprite cursor;
+	sf::Sprite bulletSprite;
+	sf::Texture bulletTexture;
 	sf::View camera;
 	sf::Mouse mouse;
 	sf::Texture texture;
