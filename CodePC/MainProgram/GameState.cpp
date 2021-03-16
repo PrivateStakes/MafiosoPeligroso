@@ -384,7 +384,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
 
 	//Update all tiles
 	for (int i = 0; i < tiles.size(); i++)
@@ -436,18 +436,28 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (tiles[i]->at(j) != nullptr)
 			{
+				for (int k = 0; k < *soldierRecieved; k++)
+				{
+					if (CollissionMan().intersectCircRect(*soldiers->at(k), *tiles[i]->at(j), 'a'))
+					{
+						collideCheck = true;
+					}
+
+					if (!collideCheck)
+					{
+						soldiers->at(k)->move();
+						if (k == 0)
+						{
+							cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+						}
+					}
+				}
 				if (CollissionMan().intersectCircRect(*player, *tiles[i]->at(j), 'a'))
 				{
 					collideCheck = true;
 				}
 			}
 		}
-	}
-
-	if (collideCheck == false)
-	{
-		player->move();
-		cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
 	}
 
 	//camera.move(player.getInputDirection());
