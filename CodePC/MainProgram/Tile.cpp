@@ -12,7 +12,9 @@ Tile::Tile(std::string filename) :
 
 Tile::~Tile()
 {
+	delete previousNode;
 	previousNode = nullptr;
+	delete nextNode;
 	nextNode = nullptr;
 }
 
