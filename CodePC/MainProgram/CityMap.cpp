@@ -3,10 +3,12 @@
 #include <iostream>
 #include "Soldier.h"
 
-CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy):
+CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy, int* soldierSent):
     State(InputStateId),
-    soldiers(soliderHierarchy)
+    soldiers(soliderHierarchy),
+    soldierRecieved(soldierSent)
 {
+   counter = soldiers->size();
    cityTexture.loadFromFile("../Images/citymap.png");
    citySprite.setTexture(cityTexture);
    citySprite.setScale(stateStack.windowWidth / citySprite.getGlobalBounds().width, stateStack.windowHeight / citySprite.getGlobalBounds().height);
@@ -20,6 +22,7 @@ CityMap::CityMap(StateID InputStateId, StateStack& stateStack, std::vector<Soldi
    blueSquareSprite.setScale(0.3, 0.5);
 
    srand(time(NULL));
+   
 }
 
 CityMap::~CityMap()
@@ -75,8 +78,8 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         else if (choice == 2)
         {
             std::cout << "How many soldiers do you want to send into combat? (You have " << soldiers->size() << " soldiers)\n";
-            std::cin >> temp;
-            if (temp <= soldiers->size() && temp > 0)
+            std::cin >> *soldierRecieved;
+            if (*soldierRecieved <= soldiers->size() && *soldierRecieved > 0)
             {
                 returnMessage = (int)stateEvent::GameState;
             }
@@ -108,8 +111,9 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
         {
-            soldiers->push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(deleteSoon), 3));
-    
+            soldiers->push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(counter), 3));
+            counter = soldiers->size();
+            updateText();
         }
     }
 

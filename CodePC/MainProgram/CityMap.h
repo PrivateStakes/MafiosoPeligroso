@@ -25,8 +25,10 @@ private:
 
 	std::vector<Soldier*>* soldiers;
 
+	int* soldierRecieved;
+
 public:
-	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy);
+	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy, int* soldierSent);
 	~CityMap() override;
 
 	// Inherited via State
