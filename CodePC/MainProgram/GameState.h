@@ -55,6 +55,7 @@ private:
 	int amountOfEnemySpawnPoints;
 	int enemyAmount;
 	int cap;
+	int* soldierRecieved;
 	Soldier* *enemies;
 	WeaponFactory weaponFactory;
 	EditorState* tempEditor;
@@ -65,7 +66,7 @@ private:
 	bool mouseVisability = true;
 
 public:
-	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy);
+	GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*> *soldierHierarchy, int* solderSent);
 	~GameState() override;
 
 	int backendUpdate();	//non-deltaTime reliant code

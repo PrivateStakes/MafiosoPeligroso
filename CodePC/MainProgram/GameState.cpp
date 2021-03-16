@@ -9,12 +9,13 @@
 #include <assert.h>
 #include "EditorState.h"
 
-GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*>* soldierHierarchy) :
-State(InputStateId),
-width(stateStack.windowWidth),
-height(stateStack.windowHeight),
-currentFileName(level),
-soldiers(soldierHierarchy)
+GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*> *soldierHierarchy, int* solderSent) :
+	State(InputStateId),
+	width(stateStack.windowWidth),
+	height(stateStack.windowHeight),
+	currentFileName(level),
+	soldiers(soldierHierarchy),
+	soldierRecieved(solderSent)
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
@@ -44,7 +45,7 @@ soldiers(soldierHierarchy)
 	for (int i = 0; i < soldiers->size(); i++)
 	{
 		soldiers->at(i)->setWeapon(nullptr);
-		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon(GunType::pistol));
+		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
 	}
 
 	//Loads level data
@@ -145,7 +146,7 @@ soldiers(soldierHierarchy)
 		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i]->setID(stateStack.getID());
-		enemies[i]->setWeapon(weaponFactory.buildWeapon(GunType::minigun));
+		enemies[i]->setWeapon(weaponFactory.buildWeapon((GunType)(rand()%3)));
 	}
 	enemyAmount = amountOfEnemySpawnPoints;
 }
