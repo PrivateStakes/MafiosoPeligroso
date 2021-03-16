@@ -110,7 +110,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 						}
 					}
 					
-					if (tempTile.getTileType() == 'e' || tempTile.getTileType() == 'c' || tempTile.getTileType() == 'd')
+					if (tempTile.getTileType() == 'e')
 					{
 						addTile = false;
 
