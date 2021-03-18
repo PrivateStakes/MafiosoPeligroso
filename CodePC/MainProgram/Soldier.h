@@ -20,6 +20,11 @@ protected:
     int updateTimer;
     int counter;
 
+    int walkTimer;
+    int walkCounter;
+    int xDir;
+    int yDir;
+
     bool isPlayer;
     bool reloading;
     sf::Vector2f inputDirection;
@@ -42,7 +47,7 @@ public:
     int getDmg()const;
     int getID()const;
 
-    sf::Vector2f getInputDirection()const;
+    sf::Vector2f getInputDirection(float deltaTime)const;
     void rotateSprite(sf::Vector2f pos);
 
     void move();

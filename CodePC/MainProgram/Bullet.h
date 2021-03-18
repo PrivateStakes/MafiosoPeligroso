@@ -11,7 +11,6 @@ private:
 	int dmg;
 	int ID;
 
-	void move();
 public:
 	Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg = 1, float speed = 35.0f, int ID = 0);
 	~Bullet();

@@ -65,6 +65,8 @@ private:
 	Soldier* *enemies;
 	WeaponFactory weaponFactory;
 	EditorState* tempEditor;
+	sf::Vector2f lastMousePos;
+	sf::Vector2f currentMousePos;
 	
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;
