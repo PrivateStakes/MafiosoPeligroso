@@ -5,12 +5,16 @@
 Soldier::Soldier(std::string fileName, std::string name, int health) :
 	GameEntity(fileName),
 	health(health),
-	speed(5),
+	speed(300),
 	isPlayer(false),
 	reloading(false),
 	currentWeapon(nullptr),
 	counter(0),
-	collided(false)
+	collided(false),
+	walkCounter(0),
+	walkTimer(0),
+	xDir(0),
+	yDir(0)
 {	
 
 }
@@ -83,9 +87,9 @@ int Soldier::getID() const
 	return this->ID;
 }
 
-sf::Vector2f Soldier::getInputDirection() const
+sf::Vector2f Soldier::getInputDirection(float deltaTime) const
 {
-	return this->inputDirection;
+	return this->inputDirection*deltaTime;
 }
 
 void Soldier::rotateSprite(sf::Vector2f pos)
@@ -102,54 +106,10 @@ void Soldier::rotateSprite(sf::Vector2f pos)
 
 }
 
-void Soldier::move()
-{
-	if (this->isPlayer)
-	{
-		this->inputDirection = sf::Vector2f(0, 0);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			this->inputDirection.x = -this->speed;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			this->inputDirection.x = this->speed;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		{
-			this->inputDirection.y = -this->speed;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			this->inputDirection.y = this->speed;
-		}
-
-		this->sprite.move(this->inputDirection);
-	}
-	else
-	{
-		//AI movement
-		this->sprite.move((rand() % 3 - 1) * 5, (rand() % 3 - 1) * 5);
-	}
-
-	if (this->reloading)
-	{
-		this->counter = (this->counter + 1) % this->currentWeapon->getReloadTime();
-		if (counter == 0)
-		{
-			this->reloading = false;
-		}
-	}
-}
-
 Bullet Soldier::shoot(sf::Vector2f direction)
 {
 	if (currentWeapon != nullptr)
 	{
-		//float offset1 = (abs(this->sprite.getPosition().x - direction.x) + abs(this->sprite.getPosition().y - direction.y))/2;
 		sf::Vector2f offset = (direction / 100.f);
 		float rotation = 0;
 		direction.x += (int(offset.x) * (rand() % 3 - 1) * (rand() % 10)) * this->currentWeapon->getSpreadMultiplier();
@@ -183,6 +143,52 @@ Bullet Soldier::shoot(sf::Vector2f direction)
 
 void Soldier::update(const float deltaTime)
 {
+	if (this->isPlayer)
+	{
+		this->inputDirection = sf::Vector2f(0, 0);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			this->inputDirection.x = -this->speed;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			this->inputDirection.x = this->speed;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			this->inputDirection.y = -this->speed;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			this->inputDirection.y = this->speed;
+		}
+
+		this->sprite.move(this->inputDirection*deltaTime);
+	}
+	else
+	{
+		//AI movement
+		if (walkCounter == 0)
+		{
+			xDir = rand() % 3 - 1;
+			yDir = rand() % 3 - 1;
+			walkTimer = rand() % 11 + 10;
+		}
+		walkCounter = (walkCounter + 1) % walkTimer;
+		this->sprite.move(this->speed/2*deltaTime*xDir, this->speed/2 * deltaTime * yDir);
+	}
+
+	if (this->reloading)
+	{
+		this->counter = (this->counter + 1) % this->currentWeapon->getReloadTime();
+		if (counter == 0)
+		{
+			this->reloading = false;
+		}
+	}
 }
 
 std::vector<Tile*> &Soldier::getNodes()

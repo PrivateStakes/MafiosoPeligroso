@@ -15,7 +15,8 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	height(stateStack.windowHeight),
 	currentFileName(level),
 	soldiers(soldierHierarchy),
-	soldierRecieved(solderSent)
+	soldierRecieved(solderSent),
+	lastMousePos(sf::Vector2f(0,0))
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
@@ -33,7 +34,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	texture.loadFromFile("../Images/cursor.png");
 	cursor.setTexture(texture);
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
-	cursor.setScale(2, 2);
+	cursor.setScale(3, 3);
 
 	amountOfBullets = 0;
 	amountOfEnemySpawnPoints = 0;
@@ -45,8 +46,9 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
 
 	//Arms soldiers
-	for (int i = 0; i < *soldierRecieved; i++)
+	for (int i = 0; i < soldiers->size(); i++)
 	{
+		soldiers->at(i)->setPosition(sf::Vector2f(100, 100));
 		soldiers->at(i)->setWeapon(nullptr);
 		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
 	}
@@ -373,7 +375,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
 
 	//Update all tiles
 	for (int i = 0; i < tiles.size(); i++)
@@ -392,20 +394,19 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	for (int i = 1; i < *soldierRecieved; i++)
 	{
-		soldiers->at(i)->move();
+		soldiers->at(i)->update((float)deltaTime);
 	}
 
 	player->rotateSprite(cursor.getPosition());
 
 	for (int i = 0; i < enemyAmount; i++)
 	{
-		//enemies[i]->move();
 		if (enemies[i]->isAbleToShoot() && rand()%5 == 0)
 		{
 			bool shot = false;
 			for (int j = 0; j < *soldierRecieved && shot != true; j++)
 			{
-				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 100 || abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 100)
+				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 300 && abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 300)
 				{
 					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
 					bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
@@ -447,22 +448,33 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		if (!soldiers->at(k)->getColl())
 		{
-			soldiers->at(k)->move();
+			soldiers->at(k)->update((float)deltaTime);
 			if (k == 0)
 			{
-				cursor.move(sf::Vector2f(mouse.getPosition(window)) - (player->getPosition() - 2.f * player->getInputDirection()));
+				currentMousePos = sf::Vector2f(mouse.getPosition(window));
+				int x = player->getPosition().x;
+				int y = player->getPosition().y;
+				if (player->getPosition().x > width)
+				{
+					x = width;
+				}
+				if (player->getPosition().y > height)
+				{
+					y = height;
+				}
+				cursor.move(currentMousePos - lastMousePos + player->getInputDirection(deltaTime));
+				mouse.setPosition(sf::Vector2i(width/2, height/2), window);
 			}
 		}
 		soldiers->at(k)->setColl(false);
 	}
+	lastMousePos = sf::Vector2f(mouse.getPosition(window));
 
 	for (int k = 0; k < enemyAmount; k++)
 	{
 		if (!enemies[k]->getColl())
 		{
-			enemies[k]->move();
-			
-			
+			enemies[k]->update((float)deltaTime);
 		}
 		enemies[k]->setColl(false);
 	}
@@ -470,8 +482,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	//camera.move(player.getInputDirection());
 	camera.setCenter(player->getPosition());
 	
-
-	mouse.setPosition(sf::Vector2i(player->getPosition()), window);
 	for (int i = 0; i < bullets.size(); i++)
 	{
 		if (bullets[i] != nullptr) bullets[i]->update(deltaTime);
@@ -544,23 +554,32 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (soldiers->size() > 1)	//looks dangerous, if soldiers cause crashes: try popping the stack done proper
 				{
-					soldiers->at(0)->setIsPlayer(false);
+					//Deletes player
 					delete soldiers->at(0);
 					soldiers->at(0) = nullptr;
+					player = nullptr;
 
+					//Copies soldier
 					soldiers->at(0) = soldiers->at(1);
 					soldiers->at(1) = nullptr;
 
+					//Puts another soldier from the hierarchy in the second spot
 					if (soldiers->at(1) != soldiers->back())
 					{
 						soldiers->at(1) = soldiers->back();
 						soldiers->back() = nullptr;
 					}
 
-					soldiers->pop_back();
+					//Sets the soldier in the front as the new player
 					soldiers->at(0)->setIsPlayer(true);
 					player = soldiers->at(0);
-					//soldierRecieved--;
+
+					//Reduces the size of the vector
+					soldiers->pop_back();
+					if (*soldierRecieved > soldiers->size())
+					{
+						(*soldierRecieved)--;
+					}
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
 			}
