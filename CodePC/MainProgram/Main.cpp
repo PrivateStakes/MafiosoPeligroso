@@ -21,7 +21,7 @@ int main()
 {
 	
 	std::srand((unsigned)time(0));
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "BeSt MaFiA gAmE eVeR!");
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Brutalshot: Throne of Guns");
 	sf::RenderStates defaultRenderState;
 
 	sf::Clock clock;

@@ -167,7 +167,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	healthText.setFont(gameFont);
 	healthText.setFillColor(sf::Color::Green);
 	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
-	healthText.setString("Health: " + std::to_string(player->getHealth()));
+	healthText.setString("Name: " + player->getName() + "\nHealth: " + std::to_string(player->getHealth()));
 
 	weaponText.setFont(gameFont);
 	weaponText.setFillColor(sf::Color::Green);
@@ -399,6 +399,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Y))
 		{
 			playerWeapon = (playerWeapon + 1) % 3;
+			delete player->getWeaponAddr();
 			player->setWeapon(weaponFactory.buildWeapon((GunType)(playerWeapon)));
 			weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
 			counter++;
@@ -504,7 +505,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		enemies[k]->setColl(false);
 	}
 
-	camera.setCenter(player->getPosition());
+	
 	
 	for (int i = 0; i < bullets.size(); i++)
 	{
@@ -578,7 +579,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			player->loseHealth(bullets[k]->getDamage());
 			deleteBullet = true;
-			healthText.setString("Health: " + std::to_string(player->getHealth()));
+			healthText.setString("Name: " + player->getName() +"\nHealth: " + std::to_string(player->getHealth()));
 
 			if (player->getHealth() <= 0)
 			{
@@ -610,6 +611,8 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 					{
 						(*soldierRecieved)--;
 					}
+					healthText.setString("Name: " + player->getName() + "\nHealth: " + std::to_string(player->getHealth()));
+					weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
 			}
@@ -677,12 +680,14 @@ void GameState::render(sf::RenderWindow& window)
 		
 	}
 
+	camera.setCenter(player->getPosition());
+
 	for (int i = 0; i < enemyAmount; i++)
 	{
 		window.draw(*enemies[i]);
 	}
 	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
-	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 40);
+	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 70);
 	window.draw(healthText);
 	window.draw(weaponText);
 

@@ -33,8 +33,9 @@ protected:
     std::vector<Tile*> nodes;
 
 public:
-    Soldier(std::string fileName = "character_1.png", std::string name = "joe", int health = 10);
+    Soldier(std::string fileName = "character_1.png", std::string name = "Joe", int health = 10);
     ~Soldier();
+    WeaponType* getWeaponAddr()const;
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
     void setID(int ID);
@@ -46,6 +47,7 @@ public:
     int getHealth()const;
     int getDmg()const;
     int getID()const;
+    std::string getName()const;
     std::string getWeaponName(int weaponID)const;
 
     sf::Vector2f getInputDirection(float deltaTime)const;

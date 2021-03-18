@@ -14,7 +14,8 @@ Soldier::Soldier(std::string fileName, std::string name, int health) :
 	walkCounter(0),
 	walkTimer(0),
 	xDir(0),
-	yDir(0)
+	yDir(0),
+	name(name)
 {	
 
 }
@@ -30,6 +31,11 @@ Soldier::~Soldier()
 	{
 		delete nodes[i];
 	}
+}
+
+WeaponType* Soldier::getWeaponAddr() const
+{
+	return currentWeapon;
 }
 
 void Soldier::loseHealth(int dmg)
@@ -85,6 +91,11 @@ int Soldier::getDmg() const
 int Soldier::getID() const
 {
 	return this->ID;
+}
+
+std::string Soldier::getName() const
+{
+	return this->name;
 }
 
 std::string Soldier::getWeaponName(int weaponID) const

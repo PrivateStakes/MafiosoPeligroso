@@ -112,7 +112,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
         {
-            soldiers->push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(counter), 3));
+            soldiers->push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(counter)));
             counter = soldiers->size();
             updateText();
         }
