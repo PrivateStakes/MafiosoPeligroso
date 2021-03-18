@@ -29,14 +29,14 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	tileSizeY = tempEditor->getGridSizeY();
 	bulletTexture.loadFromFile("../Images/Bullet2.png");
 	bulletSprite.setTexture(bulletTexture);
-	bulletSprite.setScale(2,2);
+	bulletSprite.setScale(3,3);
 
 	player = soldiers->at(0);
 	float temp = 0.f;
 	texture.loadFromFile("../Images/cursor.png");
 	cursor.setTexture(texture);
 	cursor.setOrigin(cursor.getGlobalBounds().width / 2, cursor.getGlobalBounds().height / 2);
-	cursor.setScale(3, 3);
+	cursor.setScale(2, 2);
 
 	amountOfBullets = 0;
 	amountOfEnemySpawnPoints = 0;
@@ -172,7 +172,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	weaponText.setFont(gameFont);
 	weaponText.setFillColor(sf::Color::Green);
 	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
-	weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
+	weaponText.setString("Weapon: " + player->getWeaponName());
 }
 
 GameState::~GameState()
@@ -401,7 +401,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			playerWeapon = (playerWeapon + 1) % 3;
 			delete player->getWeaponAddr();
 			player->setWeapon(weaponFactory.buildWeapon((GunType)(playerWeapon)));
-			weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
+			weaponText.setString("Weapon: " + player->getWeaponName());
 			counter++;
 		}
 	}
@@ -611,8 +611,9 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 					{
 						(*soldierRecieved)--;
 					}
+					cursor.setPosition(player->getPosition());
 					healthText.setString("Name: " + player->getName() + "\nHealth: " + std::to_string(player->getHealth()));
-					weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
+					weaponText.setString("Weapon: " + player->getWeaponName());
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
 			}
@@ -642,6 +643,8 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 void GameState::render(sf::RenderWindow& window)
 {
+	camera.setCenter(player->getPosition() + 2.f * player->getInputDirection(1 / 60));
+	window.setView(camera);
 	for (int i = 0; i < floor.size(); i++)
 	{
 		for (int j = 0; j < floor[i]->size(); j++)
@@ -680,8 +683,6 @@ void GameState::render(sf::RenderWindow& window)
 		
 	}
 
-	camera.setCenter(player->getPosition());
-
 	for (int i = 0; i < enemyAmount; i++)
 	{
 		window.draw(*enemies[i]);
@@ -692,5 +693,4 @@ void GameState::render(sf::RenderWindow& window)
 	window.draw(weaponText);
 
 	window.draw(cursor);
-	window.setView(camera);
 }

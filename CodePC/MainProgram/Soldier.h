@@ -48,7 +48,7 @@ public:
     int getDmg()const;
     int getID()const;
     std::string getName()const;
-    std::string getWeaponName(int weaponID)const;
+    std::string getWeaponName()const;
 
     sf::Vector2f getInputDirection(float deltaTime)const;
     void rotateSprite(sf::Vector2f pos);

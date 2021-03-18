@@ -1,40 +1,7 @@
 #include "Weapon.h"
 
-//Weapon::Weapon(GunType gunType)
-//{
-//	switch (gunType)
-//	{
-//	case GunType::pistol:
-//		this->gunType = "Pistol";
-//		this->dmg = 3;
-//		this->reloadTime = 30;
-//		this->spreadMultiplier = 1;
-//		this->speed = 35.f;
-//		this->multiShot = false;
-//		break;
-//
-//	case GunType::shotgun:
-//		this->gunType = "Shotgun";
-//		this->dmg = 1;
-//		this->reloadTime = 60;
-//		this->spreadMultiplier = 0;
-//		this->speed = 25.f;
-//		this->multiShot = true;
-//		break;
-//
-//	case GunType::sniper:
-//		this->gunType = "Sniper";
-//		this->dmg = 5;
-//		this->reloadTime = 120;
-//		this->spreadMultiplier = 0;
-//		this->speed = 60.f;
-//		this->multiShot = false;
-//		break;
-//	}
-//}
-
-Weapon::Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed)
-	:dmg(dmg), reloadTime(reloadTime), spreadMultiplier(spreadMultiplier), ammo(ammo), speed(speed)
+Weapon::Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed, std::string gunType)
+	:dmg(dmg), reloadTime(reloadTime), spreadMultiplier(spreadMultiplier), ammo(ammo), speed(speed), gunType(gunType)
 {
 }
 

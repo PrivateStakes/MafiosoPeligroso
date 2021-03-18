@@ -15,7 +15,7 @@ private:
 
 public:
 	//Weapon(GunType gunType = GunType::pistol);
-	Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed);
+	Weapon(int dmg, int reloadTime, int spreadMultiplier, int ammo, float speed, std::string gunType);
 	~Weapon();
 	int getMaxAmmo()const;
 	std::string getGunType()const;

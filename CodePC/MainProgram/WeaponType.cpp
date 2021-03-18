@@ -22,6 +22,11 @@ int WeaponType::getAmmo()
 	return this->ammo;
 }
 
+std::string WeaponType::getGunType() const
+{
+	return copiedWeapon->getGunType();
+}
+
 int WeaponType::getDmg() const
 {
 	return  copiedWeapon->getDmg();

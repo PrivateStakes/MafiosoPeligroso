@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <string.h>
 class Weapon;
 
 class WeaponType
@@ -12,6 +14,7 @@ public:
 	~WeaponType();
 	void loseAmmo();
 	int getAmmo();
+	std::string getGunType()const;
 	int getDmg()const;
 	int getReloadTime()const;
 	int getSpreadMultiplier()const;
