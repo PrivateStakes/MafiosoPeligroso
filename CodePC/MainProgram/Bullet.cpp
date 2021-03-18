@@ -1,9 +1,5 @@
 #include "Bullet.h"
 
-void Bullet::move()
-{
-}
-
 Bullet::Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg, float speed, int ID)
 	:GameEntity("Bullet2.png"), xDir(direction.x), yDir(direction.y), dmg(dmg), speed(speed*60), ID(ID), rotation(rotation)
 {

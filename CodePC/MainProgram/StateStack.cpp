@@ -182,6 +182,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 			switch ((stateEvent)tempInt)
 			{
 			case stateEvent::ReturnToMainMenu:
+				gameOn = false;
 				pop();
 				pop();
 				break;

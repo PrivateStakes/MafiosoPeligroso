@@ -16,7 +16,9 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	currentFileName(level),
 	soldiers(soldierHierarchy),
 	soldierRecieved(solderSent),
-	lastMousePos(sf::Vector2f(0,0))
+	lastMousePos(sf::Vector2f(0,0)),
+	counter(0),
+	updateTimer(60)
 {
 	srand(time(NULL));
 	camera.setCenter(0, 0);
@@ -46,14 +48,15 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	if (!loadStream && loadStream.is_open()) assert(true == true && "No level present on location!");
 
 	//Arms soldiers
-	for (int i = 0; i < soldiers->size(); i++)
+	for (int i = 1; i < soldiers->size(); i++)
 	{
-		soldiers->at(i)->setPosition(sf::Vector2f(100, 100));
+		soldiers->at(i)->setPosition(sf::Vector2f(200, 200));
 		soldiers->at(i)->setWeapon(nullptr);
 		soldiers->at(i)->setWeapon(weaponFactory.buildWeapon((GunType)(rand() % 3)));
 	}
 
-	
+	player->setWeapon(weaponFactory.buildWeapon((GunType)(playerWeapon)));
+	player->setPosition(sf::Vector2f(200, 200));
 
 	//Loads level data
 	for (int i = 0; i < tileSizeY; i++)
@@ -152,13 +155,24 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 		if (whichTexture == 1) tempTexture = "evil_character_1.png";
 		else tempTexture = "evil_character_2.png";
 
-		enemies[i] = new Soldier(tempTexture, "Joe", 2);
+		enemies[i] = new Soldier(tempTexture, "Joe", 5);
 		enemies[i]->setPosition(*enemySpawnPointArray[i]);
 		stateStack.setID(stateStack.getID() + 1);
 		enemies[i]->setID(stateStack.getID());
 		enemies[i]->setWeapon(weaponFactory.buildWeapon((GunType)(rand()%3)));
 	}
 	enemyAmount = amountOfEnemySpawnPoints;
+
+	gameFont.loadFromFile("../Fonts/PressStart2P-Regular.ttf");
+	healthText.setFont(gameFont);
+	healthText.setFillColor(sf::Color::Green);
+	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
+	healthText.setString("Health: " + std::to_string(player->getHealth()));
+
+	weaponText.setFont(gameFont);
+	weaponText.setFillColor(sf::Color::Green);
+	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
+	weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
 }
 
 GameState::~GameState()
@@ -375,7 +389,23 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 {
 	int returnMessage = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) returnMessage = (int)stateEvent::LaunchEditor;
+	if (counter != 0)
+	{
+		counter = (counter + 1) % updateTimer;
+	}
+	else
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Y))
+		{
+			playerWeapon = (playerWeapon + 1) % 3;
+			player->setWeapon(weaponFactory.buildWeapon((GunType)(playerWeapon)));
+			weaponText.setString("Weapon: " + player->getWeaponName(playerWeapon));
+			counter++;
+		}
+	}
+	
+	
 
 	//Update all tiles
 	for (int i = 0; i < tiles.size(); i++)
@@ -390,11 +420,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	{
 		window.setMouseCursorVisible(false);
 		mouseVisability = false;
-	}
-
-	for (int i = 1; i < *soldierRecieved; i++)
-	{
-		soldiers->at(i)->update((float)deltaTime);
 	}
 
 	player->rotateSprite(cursor.getPosition());
@@ -479,7 +504,6 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		enemies[k]->setColl(false);
 	}
 
-	//camera.move(player.getInputDirection());
 	camera.setCenter(player->getPosition());
 	
 	for (int i = 0; i < bullets.size(); i++)
@@ -540,6 +564,11 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 							enemies[j] = enemies[enemyAmount - 1];
 						}
 						enemyAmount--;
+						if (enemyAmount == 0)
+						{
+							std::cout << "You have killed every single enemy and won the demo!\n";
+							returnMessage = (int)stateEvent::ReturnToMainMenu;
+						}
 					}
 				}
 			}
@@ -549,6 +578,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			player->loseHealth(bullets[k]->getDamage());
 			deleteBullet = true;
+			healthText.setString("Health: " + std::to_string(player->getHealth()));
 
 			if (player->getHealth() <= 0)
 			{
@@ -651,6 +681,10 @@ void GameState::render(sf::RenderWindow& window)
 	{
 		window.draw(*enemies[i]);
 	}
+	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
+	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 40);
+	window.draw(healthText);
+	window.draw(weaponText);
 
 	window.draw(cursor);
 	window.setView(camera);

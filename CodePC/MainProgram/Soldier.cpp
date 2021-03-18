@@ -87,6 +87,15 @@ int Soldier::getID() const
 	return this->ID;
 }
 
+std::string Soldier::getWeaponName(int weaponID) const
+{
+	std::string weaponName;
+	if (weaponID == 0) weaponName = "Pistol";
+	else if (weaponID == 1) weaponName = "Minigun";
+	else  weaponName = "Sniper";
+	return weaponName;
+}
+
 sf::Vector2f Soldier::getInputDirection(float deltaTime) const
 {
 	return this->inputDirection*deltaTime;

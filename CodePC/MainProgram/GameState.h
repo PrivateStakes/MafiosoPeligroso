@@ -53,6 +53,10 @@ private:
 	sf::Mouse mouse;
 	sf::Texture texture;
 
+	sf::Text healthText;
+	sf::Text weaponText;
+	sf::Font gameFont;
+
 	//Player + NPC
 	Soldier* player;
 	std::vector<Soldier*>* soldiers;
@@ -70,6 +74,9 @@ private:
 	
 	std::vector<Bullet*> bullets;
 	int amountOfBullets;
+	int playerWeapon;
+	int counter;
+	int updateTimer;
 
 	bool mouseVisability = true;
 

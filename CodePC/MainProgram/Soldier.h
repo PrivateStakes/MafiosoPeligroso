@@ -33,7 +33,7 @@ protected:
     std::vector<Tile*> nodes;
 
 public:
-    Soldier(std::string fileName = "character_1.png", std::string name = "joe", int health = 3);
+    Soldier(std::string fileName = "character_1.png", std::string name = "joe", int health = 10);
     ~Soldier();
     void loseHealth(int dmg = 1);
     void setIsPlayer(bool state);
@@ -46,11 +46,11 @@ public:
     int getHealth()const;
     int getDmg()const;
     int getID()const;
+    std::string getWeaponName(int weaponID)const;
 
     sf::Vector2f getInputDirection(float deltaTime)const;
     void rotateSprite(sf::Vector2f pos);
 
-    void move();
     Bullet shoot(sf::Vector2f direction);
 
     // Inherited via GameEntity
