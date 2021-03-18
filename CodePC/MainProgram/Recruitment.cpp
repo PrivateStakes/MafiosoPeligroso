@@ -83,27 +83,67 @@ void Recruitment::randomCharacter()
 	this->hatTexture.loadFromFile("../Images/H" + std::to_string(rand()%4) + ".png");
 	this->hatSprite.setTexture(hatTexture);
 
-	temp = rand() % 4;
+	temp = rand() % 13;
 	if (temp == 0)
 	{
-		name = "Jörgen";
+		name = "Charlie";
 	}
 	else if (temp == 1)
 	{
-		name = "Morgan";
+		name = "Edmund";
 	}
 	else if (temp == 2)
 	{
-		name = "Josef";
+		name = "Viktor";
 	}
 	else if (temp == 3)
 	{
-		name = "Sten";
+		name = "Nicholas";
+	}
+	else if (temp == 4)
+	{
+		name = "Dominic";
+	}
+	else if (temp == 5)
+	{
+		name = "Dorian";
+	}
+	else if (temp == 6)
+	{
+		name = "Alfred";
+	}
+	else if (temp == 7)
+	{
+		name = "Mordecai";
+	}
+	else if (temp == 8)
+	{
+		name = "Virgil";
+	}
+	else if (temp == 9)
+	{
+		name = "Horatio";
+	}
+	else if (temp == 10)
+	{
+		name = "Andrik";
+	}
+	else if (temp == 11)
+	{
+		name = "Bobby";
+	}
+	else if (temp == 11)
+	{
+		name = "Clyde";
+	}
+	else if (temp == 12)
+	{
+		name = "Harrier";
 	}
 
 	age = rand()%60 + 14;
 
-	temp = rand() % 4;
+	temp = rand() % 13;
 	if (temp == 0)
 	{
 		occupation = "Blacksmith";
@@ -120,23 +160,95 @@ void Recruitment::randomCharacter()
 	{
 		occupation = "Teacher";
 	}
+	else if (temp == 4)
+	{
+		occupation = "Pediatrician";
+	}
+	else if (temp == 5)
+	{
+		occupation = "Fisherman";
+	}
+	else if (temp == 6)
+	{
+		occupation = "Austronaut";
+	}
+	else if (temp == 7)
+	{
+		occupation = "Mucisian";
+	}
+	else if (temp == 8)
+	{
+		occupation = "News anchor";
+	}
+	else if (temp == 9)
+	{
+		occupation = "Chef";
+	}
+	else if (temp == 10)
+	{
+		occupation = "Cashier";
+	}
+	else if (temp == 11)
+	{
+		occupation = "Police";
+	}
+	else if (temp == 12)
+	{
+		occupation = "Beatboxer";
+	}
 
-	temp = rand() % 4;
+	temp = rand() % 13;
 	if (temp == 0)
 	{
-		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+		backstory = "Couldn't settle \ninto civillian life after \nhis service in France. \n\nHis hands shake \nuncontrollably unless he's \nholding a gun.";
 	}
 	else if (temp == 1)
 	{
-		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+		backstory = "Lost his medical license \nafter being caught mixing \nhis own laudanum. \n\nIf he offers you a drink, \ndon't accept it.";
 	}
 	else if (temp == 2)
 	{
-		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+		backstory = "A behemoth of a \nman and expatriate of the \nonce Austro-Hungarian \nempire. \n\nDon't call him vinegar, \nonly his wife calls \nhim vinegar.";
 	}
 	else if (temp == 3)
 	{
-		backstory = "His wife left \nhim for some other guy. \n\nSo he left his old life \nto hunt her down";
+		backstory = "Used to be a \nboxer before he got \n'too competitive' for the \nring. \n\nRaised in the swamp, don't \nmind his accent.";
+	}
+	else if (temp == 4)
+	{
+		backstory = "Would have \ninherited his father's \nranch in Texas if he didn't \nburn it down. \n\nLoves a good chase.";
+	}
+	else if (temp == 5)
+	{
+		backstory = "Used to play \nsaxophone for a cabaret \nbefore being caught in the \nladies dress room. \n\nLanguid as a cloud of \ntobacco smoke.";
+	}
+	else if (temp == 6)
+	{
+		backstory = "Survived the \nwhole campaign at the \nSomme, moved to America for 'peace and quiet'. \n\nPlays the piano like a \nchampion.";
+	}
+	else if (temp == 7)
+	{
+		backstory = "Made a bitter \ndeparture from home after \nsettling a grudge with his \nabusive father. \n\nHas a stare like a pair \nof icepicks.";
+	}
+	else if (temp == 8)
+	{
+		backstory = "Flunked police \nacademy because he gets too \n'intense' at the shooting \nrange. \n\nWhere did he get a tommy \ngun ? [NAME HERE] STOP!";
+	}
+	else if (temp == 9)
+	{
+		backstory = "Worked as a \nwaiter at a high-class \nrestaurant before the \ndepression hit. \n\nCouldn't sound threatening \nto save his life.";
+	}
+	else if (temp == 10)
+	{
+		backstory = "Moved to America \nfrom some slavic country he \nrefuses to talk about. \n\nDon't ask him about his \nfamily.";
+	}
+	else if (temp == 11)
+	{
+		backstory = "A British \nveteran of the war, fell in \nlove with an American nurse. \n\nOptimistic to a fault.";
+	}
+	else if (temp == 12)
+	{
+		backstory = "Used to crew a \nfishing vessel before \ngetting pegged for the liquor \nin the hold. \n\nNot a lot of personality, \nbut he could strangle a \nhorse.";
 	}
 
 	temp = rand() % 4;
