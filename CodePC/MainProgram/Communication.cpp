@@ -43,26 +43,26 @@ bool Communication::yesOpen()
 
 std::string Communication::textBit(int id)
 {
-	if (id == -1) return "I welcome you to my humble abode";
+	if (id == -1) return "Got something to say cat?";
 	if (id == 0)
 	{
-		return "Lose away off why half led have near bed.\n\n\n\nAt engage simple father of period others except.\n\n\n\nMy giving do summer of though narrow marked at.\n\n\n\nSpring formal no county ye waited.";
+		return "Don't think just 'cause you bumped off the boss \n\nthat you got it all figured out big six. \n\n\n\nEvery rube in the city wants yer seat, the real \n\ntest is keeping it.";
 	}
 	else if (id == 1)
 	{
-		return "My whether cheered at regular it of promise \n\nblushes perhaps.\n\n\n\nUncommonly simplicity interested mr is be \n\ncompliment projecting my inhabiting.\n\n\n\nGentleman he september in oh excellent.";
+		return "You gotta take someone for a ride? \n\n\n\nDrop the evidence off at the Milson brother's \n\n\nplace. \n\n\n\nTheir pigs will eat anything.";
 	}
 	else if (id == 2)
 	{
-		return "Yourself off its pleasant ecstatic now law.\n\n\n\nYe their mirth seems of songs.\n\n\n\nProspect out bed contempt separate.\n\n\n\nHer inquietude our shy yet sentiments \n\ncollecting.";
+		return "The fuzz ain't no thing in this city, our \n\nerstwhile boss had that covered, now it's you \n\nwho covers that expense *hur-hur-hur*.";
 	}
 	else if (id == 3)
 	{
-		return "Cottage fat beloved himself arrived old.\n\n\n\nGrave widow hours among him ﻿no you led.\n\n\n\nPower had these met least nor young.\n\n\n\nYet match drift wrong his our. ";
+		return "Don't hire a man who can't look 'em in the eye \n\nwhen they pop 'em, can't trust a fink.";
 	}
 	else if (id == 4)
 	{
-		return "Extremity direction existence as dashwoods do \n\nup.\n\n\n\nSecuring marianne led welcomed offended but \n\noffering six raptures.\n\n\n\nConveying concluded newspaper rapturous oh at.";
+		return "Used to be easy riding the Muddy Miss to the \n\nCajun fer business. \n\n\n\nBut their hooch turned to panther sweat, then \n\nto coffin varnish, now the fuzz won't let up.";
 	}
 }
 

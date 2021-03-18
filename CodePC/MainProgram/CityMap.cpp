@@ -93,6 +93,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         {
             communicator.closeMenu();
         }
+        choice = 1;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
