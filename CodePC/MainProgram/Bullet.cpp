@@ -1,19 +1,26 @@
 #include "Bullet.h"
 
-Bullet::Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg, float speed, int ID)
-	:GameEntity("Bullet2.png"), xDir(direction.x), yDir(direction.y), dmg(dmg), speed(speed*60), ID(ID), rotation(rotation)
+Bullet::Bullet(std::string gunName)
 {
-	this->sprite.setPosition(position);
-	//this->sprite.setRotation(rotation);
+	if (gunName == "Pistol")
+	{
+		dmg = 2;
+		speed = 20*60;
+	}
+	else if (gunName == "Minigun")
+	{
+		dmg = 1;
+		speed = 20*60;
+	}
+	else if (gunName == "Sniper")
+	{
+		dmg = 5;
+		speed = 35*60;
+	}
 }
 
 Bullet::~Bullet()
 {
-}
-
-int Bullet::getID() const
-{
-	return this->ID;
 }
 
 int Bullet::getDamage() const
@@ -21,17 +28,9 @@ int Bullet::getDamage() const
 	return this->dmg;
 }
 
-float Bullet::getRotation() const
+float Bullet::getSpeed() const
 {
-	return this->rotation;
+	return this->speed;
 }
 
-sf::FloatRect Bullet::getBounds() const
-{
-	return this->sprite.getGlobalBounds();
-}
 
-void Bullet::update(const float deltaTime)
-{
-	this->sprite.move(this->speed * this->xDir * deltaTime, this->speed * this->yDir * deltaTime);
-}

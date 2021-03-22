@@ -17,7 +17,6 @@ private:
 public:
 	GameEntity(std::string fileName);
 	~GameEntity();
-	bool gotHit(const Bullet &bullet)const;
 
 	virtual void update(const float deltaTime) = 0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;

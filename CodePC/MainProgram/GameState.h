@@ -8,6 +8,7 @@
 #include "WeaponFactory.h"
 #include "WeaponType.h"
 
+class BulletType;
 class StateStack;
 class Player;
 class GameEntity;
@@ -72,7 +73,7 @@ private:
 	sf::Vector2f lastMousePos;
 	sf::Vector2f currentMousePos;
 	
-	std::vector<Bullet*> bullets;
+	std::vector<BulletType*>* bullets;
 	int amountOfBullets;
 	int playerWeapon;
 	int counter;

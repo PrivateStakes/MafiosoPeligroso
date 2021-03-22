@@ -1,6 +1,8 @@
 #include "Soldier.h"
 #include "WeaponType.h"
 #include "Tile.h"
+#include "WeaponFactory.h"
+#include "BulletType.h"
 
 Soldier::Soldier(std::string fileName, std::string name, int health) :
 	GameEntity(fileName),
@@ -122,7 +124,7 @@ void Soldier::rotateSprite(sf::Vector2f pos)
 
 }
 
-Bullet Soldier::shoot(sf::Vector2f direction)
+BulletType* Soldier::shoot(sf::Vector2f direction, WeaponFactory &weaponFactory)
 {
 	if (currentWeapon != nullptr)
 	{
@@ -153,7 +155,7 @@ Bullet Soldier::shoot(sf::Vector2f direction)
 
 		this->reloading = true;
 
-		return Bullet(rotation, direction, this->getPosition(), this->currentWeapon->getDmg(), this->currentWeapon->getSpeed(), this->ID);
+		return weaponFactory.buildBulet(this->getWeaponName(), direction, this->getPosition(), rotation, this->ID);
 	}
 }
 

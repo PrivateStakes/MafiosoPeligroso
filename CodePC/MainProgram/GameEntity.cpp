@@ -20,11 +20,6 @@ GameEntity::~GameEntity()
 
 }
 
-bool GameEntity::gotHit(const Bullet& bullet) const
-{
-	return this->sprite.getGlobalBounds().intersects(bullet.getBounds());
-}
-
 void GameEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(this->sprite, states);

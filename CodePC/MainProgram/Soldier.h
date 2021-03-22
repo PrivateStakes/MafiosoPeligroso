@@ -4,6 +4,8 @@
 
 class WeaponType;
 class Tile;
+class WeaponFactory;
+class BulletType;
 
 class Soldier : public GameEntity
 {
@@ -53,7 +55,7 @@ public:
     sf::Vector2f getInputDirection(float deltaTime)const;
     void rotateSprite(sf::Vector2f pos);
 
-    Bullet shoot(sf::Vector2f direction);
+    BulletType* shoot(sf::Vector2f direction, WeaponFactory &weaponFactory);
 
     // Inherited via GameEntity
     virtual void update(const float deltaTime) override;
