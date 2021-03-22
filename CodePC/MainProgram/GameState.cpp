@@ -2,6 +2,7 @@
 #include "StateStack.h"
 #include "CollissionMan.h"
 #include "Tile.h"
+#include "BulletType.h"
 #include <iostream>
 #include <iostream>
 #include <fstream>
@@ -30,6 +31,8 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	bulletTexture.loadFromFile("../Images/Bullet2.png");
 	bulletSprite.setTexture(bulletTexture);
 	bulletSprite.setScale(3,3);
+
+	bullets = new std::vector<BulletType*>;
 
 	player = soldiers->at(0);
 	float temp = 0.f;
@@ -194,12 +197,13 @@ GameState::~GameState()
 	}
 	delete[] enemySpawnPointArray;
 
-	for (int i = 0; i < bullets.size(); i++)
+	for (int i = 0; i < bullets->size(); i++)
 	{
-		delete bullets[i];
-		bullets[i] = nullptr;
+		delete bullets->at(i);
+		bullets->at(i) = nullptr;
 	}
-	bullets.clear();
+	bullets->clear();
+	delete bullets;
 
 	for (int i = 0; i < tiles.size(); i++)
 	{
@@ -229,12 +233,6 @@ GameState::~GameState()
 	}
 	floor.clear();
 
-	/*while (soldiers->size() > 0)
-	{
-		//delete soldiers[soldiers.size() - 1];
-		soldiers->at(soldiers->size() - 1) = nullptr;
-		soldiers->pop_back();
-	}*/
 	soldiers = nullptr;
 	player = nullptr;
 	
@@ -254,9 +252,7 @@ GameState::~GameState()
 			holder2[i] = nullptr;
 		}
 	}
-	
 
-	
 }
 
 int GameState::backendUpdate()	
@@ -435,7 +431,8 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 300 && abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 300)
 				{
 					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
-					bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
+					//bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
+					bullets->push_back(enemies[i]->shoot(soldiers->at(j)->getPosition() - enemies[i]->getPosition(), weaponFactory));
 					shot = true;
 				}
 			}
@@ -507,17 +504,18 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	
 	
-	for (int i = 0; i < bullets.size(); i++)
+	for (int i = 0; i < bullets->size(); i++)
 	{
-		if (bullets[i] != nullptr) bullets[i]->update(deltaTime);
+		//if (bullets->at(i) != nullptr) bullets->at(i)->update(deltaTime);
+		bullets->at(i)->update(deltaTime);
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
-		bullets.push_back(new Bullet(player->shoot((cursor.getPosition() - player->getPosition()))));
+		bullets->push_back(player->shoot((cursor.getPosition() - player->getPosition()), weaponFactory));
 	}
 
-	for (int k = 0; k < bullets.size(); k++)
+	for (int k = 0; k < bullets->size(); k++)
 	{
 		bool deleteBullet = false;
 
@@ -527,13 +525,13 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (tiles[i]->at(j) != nullptr)
 				{
-					if (CollissionMan().intersectCircRect(*bullets[k], *tiles[i]->at(j), 'f'))
+					if (CollissionMan().intersectCircRect(*bullets->at(k), *tiles[i]->at(j), 'f'))
 					{
 						deleteBullet = true;
 
 						if (tiles[i]->at(j)->getTileType() == 'f')
 						{
-							tiles[i]->at(j)->setHP(bullets[k]->getDamage());
+							tiles[i]->at(j)->setHP(bullets->at(k)->getDmg());
 							if (tiles[i]->at(j)->getHP() <= 0)
 							{
 								floor[i]->at(j) = new Tile(tempEditor->loadTile(TileSorts::floor));
@@ -551,11 +549,11 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		for (int j = 0; j < enemyAmount; j++)
 		{
-			if (bullets.size() > 0 && k < bullets.size())
+			if (bullets->size() > 0 && k < bullets->size())
 			{
-				if (CollissionMan().intersectCircCirc(*bullets[k], *enemies[j]) && bullets[k]->getID() != enemies[j]->getID())
+				if (CollissionMan().intersectCircCirc(*bullets->at(k), *enemies[j]) && bullets->at(k)->getID() != enemies[j]->getID())
 				{
-					enemies[j]->loseHealth(bullets[k]->getDamage());
+					enemies[j]->loseHealth(bullets->at(k)->getDmg());
 					deleteBullet = true;
 					if (enemies[j]->getHealth() <= 0)
 					{
@@ -568,16 +566,16 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 						if (enemyAmount == 0)
 						{
 							std::cout << "You have killed every single enemy and won the demo!\n";
-							returnMessage = (int)stateEvent::ReturnToMainMenu;
+							returnMessage = (int)stateEvent::ExitGame;
 						}
 					}
 				}
 			}
 		}
 
-		if (CollissionMan().intersectCircCirc(*player, *bullets[k]) && bullets[k]->getID() != player->getID())
+		if (CollissionMan().intersectCircCirc(*player, *bullets->at(k)) && bullets->at(k)->getID() != player->getID())
 		{
-			player->loseHealth(bullets[k]->getDamage());
+			player->loseHealth(bullets->at(k)->getDmg());
 			deleteBullet = true;
 			healthText.setString("Name: " + player->getName() +"\nHealth: " + std::to_string(player->getHealth()));
 
@@ -621,21 +619,21 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		if (deleteBullet)
 		{
-			if (bullets[k] != bullets.back())
+			if (bullets->at(k) != bullets->back())
 			{
-				delete bullets[k];
-				bullets[k] = nullptr;
-				bullets[k] = bullets[bullets.size()-1];
-				bullets[bullets.size() - 1] = nullptr;
+				delete bullets->at(k);
+				bullets->at(k) = nullptr;
+				bullets->at(k) = bullets->at(bullets->size()-1);
+				bullets->at(bullets->size() - 1) = nullptr;
 
 			}
-			else if (bullets.back() != nullptr)
+			else if (bullets->back() != nullptr)
 			{
-				delete bullets.back();
-				bullets.back() = nullptr;
+				delete bullets->back();
+				bullets->back() = nullptr;
 			}
 
-			bullets.pop_back();
+			bullets->pop_back();
 		}
 	}
 	return returnMessage;
@@ -649,9 +647,12 @@ void GameState::render(sf::RenderWindow& window)
 	{
 		for (int j = 0; j < floor[i]->size(); j++)
 		{
-			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'e') floor[i]->at(j)->draw(window);
-			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'c') floor[i]->at(j)->draw(window);
-			if (floor[i]->at(j) != nullptr && floor[i]->at(j)->getTileType() == 'd') floor[i]->at(j)->draw(window);
+			if (floor[i]->at(j) != nullptr)
+			{
+				if (floor[i]->at(j)->getTileType() == 'e') floor[i]->at(j)->draw(window);
+				else if (floor[i]->at(j)->getTileType() == 'c') floor[i]->at(j)->draw(window);
+				else if (floor[i]->at(j)->getTileType() == 'd') floor[i]->at(j)->draw(window);
+			}
 		}
 	}
 
@@ -663,15 +664,11 @@ void GameState::render(sf::RenderWindow& window)
 		}
 	}
 
-	for (int i = 0; i < bullets.size(); i++)
+	for (int i = 0; i < bullets->size(); i++)
 	{
-		if (bullets[i] != nullptr)
-		{
-			bulletSprite.setPosition(bullets[i]->getPosition());
-			bulletSprite.setRotation(bullets[i]->getRotation());
-			window.draw(bulletSprite);
-		}
-
+		bulletSprite.setPosition(bullets->at(i)->getPosition());
+		bulletSprite.setRotation(bullets->at(i)->getRotation());
+		window.draw(bulletSprite);
 	}
 
 	for (int i = 0; i < *soldierRecieved; i++)

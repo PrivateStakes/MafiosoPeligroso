@@ -1,24 +1,14 @@
 #pragma once
-#include "GameEntity.h"
-class Bullet : public GameEntity
+#include <iostream>
+class Bullet
 {
 private:
 	float speed;
-	float xDir;
-	float yDir;
-	float rotation;
-
 	int dmg;
-	int ID;
 
 public:
-	Bullet(float rotation, sf::Vector2f direction, sf::Vector2f position, int dmg = 1, float speed = 35.0f, int ID = 0);
+	Bullet(std::string gunName);
 	~Bullet();
-	int getID()const;
 	int getDamage()const;
-	sf::FloatRect getBounds()const;
-	float getRotation()const;
-
-	// Inherited via GameEntity
-	virtual void update(const float deltaTime) override;
+	float getSpeed()const;
 };
