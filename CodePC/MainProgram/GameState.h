@@ -7,6 +7,7 @@
 #include "NPC.h"
 #include "WeaponFactory.h"
 #include "WeaponType.h"
+#include <SFML/Audio.hpp>
 
 class BulletType;
 class StateStack;
@@ -54,6 +55,11 @@ private:
 	sf::View camera;
 	sf::Mouse mouse;
 	sf::Texture texture;
+	sf::Music themeSong;
+	sf::Sound pow;
+	sf::SoundBuffer powBuffer;
+	sf::SoundBuffer kapowBuffer;
+	sf::Sound kapow;
 
 	sf::Text healthText;
 	sf::Text weaponText;
