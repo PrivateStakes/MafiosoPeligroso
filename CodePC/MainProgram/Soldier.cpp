@@ -188,15 +188,35 @@ void Soldier::update(const float deltaTime)
 	}
 	else
 	{
-		//AI movement
-		if (walkCounter == 0)
+		if (!isPlayer)
 		{
-			xDir = rand() % 3 - 1;
-			yDir = rand() % 3 - 1;
-			walkTimer = rand() % 11 + 10;
+			if (true == false)//nodes.size() > 0)
+			{
+				//temp solution
+				for (int i = 0; i < nodes.size() - 1; i++)
+				{
+					if (nodes[i] != nullptr)
+					{
+						sprite.setPosition(nodes[i]->getPosition());//lerp(sprite.getPosition(), nodes[0]->getPosition(), deltaTime));
+						nodes[i] = nullptr;
+					}
+					nodes[i] = nodes[i + 1];
+				}
+
+				nodes.back() = nullptr;
+				nodes.pop_back();
+			}
 		}
-		walkCounter = (walkCounter + 1) % walkTimer;
-		this->sprite.move(this->speed/2*deltaTime*xDir, this->speed/2 * deltaTime * yDir);
+
+		////AI movement
+		//if (walkCounter == 0)
+		//{
+		//	xDir = rand() % 3 - 1;
+		//	yDir = rand() % 3 - 1;
+		//	walkTimer = rand() % 11 + 10;
+		//}
+		//walkCounter = (walkCounter + 1) % walkTimer;
+		//this->sprite.move(this->speed/2*deltaTime*xDir, this->speed/2 * deltaTime * yDir);
 	}
 
 	if (this->reloading)
@@ -209,36 +229,69 @@ void Soldier::update(const float deltaTime)
 	}
 }
 
-std::vector<Tile*> &Soldier::getNodes()
+std::vector<Tile*>& Soldier::getNodes()
 {
 	return nodes;
 }
 
 void Soldier::addNode(Tile* inputNode)
 {
-	nodes.push_back(inputNode);
+	if (inputNode) nodes.push_back(inputNode);
 }
 
 void Soldier::emplaceNode(int previousNode, Tile* inputNode)
 {
+	std::vector<Tile*> tempNodes = nodes;
+	if (nodes.size() > 0) nodes.push_back(nodes.back());
+	else nodes.push_back(inputNode);
 
-	for (int i = previousNode; i < nodes.size(); i++)
+	for (int i = 0; i < nodes.size(); i++)
 	{
-		if (previousNode != 0)
+		if (i >= previousNode && i < nodes.size() - 1)
 		{
-			Tile tempTile = *nodes[i];
-			delete nodes[i];
-			nodes[i] = nullptr;
-			nodes.pop_back();
-
-			nodes.push_back(new Tile(tempTile));
+			if (previousNode == i) nodes[i] = inputNode;
+			else nodes[i] = tempNodes[i - 1];
 		}
-		
-		if (i == previousNode) nodes.push_back(inputNode);
+	}
+
+	for (int i = 0; i < tempNodes.size(); i++)
+	{
+		tempNodes[i] = nullptr;
 	}
 }
 
-void Soldier::setNodes(std::vector<Tile*> &inputNodes)
+void Soldier::removeAllNodes()
+{
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		nodes[i] = nullptr;
+	}
+	nodes.clear();
+}
+
+void Soldier::moveToNextNode()
+{
+	if (nodes.size() > 0)
+	{
+		for (int i = 0; i < nodes.size(); i++)
+		{
+			if (i < nodes.size() - 1 && nodes.size() != 1)
+			{
+				nodes[i] = nullptr;
+				nodes[i] = nodes[i + 1];
+			}
+			else nodes[i] = nullptr;
+		}
+		nodes.pop_back();
+	}
+}
+
+void Soldier::setNodes(std::vector<Tile*>& inputNodes)
 {
 	nodes = inputNodes;
+}
+
+sf::Vector2f Soldier::lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed)
+{
+	return sf::Vector2f({ (source.x + (target.x - source.x) * distance_traversed * speed), (source.y + (target.y - source.y) * distance_traversed * speed) });
 }

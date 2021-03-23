@@ -10,6 +10,7 @@ class BulletType : public GameEntity
 {
 private:
 	const Bullet* copiedBullet;
+	bool hasBeenUpdated;
 
 	int ID;
 	float xDir;
@@ -28,4 +29,6 @@ public:
 	// Inherited via GameEntity
 	virtual void update(const float deltaTime) override;
 
+	bool getHasBeenUpdated();
+	void setHasBeenUpdated(bool);
 };

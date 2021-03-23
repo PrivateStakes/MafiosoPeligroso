@@ -33,6 +33,7 @@ protected:
     WeaponType* currentWeapon;
 
     std::vector<Tile*> nodes;
+    sf::Vector2f lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed);
 
 public:
     Soldier(std::string fileName = "character_1.png", std::string name = "Joe", int health = 10);
@@ -64,4 +65,6 @@ public:
     void addNode(Tile*);
     void setNodes(std::vector<Tile*>& inputNodes);
     void emplaceNode(int previousNode, Tile*); //place node after given position
+    void removeAllNodes();
+    void moveToNextNode();
 };

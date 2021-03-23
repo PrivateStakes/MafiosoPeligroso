@@ -36,3 +36,12 @@ void BulletType::update(const float deltaTime)
 	this->sprite.move(xDir * deltaTime * copiedBullet->getSpeed(), yDir * deltaTime * copiedBullet->getSpeed());
 }
 
+bool BulletType::getHasBeenUpdated()
+{
+	return hasBeenUpdated;
+}
+
+void BulletType::setHasBeenUpdated(bool input)
+{
+	hasBeenUpdated = input;
+}
