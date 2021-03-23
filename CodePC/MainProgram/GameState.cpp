@@ -50,6 +50,8 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	pow.setBuffer(powBuffer);
 	kapowBuffer.loadFromFile("../Sounds/kapow.wav");
 	kapow.setBuffer(kapowBuffer);
+	deathsoundBuffer.loadFromFile("../Sounds/deathsound.wav");
+	deathsound.setBuffer(deathsoundBuffer);
 
 	bullets = new std::vector<BulletType*>;
 
@@ -695,6 +697,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 							std::cout << "You have killed every single enemy and won the demo!\n";
 							returnMessage = (int)stateEvent::ExitGame;
 						}
+						deathsound.play();
 					}
 				}
 			}
@@ -744,6 +747,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 						nameDisplayer[i].setString(soldiers->at(i)->getName());
 						nameDisplayer[i].setOrigin(nameDisplayer[i].getGlobalBounds().width / 2, nameDisplayer[i].getGlobalBounds().height / 2);
 					}
+					deathsound.play();
 
 				}
 				else returnMessage = (int)stateEvent::ExitGame;

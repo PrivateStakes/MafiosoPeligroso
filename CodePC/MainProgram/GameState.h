@@ -59,7 +59,9 @@ private:
 	sf::Sound pow;
 	sf::SoundBuffer powBuffer;
 	sf::SoundBuffer kapowBuffer;
+	sf::SoundBuffer deathsoundBuffer;
 	sf::Sound kapow;
+	sf::Sound deathsound;
 
 	sf::Text healthText;
 	sf::Text weaponText;
