@@ -170,11 +170,11 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	healthText.setFont(gameFont);
 	healthText.setFillColor(sf::Color::Green);
 	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
-	healthText.setString("Name: " + player->getName() + "\nHealth: " + std::to_string(player->getHealth()));
+	healthText.setString("Health: " + std::to_string(player->getHealth()));
 
 	weaponText.setFont(gameFont);
 	weaponText.setFillColor(sf::Color::Green);
-	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
+	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 45);
 	weaponText.setString("Weapon: " + player->getWeaponName());
 
 	for (int i = 0; i < soldiers->size(); i++)
@@ -184,6 +184,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 		nameDisplayer[i].setFillColor(sf::Color::Green);
 		nameDisplayer[i].setPosition(soldiers->at(i)->getPosition());
 		nameDisplayer[i].setString(soldiers->at(i)->getName());
+		nameDisplayer[i].setOrigin(nameDisplayer[i].getGlobalBounds().width / 2, nameDisplayer[i].getGlobalBounds().height / 2);
 	}
 }
 
@@ -680,7 +681,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			player->loseHealth(bullets->at(k)->getDmg());
 			deleteBullet = true;
-			healthText.setString("Name: " + player->getName() +"\nHealth: " + std::to_string(player->getHealth()));
+			healthText.setString("Health: " + std::to_string(player->getHealth()));
 
 			if (player->getHealth() <= 0)
 			{
@@ -713,9 +714,13 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 						(*soldierRecieved)--;
 					}
 					cursor.setPosition(player->getPosition());
-					healthText.setString("Name: " + player->getName() + "\nHealth: " + std::to_string(player->getHealth()));
+					healthText.setString("Health: " + std::to_string(player->getHealth()));
 					weaponText.setString("Weapon: " + player->getWeaponName());
-
+					for (int i = 0; i < soldiers->size(); i++)
+					{
+						nameDisplayer[i].setString(soldiers->at(i)->getName());
+						nameDisplayer[i].setOrigin(nameDisplayer[i].getGlobalBounds().width / 2, nameDisplayer[i].getGlobalBounds().height / 2);
+					}
 
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
@@ -790,12 +795,12 @@ void GameState::render(sf::RenderWindow& window)
 		window.draw(*enemies[i]);
 	}
 	healthText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 10);
-	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 70);
+	weaponText.setPosition(player->getPosition().x - width / 2 + 10, player->getPosition().y - height / 2 + 45);
 	window.draw(healthText);
 	window.draw(weaponText);
 	for (int i = 0; i < *soldierRecieved; i++)
 	{
-		nameDisplayer[i].setPosition(soldiers->at(i)->getPosition());
+		nameDisplayer[i].setPosition(soldiers->at(i)->getPosition().x, soldiers->at(i)->getPosition().y - 55);
 		window.draw(nameDisplayer[i]);
 	}
 
