@@ -44,7 +44,7 @@ EditorState::EditorState(const StateID InputStateId, StateStack& stateStack, std
 		tileCache[(TileSorts)i].get()->setTileType(intToLetter(i));
 	}
 	currentBrush = nullptr;
-	currentBrush = tileCache.at(TileSorts::wall).get();
+	currentBrush = tileCache.at(TileSorts::wallH).get();
 
 	std::ifstream loadStream;
 	loadStream.open(currentDirectory + "saveFiles.txt");
@@ -378,7 +378,7 @@ char intToLetter(int input)
 	char returnValue;
 	switch (input)
 	{
-	case (int)TileSorts::wall:
+	case (int)TileSorts::wallH:
 		returnValue = 'a';
 		break;
 
@@ -402,9 +402,66 @@ char intToLetter(int input)
 		returnValue = 'f';
 		break;
 
+	case (int)TileSorts::wallV:
+		returnValue = 'g';
+		break;
+
+	case (int)TileSorts::wallU:
+		returnValue = 'h';
+		break;
+
+	case (int)TileSorts::wallR:
+		returnValue = 'i';
+		break;
+
+	case (int)TileSorts::wallD:
+		returnValue = 'j';
+		break;
+
+	case (int)TileSorts::wallL:
+		returnValue = 'k';
+		break;
+
+	case (int)TileSorts::wallC:
+		returnValue = 'l';
+		break;
+
+	case (int)TileSorts::wallDL:
+		returnValue = 'm';
+		break;
+
+	case (int)TileSorts::wallTL:
+		returnValue = 'n';
+		break;
+
+	case (int)TileSorts::wallTR:
+		returnValue = 'o';
+		break;
+
+	case (int)TileSorts::wallMiddleT:
+		returnValue = 'p';
+		break;
+
+	case (int)TileSorts::wallMiddleL:
+		returnValue = 'q';
+		break;
+
+	case (int)TileSorts::wallMiddleD:
+		returnValue = 'r';
+		break;
+
+	case (int)TileSorts::wallMiddleR:
+		returnValue = 's';
+		break;
+
+	case (int)TileSorts::wallDR:
+		returnValue = 't';
+		break;
+
 	default:
 		returnValue = '0';
 	}
+
 
 	return returnValue;
 }
