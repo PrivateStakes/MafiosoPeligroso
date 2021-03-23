@@ -42,6 +42,7 @@ private:
 	std::vector<Tile*>* tempFloor;
 	std::vector<Tile*>* holder[60];
 	std::vector<Tile*>* holder2[60];
+	std::vector<sf::Text> nameDisplayer;
 	
 	//Pathfinding
 
