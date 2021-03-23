@@ -274,6 +274,9 @@ int GameState::backendUpdate()
 		int xTarget = 0;
 		int yTarget = 0;
 		bool hasDetectedPlayer = false;
+		bool enemyIsOnFloor = false;
+
+		enemies[k]->setRoaming(true);
 
 		for (int i = 0; i < floor.size(); i++)
 		{
@@ -293,6 +296,8 @@ int GameState::backendUpdate()
 
 						xOrigin = i;
 						yOrigin = j;
+						enemyIsOnFloor = true;
+						enemies[k]->setRoaming(false);
 					}
 
 					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), player->getPosition()))	//change to soldier loop for rushing NPCs
@@ -305,7 +310,7 @@ int GameState::backendUpdate()
 			}
 		}
 
-		if (hasDetectedPlayer)
+		if (hasDetectedPlayer && enemyIsOnFloor)
 		{
 			floor[xOrigin]->at(yOrigin)->setHueristicDistance(sf::Vector2i(floor[xOrigin]->at(yOrigin)->getPosition()), (sf::Vector2i(floor[xTarget]->at(yTarget)->getPosition())));
 			floor[xOrigin]->at(yOrigin)->setWeightDistance(floor[xOrigin]->at(yOrigin)->getHueristicDistance());

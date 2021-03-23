@@ -19,7 +19,7 @@ Soldier::Soldier(std::string fileName, std::string name, int health) :
 	yDir(0),
 	name(name)
 {	
-
+	roaming = true;
 }
 
 Soldier::~Soldier()
@@ -31,7 +31,7 @@ Soldier::~Soldier()
 	}
 	for (int i = 0; i < nodes.size(); i++)
 	{
-		delete nodes[i];
+		nodes[i] = nullptr;
 	}
 }
 
@@ -188,9 +188,9 @@ void Soldier::update(const float deltaTime)
 	}
 	else
 	{
-		if (!isPlayer)
+		if (!roaming)
 		{
-			if (true == false)//nodes.size() > 0)
+			if (nodes.size() > 0)
 			{
 				//temp solution
 				for (int i = 0; i < nodes.size() - 1; i++)
@@ -207,16 +207,18 @@ void Soldier::update(const float deltaTime)
 				nodes.pop_back();
 			}
 		}
-
-		////AI movement
-		//if (walkCounter == 0)
-		//{
-		//	xDir = rand() % 3 - 1;
-		//	yDir = rand() % 3 - 1;
-		//	walkTimer = rand() % 11 + 10;
-		//}
-		//walkCounter = (walkCounter + 1) % walkTimer;
-		//this->sprite.move(this->speed/2*deltaTime*xDir, this->speed/2 * deltaTime * yDir);
+		else
+		{
+			//AI movement
+			if (walkCounter == 0)
+			{
+				xDir = rand() % 3 - 1;
+				yDir = rand() % 3 - 1;
+				walkTimer = rand() % 11 + 10;
+			}
+			walkCounter = (walkCounter + 1) % walkTimer;
+			this->sprite.move(this->speed / 2 * deltaTime * xDir, this->speed / 2 * deltaTime * yDir);
+		}
 	}
 
 	if (this->reloading)
@@ -294,4 +296,14 @@ void Soldier::setNodes(std::vector<Tile*>& inputNodes)
 sf::Vector2f Soldier::lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed)
 {
 	return sf::Vector2f({ (source.x + (target.x - source.x) * distance_traversed * speed), (source.y + (target.y - source.y) * distance_traversed * speed) });
+}
+
+bool Soldier::getRoaming()
+{
+	return roaming;
+}
+
+void Soldier::setRoaming(bool input)
+{
+	roaming = input;
 }
