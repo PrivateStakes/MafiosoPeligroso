@@ -178,7 +178,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 				dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
 			}
 			int tempInt = states[stateQuantity]->update(deltaTime, window);
-
+			 
 			switch ((stateEvent)tempInt)
 			{
 			case stateEvent::ReturnToMainMenu:

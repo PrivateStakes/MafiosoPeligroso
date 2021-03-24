@@ -215,7 +215,7 @@ void Soldier::update(const float deltaTime)
 				xDir = rand() % 3 - 1;
 				yDir = rand() % 3 - 1;
 				walkTimer = rand() % 11 + 10;
-			}
+			} 
 			walkCounter = (walkCounter + 1) % walkTimer;
 			this->sprite.move(this->speed / 2 * deltaTime * xDir, this->speed / 2 * deltaTime * yDir);
 		}

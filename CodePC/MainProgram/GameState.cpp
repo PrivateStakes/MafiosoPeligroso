@@ -628,7 +628,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 	for (int k = 0; k < enemyAmount; k++)
 	{
 		if (!enemies[k]->getColl())
-		{
+		{ 
 			enemies[k]->update((float)deltaTime);
 		}
 		enemies[k]->setColl(false);

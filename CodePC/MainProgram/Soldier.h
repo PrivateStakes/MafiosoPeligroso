@@ -61,7 +61,7 @@ public:
 
     // Inherited via GameEntity
     virtual void update(const float deltaTime) override;
-
+     
     std::vector<Tile*>& getNodes();
     void addNode(Tile*);
     void setNodes(std::vector<Tile*>& inputNodes);
