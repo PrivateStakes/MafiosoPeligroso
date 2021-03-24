@@ -29,7 +29,7 @@ CityMap::~CityMap()
 {
 }
 
-int CityMap::update(const float deltaTime, sf::RenderWindow& window)
+int CityMap::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
     int returnMessage = 0;
     if (choice == 1)

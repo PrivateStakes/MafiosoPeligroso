@@ -16,7 +16,7 @@ MenuState::~MenuState()
 }
 
 
-int MenuState::update(const float deltaTime, sf::RenderWindow& window)
+int MenuState::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
 	int returnMessage = 0;
 	unpauseTimerElapsed += deltaTime;

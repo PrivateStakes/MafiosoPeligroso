@@ -24,9 +24,12 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Brutalshot: Throne of Guns");
 	sf::RenderStates defaultRenderState;
 
+	sf::Event event;
+
 	sf::Clock clock;
 	sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	StateStack* stateStack = new StateStack(WIDTH, HEIGHT);
@@ -45,7 +48,7 @@ int main()
 		while (elapsedTimeSinceLastUpdate > timePerFrame)
 		{
 			elapsedTimeSinceLastUpdate -= timePerFrame;
-			gameOn = stateStack->update(timePerFrame.asSeconds(), window);
+			gameOn = stateStack->update(timePerFrame.asSeconds(), window, event);
 		}
 
 		if (gameOn)

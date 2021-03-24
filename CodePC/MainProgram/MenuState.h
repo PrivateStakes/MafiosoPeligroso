@@ -31,7 +31,7 @@ public:
 	MenuState(const StateID InputStateId, StateStack& stateStack, bool isPauseMenu);
 	~MenuState() override;
 
-	int update(const float deltaTime, sf::RenderWindow& window) override;
+	int update(const float deltaTime, sf::RenderWindow& window, sf::Event& event) override;
 	void render(sf::RenderWindow& window) override;
 };
 

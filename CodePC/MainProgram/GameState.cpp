@@ -506,7 +506,7 @@ int GameState::backendUpdate()
 	return 0;
 }
 
-int GameState::update(const float deltaTime, sf::RenderWindow& window)
+int GameState::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
 	int returnMessage = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;

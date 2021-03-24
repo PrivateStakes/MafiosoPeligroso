@@ -167,7 +167,7 @@ void StateStack::render(sf::RenderWindow& window)
 	if (stateQuantity + 1 != 0) states[stateQuantity]->render(window);
 }
 
-bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
+bool StateStack::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
 	if (stateQuantity + 1 != 0)
 	{
@@ -177,7 +177,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				//dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
 			}
-			int tempInt = states[stateQuantity]->update(deltaTime, window);
+			int tempInt = states[stateQuantity]->update(deltaTime, window, event);
 
 			switch ((stateEvent)tempInt)
 			{

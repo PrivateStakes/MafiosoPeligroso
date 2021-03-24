@@ -176,7 +176,7 @@ EditorState::~EditorState()
 	
 }
 
-int EditorState::update(const float deltaTime, sf::RenderWindow& window)
+int EditorState::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
 	int returnMessage = 0;
 

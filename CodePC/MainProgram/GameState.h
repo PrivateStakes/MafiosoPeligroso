@@ -95,7 +95,7 @@ public:
 	~GameState() override;
 
 	int backendUpdate();	//non-deltaTime reliant code
-	int update(const float deltaTime, sf::RenderWindow& window) override;
+	int update(const float deltaTime, sf::RenderWindow& window, sf::Event& event) override;
 	void render(sf::RenderWindow& window) override;
 };
 

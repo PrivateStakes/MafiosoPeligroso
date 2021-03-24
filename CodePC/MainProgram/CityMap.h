@@ -32,6 +32,6 @@ public:
 	~CityMap() override;
 
 	// Inherited via State
-	int update(const float deltaTime, sf::RenderWindow& window) override;
+	int update(const float deltaTime, sf::RenderWindow& window, sf::Event& event) override;
 	void render(sf::RenderWindow& window) override;
 };

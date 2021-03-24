@@ -51,7 +51,7 @@ public:
 	void push(StateID id);
 	void pop();
 	void render(sf::RenderWindow& window);
-	bool update(const float aDeltaTime, sf::RenderWindow& window);
+	bool update(const float aDeltaTime, sf::RenderWindow& window, sf::Event& event);
 
 	int getID();
 	void setID(int input);
