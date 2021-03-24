@@ -29,9 +29,10 @@ protected:
 
     bool isPlayer;
     bool reloading;
-    sf::Vector2f inputDirection;
     WeaponType* currentWeapon;
 
+    bool roaming;
+    sf::Vector2f inputDirection;
     std::vector<Tile*> nodes;
     sf::Vector2f lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed);
 
@@ -60,11 +61,14 @@ public:
 
     // Inherited via GameEntity
     virtual void update(const float deltaTime) override;
-
+     
     std::vector<Tile*>& getNodes();
     void addNode(Tile*);
     void setNodes(std::vector<Tile*>& inputNodes);
     void emplaceNode(int previousNode, Tile*); //place node after given position
     void removeAllNodes();
     void moveToNextNode();
+
+    bool getRoaming();
+    void setRoaming(bool);
 };

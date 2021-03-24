@@ -18,7 +18,7 @@ private:
 
 	int hp;	//Not Djikstra stuff, Morgan >:(
 
-public:
+public: 
 	Tile(std::string filename);
 	~Tile();
 

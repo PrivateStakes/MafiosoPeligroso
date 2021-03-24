@@ -12,9 +12,10 @@ Tile::Tile(std::string filename) :
 
 Tile::~Tile()
 {
-
+	previousNode = nullptr;
+	nextNode = nullptr;
 }
-
+ 
 void Tile::update(const float deltaTime)
 {
 	sprite.setPosition((sf::Vector2f)((sf::Vector2i)sprite.getPosition()));
