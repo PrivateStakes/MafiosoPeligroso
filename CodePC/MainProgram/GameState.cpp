@@ -9,6 +9,15 @@
 #include <sstream>
 #include <assert.h>
 #include "EditorState.h"
+#ifdef _DEBUG
+#pragma comment(lib, "sfml-window-d.lib")
+#pragma comment(lib, "sfml-system-d.lib")
+#pragma comment(lib, "sfml-graphics-d.lib")
+#else
+#pragma comment(lib, "sfml-window.lib")
+#pragma comment(lib, "sfml-system.lib")
+#pragma comment(lib, "sfml-graphics.lib")
+#endif
 
 GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::string* level, std::vector<Soldier*> *soldierHierarchy, int* solderSent) :
 	State(InputStateId),
@@ -31,6 +40,18 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	bulletTexture.loadFromFile("../Images/Bullet2.png");
 	bulletSprite.setTexture(bulletTexture);
 	bulletSprite.setScale(3,3);
+
+	themeSong.openFromFile("../Sounds/Bestsong.wav");
+	themeSong.setVolume(20);
+	themeSong.play();
+	themeSong.setLoop(true);
+
+	powBuffer.loadFromFile("../Sounds/pow.wav");
+	pow.setBuffer(powBuffer);
+	kapowBuffer.loadFromFile("../Sounds/kapow.wav");
+	kapow.setBuffer(kapowBuffer);
+	deathsoundBuffer.loadFromFile("../Sounds/deathsound.wav");
+	deathsound.setBuffer(deathsoundBuffer);
 
 	bullets = new std::vector<BulletType*>;
 
@@ -539,6 +560,8 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 			{
 				if (abs(enemies[i]->getPosition().x - soldiers->at(j)->getPosition().x) < 300 && abs(enemies[i]->getPosition().y - soldiers->at(j)->getPosition().y) < 300)
 				{
+					if (enemies[i]->getWeaponName() == "Sniper") kapow.play();
+					else pow.play();
 					enemies[i]->rotateSprite(soldiers->at(j)->getPosition());
 					//bullets.push_back(new Bullet(enemies[i]->shoot((soldiers->at(j)->getPosition() - enemies[i]->getPosition()))));
 					bullets->push_back(enemies[i]->shoot(soldiers->at(j)->getPosition() - enemies[i]->getPosition(), weaponFactory));
@@ -621,6 +644,8 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->isAbleToShoot())
 	{
+		if (player->getWeaponName() == "Sniper") kapow.play();
+		else pow.play();
 		bullets->push_back(player->shoot((cursor.getPosition() - player->getPosition()), weaponFactory));
 	}
 
@@ -677,6 +702,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 							std::cout << "You have killed every single enemy and won the demo!\n";
 							returnMessage = (int)stateEvent::ExitGame;
 						}
+						deathsound.play();
 					}
 				}
 			}
@@ -726,6 +752,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 						nameDisplayer[i].setString(soldiers->at(i)->getName());
 						nameDisplayer[i].setOrigin(nameDisplayer[i].getGlobalBounds().width / 2, nameDisplayer[i].getGlobalBounds().height / 2);
 					}
+					deathsound.play();
 
 				}
 				else returnMessage = (int)stateEvent::ExitGame;
