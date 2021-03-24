@@ -31,6 +31,10 @@ CityMap::~CityMap()
 
 int CityMap::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
+    while (true)
+    {
+
+    }
     int returnMessage = 0;
     if (choice == 1)
     {
