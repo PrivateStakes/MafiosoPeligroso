@@ -99,6 +99,7 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window, sf::Event& 
                 if (event.key.code == sf::Keyboard::Enter)
                 {
                     soldiers->push_back(new Soldier("character_" + std::to_string(temp + 1) + ".png", recruit(counter)));
+                    soldiers->at(soldiers->size() - 1)->setCustomCollider(soldiers->at(soldiers->size()-1)->getBounds());
                     counter = soldiers->size();
                     updateText();
                 }
