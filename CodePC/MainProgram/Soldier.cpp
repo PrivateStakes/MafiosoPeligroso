@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include "WeaponFactory.h"
 #include "BulletType.h"
+#include "CollissionMan.h"
 
 Soldier::Soldier(std::string fileName, std::string name, int health) :
 	GameEntity(fileName),
@@ -18,8 +19,11 @@ Soldier::Soldier(std::string fileName, std::string name, int health) :
 	xDir(0),
 	yDir(0),
 	name(name)
-{	
+{
 	roaming = true;
+	canDetectPlayer = true;
+	hasDetectedPlayer = false;
+	initialNodeAmount = 0;
 }
 
 Soldier::~Soldier()
@@ -29,6 +33,7 @@ Soldier::~Soldier()
 		delete currentWeapon;
 		currentWeapon = nullptr;
 	}
+
 	for (int i = 0; i < nodes.size(); i++)
 	{
 		nodes[i] = nullptr;
@@ -188,24 +193,29 @@ void Soldier::update(const float deltaTime)
 	}
 	else
 	{
+		pathfindingTimerElapsed += deltaTime;
+
+		if (true)//hasDetectedPlayer)
+		{
+			roaming = false;
+			
+			if (pathfindingTimerElapsed > pathfindingTimer)
+			{
+				pathfindingTimerElapsed = 0.f;
+				canDetectPlayer = true;
+			}
+		}
+
 		if (!roaming)
 		{
 			if (nodes.size() > 0)
 			{
-				//temp solution
-				for (int i = 0; i < nodes.size() - 1; i++)
-				{
-					if (nodes[i] != nullptr)
-					{
-						sprite.setPosition(nodes[i]->getPosition());//lerp(sprite.getPosition(), nodes[0]->getPosition(), deltaTime));
-						nodes[i] = nullptr;
-					}
-					nodes[i] = nodes[i + 1];
-				}
+				sprite.setPosition(lerp(sprite.getPosition(), nodes[0]->getPosition(), deltaTime * 2.f));
+				CollissionMan colissions;
 
-				nodes.back() = nullptr;
-				nodes.pop_back();
+				if (colissions.intersectRectPoint(*nodes[0], sprite.getPosition())) moveToNextNode();
 			}
+			else hasDetectedPlayer = false;
 		}
 		else
 		{
@@ -239,6 +249,7 @@ std::vector<Tile*>& Soldier::getNodes()
 void Soldier::addNode(Tile* inputNode)
 {
 	if (inputNode) nodes.push_back(inputNode);
+	initialNodeAmount++;
 }
 
 void Soldier::emplaceNode(int previousNode, Tile* inputNode)
@@ -260,6 +271,7 @@ void Soldier::emplaceNode(int previousNode, Tile* inputNode)
 	{
 		tempNodes[i] = nullptr;
 	}
+	initialNodeAmount++;
 }
 
 void Soldier::removeAllNodes()
@@ -269,6 +281,8 @@ void Soldier::removeAllNodes()
 		nodes[i] = nullptr;
 	}
 	nodes.clear();
+	initialNodeAmount = 0;
+	hasDetectedPlayer = false;
 }
 
 void Soldier::moveToNextNode()
@@ -288,14 +302,21 @@ void Soldier::moveToNextNode()
 	}
 }
 
+float Soldier::getDetectionRadius()
+{
+	return detectionRadius;
+}
+
 void Soldier::setNodes(std::vector<Tile*>& inputNodes)
 {
 	nodes = inputNodes;
+	initialNodeAmount = nodes.size();
 }
 
 sf::Vector2f Soldier::lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed)
 {
-	return sf::Vector2f({ (source.x + (target.x - source.x) * distance_traversed * speed), (source.y + (target.y - source.y) * distance_traversed * speed) });
+	//return sf::Vector2f({ (source.x + (target.x - source.x) * distance_traversed * speed), (source.y + (target.y - source.y) * distance_traversed * speed) });
+	return sf::Vector2f({ (source.x + distance_traversed * (target.x - source.x)), (source.y + distance_traversed * (target.y - source.y)) });
 }
 
 bool Soldier::getRoaming()
@@ -306,4 +327,24 @@ bool Soldier::getRoaming()
 void Soldier::setRoaming(bool input)
 {
 	roaming = input;
+}
+
+bool Soldier::getCanDetectPlayer()
+{
+	return canDetectPlayer;
+}
+
+void Soldier::setCanDetectPlayer(bool input)
+{
+	canDetectPlayer = input;
+}
+
+bool Soldier::getHasDetectedPlayer()
+{
+	return hasDetectedPlayer;
+}
+
+void Soldier::setHasDetectedPlayer(bool input)
+{
+	hasDetectedPlayer = input;
 }

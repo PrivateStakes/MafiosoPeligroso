@@ -42,7 +42,7 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	bulletSprite.setScale(3,3);
 
 	themeSong.openFromFile("../Sounds/Bestsong.wav");
-	themeSong.setVolume(20);
+	themeSong.setVolume(0);
 	themeSong.play();
 	themeSong.setLoop(true);
 
@@ -290,221 +290,231 @@ int GameState::backendUpdate()
 {
 	for (int k = 0; k < enemyAmount; k++)
 	{
-		int xOrigin = 0;
-		int yOrigin = 0;
+		if (enemies[k]->getNodes().size() == 0) enemies[k]->setRoaming(true);
 
-		int xTarget = 0;
-		int yTarget = 0;
-		bool hasDetectedPlayer = false;
-		bool enemyIsOnFloor = false;
-
-		enemies[k]->setRoaming(true);
-
-		for (int i = 0; i < floor.size(); i++)
+		if (enemies[k]->getCanDetectPlayer())
 		{
-			for (int j = 0; j < floor[i]->size(); j++)
+			int xOrigin = 0;
+			int yOrigin = 0;
+
+			int xTarget = 0;
+			int yTarget = 0;
+			bool hasDetectedPlayer = false;
+			bool enemyIsOnFloor = false;
+
+			for (int i = 0; i < floor.size(); i++)
 			{
-				if (floor[i]->at(j) != nullptr)
+				for (int j = 0; j < floor[i]->size(); j++)
 				{
-					floor[i]->at(j)->resetPathfindingValues();
-					floor[i]->at(j)->setColour(sf::Color::Transparent);
-
-					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[k]->getPosition()))
+					if (floor[i]->at(j) != nullptr)
 					{
-						enemies[k]->removeAllNodes();
-						enemies[k]->addNode(floor[i]->at(j));
-						floor[i]->at(j)->setVisitedByAlgorithm(false);
-						floor[i]->at(j)->setTravelDistance(0);
+						floor[i]->at(j)->resetPathfindingValues();
+						floor[i]->at(j)->setColour(sf::Color::Transparent);
 
-						xOrigin = i;
-						yOrigin = j;
-						enemyIsOnFloor = true;
-						enemies[k]->setRoaming(false);
-					}
+						if (CollissionMan().intersectRectPoint(*floor[i]->at(j), enemies[k]->getPosition()))
+						{
+							if (player->getPosition().x < enemies[k]->getPosition().x + enemies[k]->getDetectionRadius() && player->getPosition().x > enemies[k]->getPosition().x - enemies[k]->getDetectionRadius())
+							{
+								if (player->getPosition().y < enemies[k]->getPosition().y + enemies[k]->getDetectionRadius() && player->getPosition().y > enemies[k]->getPosition().y - enemies[k]->getDetectionRadius())
+								{
+									enemies[k]->removeAllNodes();
+									enemies[k]->addNode(floor[i]->at(j));
+									floor[i]->at(j)->setVisitedByAlgorithm(false);
+									floor[i]->at(j)->setTravelDistance(0);
 
-					if (CollissionMan().intersectRectPoint(*floor[i]->at(j), player->getPosition()))	//change to soldier loop for rushing NPCs
-					{
-						xTarget = i;
-						yTarget = j;
-						hasDetectedPlayer = true;
+									xOrigin = i;
+									yOrigin = j;
+									enemyIsOnFloor = true;
+									enemies[k]->setRoaming(false);
+									enemies[k]->setHasDetectedPlayer(true);
+								}
+							}
+						}
+
+						if (CollissionMan().intersectRectPoint(*floor[i]->at(j), player->getPosition()))	//change to soldier loop for rushing NPCs
+						{
+							xTarget = i;
+							yTarget = j;
+							hasDetectedPlayer = true;
+						}
 					}
 				}
 			}
-		}
 
-		if (hasDetectedPlayer && enemyIsOnFloor)
-		{
-			floor[xOrigin]->at(yOrigin)->setHueristicDistance(sf::Vector2i(floor[xOrigin]->at(yOrigin)->getPosition()), (sf::Vector2i(floor[xTarget]->at(yTarget)->getPosition())));
-			floor[xOrigin]->at(yOrigin)->setWeightDistance(floor[xOrigin]->at(yOrigin)->getHueristicDistance());
-
-			/*
-			Consider adding an x and y locally to each tile, making them aware of their own position
-			*/
-
-			//if this tanks framerate, change to using the 'backendUpdate' function for looping -- make the below code part of an if-statement
-			//Alt. solution: make a timer for each soldier which counts down a random amount of seconds (less than 3?) to when they update their paths <----
-			int x = xOrigin;
-			int y = yOrigin;
-			bool done = false;
-			while (!done)
+			if (hasDetectedPlayer && enemyIsOnFloor)
 			{
-				done = true;
+				floor[xOrigin]->at(yOrigin)->setHueristicDistance(sf::Vector2i(floor[xOrigin]->at(yOrigin)->getPosition()), (sf::Vector2i(floor[xTarget]->at(yTarget)->getPosition())));
+				floor[xOrigin]->at(yOrigin)->setWeightDistance(floor[xOrigin]->at(yOrigin)->getHueristicDistance());
 
-				//currently analysed tile
-				//Checks all floor tiles, in order, to find the first one used for analysis
+				/*
+				Consider adding an x and y locally to each tile, making them aware of their own position
+				*/
 
-				bool hasPickedElement = false;
-				for (int i = 0; i < floor.size(); i++)
+				//if this tanks framerate, change to using the 'backendUpdate' function for looping -- make the below code part of an if-statement
+				//Alt. solution: make a timer for each soldier which counts down a random amount of seconds (less than 3?) to when they update their paths <----
+				int x = xOrigin;
+				int y = yOrigin;
+				bool done = false;
+				while (!done)
 				{
-					if (!hasPickedElement)
-					{
-						for (int j = 0; j < floor[i]->size(); j++)
-						{
-							if (floor[i]->at(j) != nullptr)
-							{
-								if (floor[i]->at(j)->getVisitedByAlgorithm() == false)	//Will ignore visited nodes, so this defines the open set
-								{
-									if (!hasPickedElement)
-									{
-										if (floor[x]->at(y) != nullptr)
-										{
-											if (floor[i]->at(j)->getWeightDistance() <= floor[x]->at(y)->getWeightDistance()) //is part of the open set and is an improved distance
-											{
-												done = false;	//Exits once all nodes have been visited, as it won't be set to false
-												hasPickedElement = true;
+					done = true;
 
-												x = i;
-												y = j;
+					//currently analysed tile
+					//Checks all floor tiles, in order, to find the first one used for analysis
+
+					bool hasPickedElement = false;
+					for (int i = 0; i < floor.size(); i++)
+					{
+						if (!hasPickedElement)
+						{
+							for (int j = 0; j < floor[i]->size(); j++)
+							{
+								if (floor[i]->at(j) != nullptr)
+								{
+									if (floor[i]->at(j)->getVisitedByAlgorithm() == false)	//Will ignore visited nodes, so this defines the open set
+									{
+										if (!hasPickedElement)
+										{
+											if (floor[x]->at(y) != nullptr)
+											{
+												if (floor[i]->at(j)->getWeightDistance() <= floor[x]->at(y)->getWeightDistance()) //is part of the open set and is an improved distance
+												{
+													done = false;	//Exits once all nodes have been visited, as it won't be set to false
+													hasPickedElement = true;
+
+													x = i;
+													y = j;
+												}
 											}
 										}
+
+										floor[i]->at(j)->setColour(sf::Color::Cyan);
 									}
-
-									floor[i]->at(j)->setColour(sf::Color::Cyan);
+									else floor[i]->at(j)->setColour(sf::Color::Red);
 								}
-								else floor[i]->at(j)->setColour(sf::Color::Red);
+
+								if (hasPickedElement) break;
 							}
-
-							if (hasPickedElement) break;
 						}
-					}
-					else break;
-				}
-
-				if (floor[x]->at(y) != nullptr)
-				{
-					floor[x]->at(y)->setVisitedByAlgorithm(true);	//set to closed set
-
-					if (floor[x]->at(y) == floor[xTarget]->at(yTarget))
-					{
-						//for now -- maybe have a check if the enemy really needs a new set of nodes rn?
-						enemies[k]->removeAllNodes();
-						done = true;
-
-						Tile* temp = floor[xTarget]->at(yTarget);
-						bool allNodesAdded = false;
-
-						int i = 0;
-						int timeoutQuantity = 3000;	//increase if floor area ever exceeds 3000 sqr tiles -- will increase loading times for unreachable tiles though
-						while (!allNodesAdded)
-						{
-							if (temp == floor[xOrigin]->at(yOrigin) || i > timeoutQuantity) allNodesAdded = true;
-							else
-							{
-								if (temp->getPreviousNode() != nullptr)
-								{
-									if (enemies[k]->getNodes().size() > 0) enemies[k]->emplaceNode(enemies[k]->getNodes().size() - i, temp->getPreviousNode());
-									else enemies[k]->addNode(temp->getPreviousNode());
-									temp->setColour(sf::Color::Black);
-									temp = temp->getPreviousNode();
-								}
-							}
-
-							i++;
-						}
-						temp = nullptr;
-
-						enemies[k]->getNodes();
+						else break;
 					}
 
-					//check neighbouring nodes and decide whether they're to be checked or not
+					if (floor[x]->at(y) != nullptr)
 					{
-						int tempX;
-						int tempY;
-						unsigned int shortestDistance = 0 - 1;
+						floor[x]->at(y)->setVisitedByAlgorithm(true);	//set to closed set
 
-						for (int i = 0; i < 4; i++)
+						if (floor[x]->at(y) == floor[xTarget]->at(yTarget))
 						{
-							int operator1 = 1;
-							int operator2 = 1;
+							//for now -- maybe have a check if the enemy really needs a new set of nodes rn?
+							enemies[k]->removeAllNodes();
+							done = true;
 
-							//Assign operator difference
-							switch (i)
+							Tile* temp = floor[xTarget]->at(yTarget);
+							bool allNodesAdded = false;
+
+							int i = 0;
+							int timeoutQuantity = 3000;	//increase if floor area ever exceeds 3000 sqr tiles -- will increase loading times for unreachable tiles though
+							while (!allNodesAdded)
 							{
-								//Each cardinal directions
-							case 0:
-								operator2 = 0;
-								break;
-							case 1:
-								operator1 *= -1;
-								operator2 = 0;
-								break;
-							case 2:
-								operator1 = 0;
-								break;
-							case 3:
-								operator1 = 0;
-								operator2 *= -1;
-								break;
-							}
-
-							tempX = x + operator1;
-							tempY = y + operator2;
-
-							//checks each connection for the node with the lowest travel distance
-							if ((tempX) < floor.size())
-							{
-								if ((tempY) < floor[tempX]->size())
+								if (temp == floor[xOrigin]->at(yOrigin) || i > timeoutQuantity) allNodesAdded = true;
+								else
 								{
-									if (floor[tempX]->at(tempY) != nullptr)
+									if (temp->getPreviousNode() != nullptr)
 									{
-										int tempTravelDistance = floor[x]->at(y)->getTravelDistance() + 1;	//used for compárison to current distance before setting
+										if (enemies[k]->getNodes().size() > 0) enemies[k]->emplaceNode(enemies[k]->getNodes().size() - i, temp->getPreviousNode());
+										else enemies[k]->addNode(temp->getPreviousNode());
+										temp->setColour(sf::Color::Black);
+										temp = temp->getPreviousNode();
+									}
+								}
 
-										if (!floor[tempX]->at(tempY)->getVisitedByAlgorithm())	//Is part of open set
+								i++;
+							}
+							temp = nullptr;
+
+							enemies[k]->getNodes();
+						}
+
+						//check neighbouring nodes and decide whether they're to be checked or not
+						{
+							int tempX;
+							int tempY;
+							unsigned int shortestDistance = 0 - 1;
+
+							for (int i = 0; i < 4; i++)
+							{
+								int operator1 = 1;
+								int operator2 = 1;
+
+								//Assign operator difference
+								switch (i)
+								{
+									//Each cardinal directions
+								case 0:
+									operator2 = 0;
+									break;
+								case 1:
+									operator1 *= -1;
+									operator2 = 0;
+									break;
+								case 2:
+									operator1 = 0;
+									break;
+								case 3:
+									operator1 = 0;
+									operator2 *= -1;
+									break;
+								}
+
+								tempX = x + operator1;
+								tempY = y + operator2;
+
+								//checks each connection for the node with the lowest travel distance
+								if ((tempX) < floor.size())
+								{
+									if ((tempY) < floor[tempX]->size())
+									{
+										if (floor[tempX]->at(tempY) != nullptr)
 										{
-											floor[tempX]->at(tempY)->setTravelDistance(floor[x]->at(y)->getTravelDistance() + 1);	//set distance
-											if (floor[tempX]->at(tempY)->getTravelDistance() <= shortestDistance)
+											int tempTravelDistance = floor[x]->at(y)->getTravelDistance() + 1;	//used for compárison to current distance before setting
+
+											if (!floor[tempX]->at(tempY)->getVisitedByAlgorithm())	//Is part of open set
 											{
+												floor[tempX]->at(tempY)->setTravelDistance(floor[x]->at(y)->getTravelDistance() + 1);	//set distance
+												if (floor[tempX]->at(tempY)->getTravelDistance() <= shortestDistance)
+												{
+													floor[tempX]->at(tempY)->setPreviousNode(floor[x]->at(y));
+													floor[x]->at(y)->setNextNode(floor[tempX]->at(tempY));			//<--- not sure about this one
+												}
+											}
+											else if (tempTravelDistance < floor[tempX]->at(tempY)->getTravelDistance())	//Is part of closed set and new distance is shorter
+											{
+												floor[tempX]->at(tempY)->setVisitedByAlgorithm(false);
+
+												floor[tempX]->at(tempY)->setTravelDistance(tempTravelDistance);																				//g
+												floor[tempX]->at(tempY)->getNextNode()->setPreviousNode(nullptr);
+												floor[tempX]->at(tempY)->getPreviousNode()->setNextNode(nullptr);
+
 												floor[tempX]->at(tempY)->setPreviousNode(floor[x]->at(y));
-												floor[x]->at(y)->setNextNode(floor[tempX]->at(tempY));			//<--- not sure about this one
+												floor[tempX]->at(tempY)->setNextNode(nullptr);						//<--- not sure about this one
+												floor[x]->at(y)->setNextNode(floor[tempX]->at(tempY));
 											}
+
+											if (shortestDistance < floor[tempX]->at(tempY)->getTravelDistance()) shortestDistance = floor[tempX]->at(tempY)->getTravelDistance();
+
+											floor[tempX]->at(tempY)->setHueristicDistance(sf::Vector2i((x + operator1), (tempY)), sf::Vector2i((xTarget), (yTarget)));						//h
+											floor[tempX]->at(tempY)->setWeightDistance(floor[tempX]->at(tempY)->getTravelDistance() + floor[tempX]->at(tempY)->getHueristicDistance());	//f
 										}
-										else if (tempTravelDistance < floor[tempX]->at(tempY)->getTravelDistance())	//Is part of closed set and new distance is shorter
-										{
-											floor[tempX]->at(tempY)->setVisitedByAlgorithm(false);
-
-											floor[tempX]->at(tempY)->setTravelDistance(tempTravelDistance);																				//g
-											floor[tempX]->at(tempY)->getNextNode()->setPreviousNode(nullptr);
-											floor[tempX]->at(tempY)->getPreviousNode()->setNextNode(nullptr);
-
-											floor[tempX]->at(tempY)->setPreviousNode(floor[x]->at(y));
-											floor[tempX]->at(tempY)->setNextNode(nullptr);						//<--- not sure about this one
-											floor[x]->at(y)->setNextNode(floor[tempX]->at(tempY));
-										}
-
-										if (shortestDistance < floor[tempX]->at(tempY)->getTravelDistance()) shortestDistance = floor[tempX]->at(tempY)->getTravelDistance();
-
-										floor[tempX]->at(tempY)->setHueristicDistance(sf::Vector2i((x + operator1), (tempY)), sf::Vector2i((xTarget), (yTarget)));						//h
-										floor[tempX]->at(tempY)->setWeightDistance(floor[tempX]->at(tempY)->getTravelDistance() + floor[tempX]->at(tempY)->getHueristicDistance());	//f
 									}
 								}
 							}
 						}
 					}
 				}
-			}
 
-			floor[xOrigin]->at(yOrigin)->setColour(sf::Color::Green);
-			floor[xTarget]->at(yTarget)->setColour(sf::Color::Yellow);
+				floor[xOrigin]->at(yOrigin)->setColour(sf::Color::Green);
+				floor[xTarget]->at(yTarget)->setColour(sf::Color::Yellow);
+			}
 		}
 	}
 
@@ -553,7 +563,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window, sf::Event
 
 	for (int i = 0; i < enemyAmount; i++)
 	{
-		if (enemies[i]->isAbleToShoot() && rand()%5 == 0)
+		if (false == true) //enemies[i]->isAbleToShoot() && rand()%5 == 0)
 		{
 			bool shot = false;
 			for (int j = 0; j < *soldierRecieved && shot != true; j++)
