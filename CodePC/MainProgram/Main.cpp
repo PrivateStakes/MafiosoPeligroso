@@ -23,10 +23,14 @@ int main()
 	std::srand((unsigned)time(0));
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Brutalshot: Throne of Guns");
 	sf::RenderStates defaultRenderState;
+	window.setKeyRepeatEnabled(false);
+
+	sf::Event event;
 
 	sf::Clock clock;
 	sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	StateStack* stateStack = new StateStack(WIDTH, HEIGHT);
@@ -35,18 +39,19 @@ int main()
 
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) window.close();
-		}
+		/*while (window.pollEvent(event)) //DON'T REENABLE THIS, WILL BREAK CITYMAP
+ 		{
+			if (event.type == sf::Event::Closed) window.close(); 
+		}*/
 
 		elapsedTimeSinceLastUpdate += clock.restart();
 		while (elapsedTimeSinceLastUpdate > timePerFrame)
 		{
 			elapsedTimeSinceLastUpdate -= timePerFrame;
-			gameOn = stateStack->update(timePerFrame.asSeconds(), window);
+			gameOn = stateStack->update(timePerFrame.asSeconds(), window, event);
 		}
+
+		
 
 		if (gameOn)
 		{

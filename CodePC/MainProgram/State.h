@@ -16,6 +16,6 @@ public:
 
 	const StateID getStateID() const;
 
-	virtual int update(const float deltaTime, sf::RenderWindow& window) = 0;
+	virtual int update(const float deltaTime, sf::RenderWindow& window, sf::Event& event) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
 };

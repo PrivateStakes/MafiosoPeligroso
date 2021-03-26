@@ -29,7 +29,7 @@ CityMap::~CityMap()
 {
 }
 
-int CityMap::update(const float deltaTime, sf::RenderWindow& window)
+int CityMap::update(const float deltaTime, sf::RenderWindow& window, sf::Event& event)
 {
     int returnMessage = 0;
     if (choice == 1)
@@ -45,78 +45,121 @@ int CityMap::update(const float deltaTime, sf::RenderWindow& window)
         commText2.setString("SELECT:\n\nTALK\n\nATTACK\n\nCLOSE<-");
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) returnMessage = (int)stateEvent::ExitGame;
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && kms.getPosition().x > 365 && kms.getPosition().x < 575 
-        && kms.getPosition().y > 470 && kms.getPosition().y < 750)
+    while (window.pollEvent(event))
     {
+        if (event.type == sf::Event::KeyPressed)
+        {
+            if (event.key.code == sf::Keyboard::L) returnMessage = (int)stateEvent::ExitGame;
+
+            if (communicator.yesOpen())
+            {
+                if (((event.key.code == sf::Keyboard::W) || (event.key.code == sf::Keyboard::Up)) && choice > 1) choice--;
+                else if (((event.key.code == sf::Keyboard::S) || (event.key.code == sf::Keyboard::Down)) && choice < 3) choice++;
+            }
+
+            if (communicator.yesOpen() && (event.key.code == sf::Keyboard::Enter))
+            {
+                if (choice == 1)
+                {
+                    commText1.setString(textBit(rand() % 5));
+                }
+                else if (choice == 2)
+                {
+                    std::cout << "How many soldiers do you want to have in combat at once? (You have " << soldiers->size() << " soldiers)\n";
+                    std::cin >> *soldierRecieved;
+                    if (*soldierRecieved <= soldiers->size() && *soldierRecieved > 0)
+                    {
+                        returnMessage = (int)stateEvent::GameState;
+                    }
+                    else
+                    {
+                        std::cout << "Not within area of selection Please insert something between 1 and " << soldiers->size() << std::endl;
+                    }
+
+                }
+                else if (choice == 3)
+                {
+                    communicator.closeMenu();
+                }
+                choice = 1;
+            }
+
+            if (event.key.code == sf::Keyboard::P) recruiter.openMenu();
+            if (event.key.code == sf::Keyboard::O) recruiter.closeMenu();
+
+            if (recruiter.yesOpen())
+            {
+                if (event.key.code == sf::Keyboard::I)
+                {
+                    randomCharacter();
+                }
+
+                if (event.key.code == sf::Keyboard::O) recruiter.closeMenu();
+
+                if (event.key.code == sf::Keyboard::Enter)
+                {
+                    soldiers->push_back(new Soldier("character_" + std::to_string(temp + 1) + ".png", recruit(counter)));
+                    counter = soldiers->size();
+                    updateText();
+                }
+            }
+        }
+    }
+            
+
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (!onOff && !communicator.yesOpen() && (event.mouseButton.button == sf::Mouse::Left) && (kms.getPosition().x > 365 && kms.getPosition().x < 575
+            && kms.getPosition().y > 470 && kms.getPosition().y < 750))
+        {
+            onOff = true;
         communicator.openMenu();
         commText1.setString(textBit(-1));
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) recruiter.closeMenu();
-
-    if (communicator.yesOpen())
-    {
-        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) && choice > 1) choice--;
-        else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) && choice < 3) choice++;
-
-        if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
-            && kms.getPosition().y > 950 && kms.getPosition().y < 970) choice = 1;
-        else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
-            && kms.getPosition().y > 990 && kms.getPosition().y < 1010) choice = 2;
-        else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
-            && kms.getPosition().y > 1030 && kms.getPosition().y < 1050) choice = 3;
-    }
-
-    if (communicator.yesOpen() && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
-    {
-        if (choice == 1)
-        {
-            commText1.setString(textBit(rand()%5));
         }
-        else if (choice == 2)
+
+        if (!onOff && communicator.yesOpen() && (event.mouseButton.button == sf::Mouse::Left))
         {
-            std::cout << "How many soldiers do you want to have in combat at once? (You have " << soldiers->size() << " soldiers)\n";
-            std::cin >> *soldierRecieved;
-            if (*soldierRecieved <= soldiers->size() && *soldierRecieved > 0)
+            onOff = true;
+            if (choice == 1)
             {
-                returnMessage = (int)stateEvent::GameState;
+                commText1.setString(textBit(rand() % 5));
             }
-            else
+            else if (choice == 2)
             {
-                std::cout << "Not within area of selection Please insert something between 1 and " << soldiers->size() << std::endl;
+                std::cout << "How many soldiers do you want to have in combat at once? (You have " << soldiers->size() << " soldiers)\n";
+                    std::cin >> *soldierRecieved;
+                    if (*soldierRecieved <= soldiers->size() && *soldierRecieved > 0)
+                    {
+                        returnMessage = (int)stateEvent::GameState;
+                    }
+                    else
+                    {
+                        std::cout << "Not within area of selection Please insert something between 1 and " << soldiers->size() << std::endl;
+                    }
+
             }
-            
+            else if (choice == 3)
+            {
+                communicator.closeMenu();
+            }
+            choice = 1;
         }
-        else if (choice == 3)
-        {
-            communicator.closeMenu();
-        }
-        choice = 1;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+    if (event.type == sf::Event::MouseButtonReleased)
     {
-        recruiter.openMenu();
+        if (event.mouseButton.button == sf::Mouse::Left) onOff = false;
     }
 
-    if (recruiter.yesOpen())
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::I))
+        if (communicator.yesOpen())
         {
-            randomCharacter();
+            if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+                && kms.getPosition().y > 950 && kms.getPosition().y < 970) choice = 1;
+            else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+                && kms.getPosition().y > 990 && kms.getPosition().y < 1010) choice = 2;
+            else if (kms.getPosition().x > 1200 && kms.getPosition().x < 1320
+                && kms.getPosition().y > 1030 && kms.getPosition().y < 1050) choice = 3;
         }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) recruiter.closeMenu();
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
-        {
-            soldiers->push_back(new Soldier("character_" + std::to_string(temp+1) + ".png", recruit(counter)));
-            counter = soldiers->size();
-            updateText();
-        }
-    }
 
     return returnMessage;
 }

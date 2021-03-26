@@ -20,18 +20,21 @@ private:
 	sf::Sprite blueSquareSprite;
 	sf::Mouse kms;
 
+	sf::Window testWindow;
+
 	Communication communicator;
 	Recruitment recruiter;
 
 	std::vector<Soldier*>* soldiers;
 
 	int* soldierRecieved;
+	bool onOff = false;
 
 public:
 	CityMap(const StateID InputStateId, StateStack& stateStack, std::vector<Soldier*>* soliderHierarchy, int* soldierSent);
 	~CityMap() override;
 
 	// Inherited via State
-	int update(const float deltaTime, sf::RenderWindow& window) override;
+	int update(const float deltaTime, sf::RenderWindow& window, sf::Event& event) override;
 	void render(sf::RenderWindow& window) override;
 };
