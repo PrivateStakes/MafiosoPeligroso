@@ -52,6 +52,10 @@ GameState::GameState(const StateID InputStateId, StateStack& stateStack, std::st
 	kapow.setBuffer(kapowBuffer);
 	deathsoundBuffer.loadFromFile("../Sounds/deathsound.wav");
 	deathsound.setBuffer(deathsoundBuffer);
+	hitBuffer.loadFromFile("../Sounds/hit.wav");
+	hit.setBuffer(hitBuffer);
+	crackBuffer.loadFromFile("../Sounds/crack.wav");
+	crack.setBuffer(crackBuffer);
 
 	bullets = new std::vector<BulletType*>;
 
@@ -668,6 +672,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 							tiles[i]->at(j)->setHP(bullets->at(k)->getDmg());
 							if (tiles[i]->at(j)->getHP() <= 0)
 							{
+								crack.play();
 								floor[i]->at(j) = new Tile(tempEditor->loadTile(TileSorts::floor));
 								floor[i]->at(j)->setTileType('e');
 								floor[i]->at(j)->setPosition(tiles[i]->at(j)->getPosition());
@@ -761,6 +766,7 @@ int GameState::update(const float deltaTime, sf::RenderWindow& window)
 
 		if (deleteBullet)
 		{
+			hit.play();
 			if (bullets->at(k) != bullets->back())
 			{
 				delete bullets->at(k);

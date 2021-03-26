@@ -175,7 +175,7 @@ bool StateStack::update(const float deltaTime, sf::RenderWindow& window)
 		{
 			if (states[stateQuantity]->getStateID() == StateID::GameState)
 			{
-				dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
+				//dynamic_cast<GameState*>(states[stateQuantity])->backendUpdate();
 			}
 			int tempInt = states[stateQuantity]->update(deltaTime, window);
 			 
