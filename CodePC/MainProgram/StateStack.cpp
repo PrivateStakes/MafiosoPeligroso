@@ -19,6 +19,7 @@ StateStack::StateStack(const int inputWindowWidth, const int inputWindowHeight) 
 	soldiers->push_back(new Soldier());
 	soldiers->at(0)->setIsPlayer(true);
 	soldiers->at(0)->setID(ID++);
+	soldiers->at(0)->setCustomCollider(soldiers->at(0)->getBounds());
 
 	soldierSent = nullptr;
 	soldierSent = new int;

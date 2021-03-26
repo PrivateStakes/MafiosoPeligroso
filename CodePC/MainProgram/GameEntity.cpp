@@ -57,5 +57,14 @@ sf::FloatRect GameEntity::getBounds()
 	{
 		return this->sprite.getGlobalBounds();
 	}
-	else return customCollider;
+	else
+	{
+		sf::FloatRect returnRect;
+		returnRect = customCollider;
+		returnRect.height = customCollider.height;
+		returnRect.left = customCollider.left + sprite.getPosition().x;
+		returnRect.top = customCollider.top + sprite.getPosition().y;
+		returnRect.width = customCollider.width; 
+		return returnRect;
+	}
 }
