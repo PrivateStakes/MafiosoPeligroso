@@ -60,8 +60,12 @@ private:
 	sf::SoundBuffer powBuffer;
 	sf::SoundBuffer kapowBuffer;
 	sf::SoundBuffer deathsoundBuffer;
+	sf::SoundBuffer crackBuffer;
+	sf::SoundBuffer hitBuffer;
 	sf::Sound kapow;
 	sf::Sound deathsound;
+	sf::Sound hit;
+	sf::Sound crack;
 
 	sf::Text healthText;
 	sf::Text weaponText;

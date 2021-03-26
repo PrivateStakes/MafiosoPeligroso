@@ -52,6 +52,7 @@ public:
 	void pop();
 	void render(sf::RenderWindow& window);
 	bool update(const float aDeltaTime, sf::RenderWindow& window, sf::Event& event);
+	void backendUpdate();
 
 	int getID();
 	void setID(int input);

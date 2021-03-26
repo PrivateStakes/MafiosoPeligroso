@@ -44,6 +44,7 @@ int main()
 			if (event.type == sf::Event::Closed) window.close(); 
 		}*/
 
+		stateStack->backendUpdate();
 		elapsedTimeSinceLastUpdate += clock.restart();
 		while (elapsedTimeSinceLastUpdate > timePerFrame)
 		{

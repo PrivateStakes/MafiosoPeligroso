@@ -31,8 +31,17 @@ protected:
     bool reloading;
     WeaponType* currentWeapon;
 
+
+    float pathfindingTimer = 2.5f;
+    float pathfindingTimerElapsed = 0.f;
+    float detectionRadius = 50.f;
+
+    bool canDetectPlayer;
+    bool hasDetectedPlayer;
     bool roaming;
+
     sf::Vector2f inputDirection;
+    int initialNodeAmount;
     std::vector<Tile*> nodes;
     sf::Vector2f lerp(sf::Vector2f source, sf::Vector2f target, float distance_traversed);
 
@@ -69,6 +78,14 @@ public:
     void removeAllNodes();
     void moveToNextNode();
 
+    float getDetectionRadius();
+
     bool getRoaming();
     void setRoaming(bool);
+
+    bool getCanDetectPlayer();
+    void setCanDetectPlayer(bool);
+
+    bool getHasDetectedPlayer();
+    void setHasDetectedPlayer(bool);
 };
